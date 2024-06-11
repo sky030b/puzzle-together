@@ -1,0 +1,23 @@
+{
+  "name": "puzzle-together",
+  "version": "1.0.0",
+  "description": "A puzzle game that everyone can have fun together. ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sky030b/puzzle-together.git"
+  },
+  "keywords": [
+    "puzzle",
+    "together"
+  ],
+  "author": "sky030b",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sky030b/puzzle-together/issues"
+  },
+  "homepage": "https://github.com/sky030b/puzzle-together#readme"
+}
