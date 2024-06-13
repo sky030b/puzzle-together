@@ -49,10 +49,13 @@
 
 <body>
   <input type="file" id="upload" accept="image/*">
-  <div id="target-container"></div>
-  <div id="puzzle-container"></div>
+    <div id="target-container"></div>
+    <div id="puzzle-container"></div>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
-    document.getElementById('upload').addEventListener('change', handleImage);
+    document.getElementById('upload').addEventListener('change', handleImage, false);
+
+    const socket = io();
 
     function handleImage(e) {
       const reader = new FileReader();
@@ -131,6 +134,12 @@
         const parentRect = selectedPiece.parentNode.getBoundingClientRect();
         selectedPiece.style.left = `${e.clientX - offsetX - parentRect.left}px`;
         selectedPiece.style.top = `${e.clientY - offsetY - parentRect.top}px`;
+
+        socket.emit('movePiece', {
+          id: selectedPiece.id,
+          left: selectedPiece.style.left,
+          top: selectedPiece.style.top
+        });
       }
 
       function onMouseUp() {
@@ -147,9 +156,17 @@
               selectedPiece.style.zIndex = '-1';
               selectedPiece.classList.add('locked');
               selectedPiece.removeEventListener('mousedown', onMouseDown);
+
+              socket.emit('lockPiece', {
+                id: selectedPiece.id,
+                left: selectedPiece.style.left,
+                top: selectedPiece.style.top,
+                zIndex: selectedPiece.style.zIndex
+              });
             }
           }
         });
+        selectedPiece.style.zIndex = '1';
         selectedPiece = null;
       }
 
@@ -194,6 +211,26 @@
         element.style.left = `${targetCenterX - elementCenterX}px`;
         element.style.top = `${targetCenterY - elementCenterY}px`;
       }
+
+      socket.on('movePiece', (data) => {
+        const piece = document.getElementById(data.id);
+        if (piece) {
+          piece.style.left = data.left;
+          piece.style.top = data.top;
+        }
+      });
+
+      socket.on('lockPiece', (data) => {
+        const piece = document.getElementById(data.id);
+        if (piece) {
+          piece.style.left = data.left;
+          piece.style.top = data.top;
+          piece.style.zIndex = data.zIndex;
+          piece.dataset.locked = 'true';
+          piece.classList.add('locked');
+          piece.removeEventListener('mousedown', onMouseDown);
+        }
+      });
     }
   </script>
 </body>

@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/sky030b/puzzle-together/issues"
   },
-  "homepage": "https://github.com/sky030b/puzzle-together#readme"
+  "homepage": "https://github.com/sky030b/puzzle-together#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "socket.io": "^4.7.5"
+  }
 }
