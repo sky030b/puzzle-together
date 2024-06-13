@@ -172,6 +172,14 @@
               selectedPiece.dataset.locked = 'true';
               selectedPiece.style.zIndex = '-1';
               selectedPiece.classList.add('locked');
+
+              socket.emit('lockPiece', {
+                room: currentRoom,
+                id: selectedPiece.id,
+                parentId: target.id,
+                locked: true
+              });
+
               selectedPiece.removeEventListener('mousedown', onMouseDown);
 
               socket.emit('lockPiece', {
@@ -181,7 +189,7 @@
                 top: selectedPiece.style.top,
                 zIndex: selectedPiece.style.zIndex
               });
-            } 
+            }
             else {
               selectedPiece.style.zIndex = '5';
             }
@@ -218,18 +226,12 @@
       }
 
       function centerInTarget(element, target) {
-        const targetRect = target.getBoundingClientRect();
-        const parentRect = element.parentNode.getBoundingClientRect();
-        const elementRect = element.getBoundingClientRect();
-
-        const targetCenterX = targetRect.left + targetRect.width / 2 - parentRect.left;
-        const targetCenterY = targetRect.top + targetRect.height / 2 - parentRect.top;
-
-        const elementCenterX = elementRect.width / 2;
-        const elementCenterY = elementRect.height / 2;
-
-        element.style.left = `${targetCenterX - elementCenterX}px`;
-        element.style.top = `${targetCenterY - elementCenterY}px`;
+        target.innerHTML = '';
+        target.appendChild(element);
+        element.style.position = 'absolute';
+        element.style.left = '50%';
+        element.style.top = '50%';
+        element.style.transform = 'translate(-50%, -50%)';
       }
 
       socket.on('movePiece', (data) => {
@@ -245,11 +247,13 @@
       socket.on('lockPiece', (data) => {
         if (data.room === currentRoom) {
           const piece = document.getElementById(data.id);
-          if (piece) {
-            piece.style.left = data.left;
-            piece.style.top = data.top;
-            piece.style.zIndex = data.zIndex;
-            piece.dataset.locked = 'true';
+          const target = document.getElementById(data.parentId);
+          if (piece && target) {
+            target.appendChild(piece);
+            piece.style.left = '50%';
+            piece.style.top = '50%';
+            piece.style.transform = 'translate(-50%, -50%)';
+            piece.dataset.locked = data.locked;
             piece.classList.add('locked');
             piece.removeEventListener('mousedown', onMouseDown);
           }
