@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draggable Puzzle</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .puzzle-piece {
+      border: 1px solid black;
+      position: absolute;
+      cursor: move;
+      overflow: hidden;
+      background-size: 400px 400px;
+    }
+
+    .locked {
+      cursor: default;
+    }
+
+    .target-box {
+      width: 100px;
+      height: 100px;
+      border: 1px dashed black;
+      position: relative;
+    }
+
+    #target-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0px;
+      width: 400px;
+      position: relative;
+    }
+
+    #puzzle-container {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      width: 600px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="file" id="upload" accept="image/*">
+  <div id="target-container"></div>
+  <div id="puzzle-container"></div>
+  <script>
+    document.getElementById('upload').addEventListener('change', handleImage);
+
+    function handleImage(e) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+          const canvasSize = 100;
+          const pieceCount = 16;
+          const pieces = [];
+
+          const puzzleContainer = document.getElementById('puzzle-container');
+          puzzleContainer.innerHTML = '';
+
+          for (let i = 0; i < pieceCount; i++) {
+            const piece = document.createElement('div');
+            piece.id = 'piece' + (i + 1);
+            piece.className = 'puzzle-piece';
+            piece.style.width = `${canvasSize}px`;
+            piece.style.height = `${canvasSize}px`;
+            piece.style.backgroundImage = `url(${img.src})`;
+            piece.style.left = `${Math.random() * (puzzleContainer.clientWidth - canvasSize)}px`;
+            piece.style.top = `${Math.random() * (puzzleContainer.clientHeight - canvasSize)}px`;
+
+            const row = Math.floor(i / 4);
+            const col = i % 4;
+            piece.style.backgroundPosition = `-${col * canvasSize}px -${row * canvasSize}px`;
+            puzzleContainer.appendChild(piece);
+            pieces.push(piece);
+          }
+
+          createTargetBoxes(pieceCount);
+          addDragAndDrop();
+        }
+        img.src = event.target.result;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    function createTargetBoxes(pieceCount) {
+      const targetContainer = document.getElementById('target-container');
+      targetContainer.style.border = '1px solid black';
+      targetContainer.innerHTML = '';
+
+      for (let i = 0; i < pieceCount; i++) {
+        const targetBox = document.createElement('div');
+        targetBox.id = 'target' + (i + 1);
+        targetBox.className = 'target-box';
+        targetContainer.appendChild(targetBox);
+      }
+    }
+
+    function addDragAndDrop() {
+      const puzzlePieces = document.querySelectorAll('.puzzle-piece');
+      const targetBoxes = document.querySelectorAll('.target-box');
+      let offsetX, offsetY, selectedPiece;
+
+      puzzlePieces.forEach(piece => {
+        piece.addEventListener('mousedown', onMouseDown);
+      });
+
+      function onMouseDown(e) {
+        if (e.target.dataset.locked === 'true') return;
+        selectedPiece = e.target;
+        selectedPiece.style.zIndex = '10';
+        const rect = selectedPiece.getBoundingClientRect();
+        const parentRect = selectedPiece.parentNode.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      }
+
+      function onMouseMove(e) {
+        if (!selectedPiece) return;
+        const parentRect = selectedPiece.parentNode.getBoundingClientRect();
+        selectedPiece.style.left = `${e.clientX - offsetX - parentRect.left}px`;
+        selectedPiece.style.top = `${e.clientY - offsetY - parentRect.top}px`;
+      }
+
+      function onMouseUp() {
+        if (!selectedPiece) return;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+
+        targetBoxes.forEach(target => {
+          if (isNearTarget(selectedPiece, target) && selectedPiece.id === 'piece' + target.id.replace('target', '')) {
+            const overlapRatio = calculateOverlap(selectedPiece, target);
+            if (overlapRatio >= 0.8) {
+              centerInTarget(selectedPiece, target);
+              selectedPiece.dataset.locked = 'true';
+              selectedPiece.style.zIndex = '-1';
+              selectedPiece.classList.add('locked');
+              selectedPiece.removeEventListener('mousedown', onMouseDown);
+            }
+          }
+        });
+        selectedPiece = null;
+      }
+
+      function isNearTarget(element, target) {
+        const rect1 = element.getBoundingClientRect();
+        const rect2 = target.getBoundingClientRect();
+
+        const isInHorizontalBound = rect1.left < rect2.right && rect1.right > rect2.left;
+        const isInVerticalBound = rect1.top < rect2.bottom && rect1.bottom > rect2.top;
+
+        return isInHorizontalBound && isInVerticalBound;
+      }
+
+      function calculateOverlap(element, target) {
+        const rect1 = element.getBoundingClientRect();
+        const rect2 = target.getBoundingClientRect();
+
+        const overlapWidth = Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left);
+        const overlapHeight = Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top);
+
+        if (overlapWidth <= 0 || overlapHeight <= 0) {
+          return 0;
+        }
+
+        const overlapArea = overlapWidth * overlapHeight;
+        const elementArea = rect1.width * rect1.height;
+
+        return overlapArea / elementArea;
+      }
+
+      function centerInTarget(element, target) {
+        const targetRect = target.getBoundingClientRect();
+        const parentRect = element.parentNode.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+
+        const targetCenterX = targetRect.left + targetRect.width / 2 - parentRect.left;
+        const targetCenterY = targetRect.top + targetRect.height / 2 - parentRect.top;
+
+        const elementCenterX = elementRect.width / 2;
+        const elementCenterY = elementRect.height / 2;
+
+        element.style.left = `${targetCenterX - elementCenterX}px`;
+        element.style.top = `${targetCenterY - elementCenterY}px`;
+      }
+    }
+  </script>
+</body>
+
+</html>
