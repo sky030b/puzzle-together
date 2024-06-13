@@ -30,8 +30,6 @@
             height: 100px;
             background-color: white;
             position: absolute;
-            top: 50px;
-            left: 50px;
             border: 1px solid #000;
             cursor: grab;
         }
@@ -53,12 +51,33 @@
         const canvas = document.getElementById('canvas');
         const draggable = document.getElementById('draggable');
 
+        const canvasWidth = 6000;
+        const canvasHeight = 3000;
+
+        // Initialize draggable position to the center of the canvas
+        draggable.style.left = `${(canvasWidth - draggable.clientWidth) / 2}px`;
+        draggable.style.top = `${(canvasHeight - draggable.clientHeight) / 2}px`;
+
         let scale = 1;
         let isDraggingCanvas = false;
         let isDraggingElement = false;
         let startX, startY;
         let canvasStartX, canvasStartY;
         let elementStartX, elementStartY;
+
+        // Center the view on the draggable element
+        const centerView = () => {
+            const containerRect = container.getBoundingClientRect();
+            const draggableRect = draggable.getBoundingClientRect();
+
+            const offsetX = (containerRect.width / 2) - (draggableRect.left + draggableRect.width / 2);
+            const offsetY = (containerRect.height / 2) - (draggableRect.top + draggableRect.height / 2);
+
+            canvas.style.left = `${offsetX}px`;
+            canvas.style.top = `${offsetY}px`;
+        };
+
+        centerView();
 
         container.addEventListener('wheel', (e) => {
             e.preventDefault();
@@ -119,8 +138,15 @@
                 const dx = (e.pageX - startX) / scale;
                 const dy = (e.pageY - startY) / scale;
 
-                draggable.style.left = `${elementStartX + dx}px`;
-                draggable.style.top = `${elementStartY + dy}px`;
+                let newLeft = elementStartX + dx;
+                let newTop = elementStartY + dy;
+
+                // Ensure the draggable element does not exceed canvas boundaries
+                newLeft = Math.max(0, Math.min(newLeft, canvasWidth - draggable.clientWidth));
+                newTop = Math.max(0, Math.min(newTop, canvasHeight - draggable.clientHeight));
+
+                draggable.style.left = `${newLeft}px`;
+                draggable.style.top = `${newTop}px`;
             }
         });
 
