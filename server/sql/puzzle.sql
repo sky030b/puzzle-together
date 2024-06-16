@@ -4,13 +4,13 @@ CREATE TABLE players (
     email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT,
     nickname VARCHAR(255) NOT NULL UNIQUE,
-    color_code VARCHAR(10) NOT NULL,
+    represent_color VARCHAR(10) NOT NULL,
     -- current_title INT,   not yet
-    is_room_public TINYINT(1) DEFAULT 0,
-    games_played INT DEFAULT 0,
-    games_completed INT DEFAULT 0,
-    profile_description TEXT,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    is_room_public TINYINT(1) DEFAULT 0 NOT NULL,
+    games_played INT DEFAULT 0 NOT NULL,
+    games_completed INT DEFAULT 0 NOT NULL,
+    profile TEXT,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
     -- FOREIGN KEY (current_title) REFERENCES titles(id)   not yet
 );
 
@@ -18,29 +18,33 @@ CREATE TABLE games (
     id INT PRIMARY KEY AUTO_INCREMENT,
     game_id VARCHAR(255) NOT NULL UNIQUE,
     title VARCHAR(100) NOT NULL UNIQUE,
-    question_img_url VARCHAR(255) NOT NULL UNIQUE,
+    question_img_url VARCHAR(255) NOT NULL,
     owner_id VARCHAR(255) NOT NULL,
     img_width INT NOT NULL,
     img_height INT NOT NULL,
     scale DECIMAL(10, 3),
     row_qty INT NOT NULL,
     col_qty INT NOT NULL,
+    height DECIMAL(10, 3) NOT NULL,
+    width DECIMAL(10, 3) NOT NULL,
     difficulty ENUM('easy', 'medium', 'hard') NOT NULL DEFAULT 'easy',
+    mode ENUM('cooperation', 'competition', 'relay') NOT NULL DEFAULT 'cooperation',
     is_public TINYINT(1) DEFAULT 0,
-    is_open_when_owner_not_in TINYINT(1) DEFAULT 0,
-    play_duration BIGINT DEFAULT 1,
-    is_done TINYINT(1) DEFAULT 0,
-    played_times INT NOT NULL DEFAULT 0,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (owner_id) REFERENCES players(player_id)
+    is_open_when_owner_not_in TINYINT(1) DEFAULT 0 NOT NULL,
+    play_duration BIGINT DEFAULT 0 NOT NULL,
+    is_completed TINYINT(1) DEFAULT 0 NOT NULL,
+    completed_at TIMESTAMP DEFAULT NULL,
+    completed_times INT NOT NULL DEFAULT 0,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES players(player_id) ON DELETE CASCADE
 );
 
 CREATE TABLE player_game (
     player_id VARCHAR(255) NOT NULL,
     game_id VARCHAR(255) NOT NULL,
     PRIMARY KEY (player_id, game_id),
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
-    FOREIGN KEY (game_id) REFERENCES games(game_id)
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
 
 CREATE TABLE puzzles (
@@ -56,10 +60,16 @@ CREATE TABLE puzzles (
     locked_by VARCHAR(255) NULL,
     locked_at TIMESTAMP DEFAULT NULL,
     locked_color VARCHAR(7) DEFAULT NULL,
-    z_index INT NOT NULL,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (game_id) REFERENCES games(game_id)
+    z_index INT NOT NULL DEFAULT 3,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
+
+DROP TABLE puzzles;
+DROP TABLE player_game;
+DROP TABLE games;
+DROP TABLE players;
+
 
 -- not yet
 
@@ -74,8 +84,8 @@ CREATE TABLE user_title (
     player_id VARCHAR(255) NOT NULL,
     title_id INT NOT NULL,
     PRIMARY KEY (player_id, title_id),
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
-    FOREIGN KEY (title_id) REFERENCES titles(id)
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    FOREIGN KEY (title_id) REFERENCES titles(id) ON DELETE CASCADE
 );
 
 CREATE TABLE posts (
@@ -83,8 +93,8 @@ CREATE TABLE posts (
     player_id VARCHAR(255) NOT NULL,
     media VARCHAR(255),
     content TEXT,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (player_id) REFERENCES players(player_id)
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments (
@@ -92,9 +102,9 @@ CREATE TABLE comments (
     post_id INT NOT NULL,
     player_id VARCHAR(255) NOT NULL,
     content TEXT,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
-    FOREIGN KEY (post_id) REFERENCES posts(id)
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
 CREATE TABLE movements (
@@ -104,10 +114,10 @@ CREATE TABLE movements (
     top_position DECIMAL(10, 3) NOT NULL,
     left_position DECIMAL(10, 3) NOT NULL,
     moved_by VARCHAR(255) NOT NULL,
-    moved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (puzzle_id) REFERENCES puzzles(puzzle_id),
-    FOREIGN KEY (game_id) REFERENCES games(game_id),
-    FOREIGN KEY (moved_by) REFERENCES players(player_id)
+    moved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (puzzle_id) REFERENCES puzzles(puzzle_id) ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
+    -- FOREIGN KEY (moved_by) REFERENCES players(player_id) ON DELETE CASCADE 應該會是暱稱而不是id，為登入使用者不會有id
 );
 
 CREATE TABLE chat_logs (
@@ -115,7 +125,7 @@ CREATE TABLE chat_logs (
     game_id VARCHAR(255) NOT NULL,
     player_id VARCHAR(255) NOT NULL,
     message TEXT,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (player_id) REFERENCES players(player_id),
-    FOREIGN KEY (game_id) REFERENCES games(game_id)
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
