@@ -39,17 +39,40 @@
 </head>
 
 <body>
-  <input type="text" id="room-input" placeholder="Enter room name">
-  <button id="join-room">Join Room</button><br>
-  <label for="rows">Rows:</label>
-  <input type="number" id="rows" value="4" min="1">
-  <label for="cols">Cols:</label>
-  <input type="number" id="cols" value="4" min="1"><br>
-  <input type="file" id="upload" accept="image/*">
+  <form action="/api/1.0/games/" method="POST" enctype="multipart/form-data">
+    <input type="text" id="room-input" placeholder="Enter room name">
+    <button id="join-room">Join Room</button><br>
+    <label for="rows">Rows:</label>
+    <input type="number" id="rows" name="row_qty" value="4" min="1" required>
+    <label for="cols">Cols:</label>
+    <input type="number" id="cols" name="col_qty" value="4" min="1" required><br>
+    <input type="file" id="upload" name="question_img" accept="image/*">
+    <input type="text" name="owner_id" id="owner_id" value="" style="display: none;">
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+    <label for="difficulty">Difficulty:</label>
+    <input type="text" id="difficulty" name="difficulty" value='easy' required>
+    <label for="mode">Mode:</label>
+    <input type="text" id="mode" name="mode" value='cooperation' required>
+
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="is_public" name="is_public">
+      <label class="form-check-label" for="is_public">is_public</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="is_open_when_owner_not_in" name="is_open_when_owner_not_in">
+      <label class="form-check-label" for="is_open_when_owner_not_in">is_open_when_owner_not_in</label>
+    </div>
+    <button type="submit">送出</button>
+  </form>
   <div id="target-container" style="margin-right: auto; margin-left: auto;"></div>
   <div id="puzzle-container"></div>
   <script src="/socket.io/socket.io.js"></script>
   <script>
+
+    document.getElementById('owner_id').value = "player123";
+
     const socket = io();
     let currentRoom = '';
     const puzzleTargetMap = {};
