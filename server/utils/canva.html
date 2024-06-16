@@ -21,8 +21,6 @@
         }
 
         #canvas {
-            width: 6000px;
-            height: 3000px;
             background-color: #f0f0f0;
             position: absolute;
             transform-origin: 0 0;
@@ -55,7 +53,29 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        async function renderGame() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const gameId = urlParams.get('gameId');
+
+            // if (!gameId) {
+            //     alert("請輸入有效的遊戲關卡ID");
+            //     window.location.href = '/canva.html';
+            // }
+
+            // const url = `/api/1.0/games/${gameId}`;
+            const url = `/api/1.0/games/6ihuOgWm5k`;
+            const res = await axios.get(url);
+            const renderInfo = res.data;
+            console.log(renderInfo, 123)
+        }
+        async function main() {
+            await renderGame();
+        }
+        main();
+
         const container = document.getElementById('container');
         const canvas = document.getElementById('canvas');
         const draggable = document.getElementById('draggable');
@@ -99,7 +119,7 @@
                 scale -= scaleAmount;
             }
 
-            scale = Math.min(Math.max(0.5, scale), 3);
+            scale = Math.min(Math.max(0.3, scale), 3);
 
             const rect = canvas.getBoundingClientRect();
             const offsetX = (e.pageX - rect.left) / rect.width;

@@ -39,9 +39,9 @@
 </head>
 
 <body>
-  <form action="/api/1.0/games/" method="POST" enctype="multipart/form-data">
-    <input type="text" id="room-input" placeholder="Enter room name">
-    <button id="join-room">Join Room</button><br>
+  <form id="game-form" class="game-form" enctype="multipart/form-data">
+    <!-- <input type="text" id="room-input" placeholder="Enter room name">
+    <button id="join-room">Join Room</button><br> -->
     <label for="rows">Rows:</label>
     <input type="number" id="rows" name="row_qty" value="4" min="1" required>
     <label for="cols">Cols:</label>
@@ -68,6 +68,8 @@
   </form>
   <div id="target-container" style="margin-right: auto; margin-left: auto;"></div>
   <div id="puzzle-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
 
@@ -77,8 +79,23 @@
     let currentRoom = '';
     const puzzleTargetMap = {};
 
-    document.getElementById('join-room').addEventListener('click', joinRoom);
-    document.getElementById('upload').addEventListener('change', handleImage, false);
+    // document.getElementById('join-room').addEventListener('click', joinRoom);
+    // document.getElementById('upload').addEventListener('change', handleImage, false);
+    const form = document.querySelector(".game-form");
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const res = await axios.post(
+        '/api/1.0/games/',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      window.location.href = `/canva.html?gameId=${res.data.game_id}`;
+    })
 
     function joinRoom() {
       const roomInput = document.getElementById('room-input');

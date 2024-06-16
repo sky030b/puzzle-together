@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body,
+    html {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      background-color: #e0e0e0;
+    }
+
+    #canvas {
+      background-color: #f0f0f0;
+      position: absolute;
+      transform-origin: 0 0;
+    }
+
+    #draggable {
+      width: 750px;
+      height: 750px;
+      background-color: white;
+      position: absolute;
+      border: 1px solid #000;
+      cursor: grab;
+      outline: 1px solid rgba(0, 0, 0, 0);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0);
+    }
+
+    #draggable:active {
+      cursor: grabbing;
+      outline: 1px solid rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <title>Interactive Canvas</title>
+</head>
+
+<body>
+  <div id="container">
+    <div id="canvas">
+      <div id="draggable"></div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    async function renderGame() {
+      try {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const gameId = urlParams.get('gameId');
+
+        const url = `/api/1.0/games/${gameId}`;
+        const res = await axios.get(url);
+        const renderInfo = res.data;
+
+        if (!renderInfo) {
+          alert("沒有找到指定的遊戲關卡");
+          window.location.href = '/index.html';
+        }
+
+        const orderedRenderInfo = getOrderedGameRenderInfo(renderInfo);
+        console.log(orderedRenderInfo, 123)
+
+      } catch (error) {
+        alert(error.message)
+        alert("請輸入有效的遊戲關卡ID");
+        window.location.href = '/index.html';
+      }
+
+    }
+
+    const container = document.getElementById('container');
+    const canvas = document.getElementById('canvas');
+    const draggable = document.getElementById('draggable');
+
+    const canvasWidth = 8000;
+    const canvasHeight = 4000;
+    canvas.style.width = `${canvasWidth}px`;
+    canvas.style.height = `${canvasHeight}px`;
+
+    draggable.style.left = `${(canvasWidth - draggable.clientWidth) / 2}px`;
+    draggable.style.top = `${(canvasHeight - draggable.clientHeight) / 2}px`;
+
+    let scale = 1;
+    let isDraggingCanvas = false;
+    let isDraggingElement = false;
+    let startX, startY;
+    let canvasStartX, canvasStartY;
+    let elementStartX, elementStartY;
+
+    const centerView = () => {
+      const containerRect = container.getBoundingClientRect();
+      const draggableRect = draggable.getBoundingClientRect();
+
+      const offsetX = (containerRect.width / 2) - (draggableRect.left + draggableRect.width / 2);
+      const offsetY = (containerRect.height / 2) - (draggableRect.top + draggableRect.height / 2);
+
+      canvas.style.left = `${offsetX}px`;
+      canvas.style.top = `${offsetY}px`;
+    };
+
+    centerView();
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const scaleAmount = 0.1;
+      const previousScale = scale;
+
+      if (e.deltaY < 0) {
+        scale += scaleAmount;
+      } else {
+        scale -= scaleAmount;
+      }
+
+      scale = Math.min(Math.max(0.3, scale), 3);
+
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = (e.pageX - rect.left) / rect.width;
+      const offsetY = (e.pageY - rect.top) / rect.height;
+
+      const newCanvasWidth = canvas.clientWidth * scale;
+      const newCanvasHeight = canvas.clientHeight * scale;
+
+      const dx = (newCanvasWidth - canvas.clientWidth * previousScale) * offsetX;
+      const dy = (newCanvasHeight - canvas.clientHeight * previousScale) * offsetY;
+
+      canvas.style.transform = `scale(${scale})`;
+      canvas.style.left = `${parseFloat(canvas.style.left || 0) - dx}px`;
+      canvas.style.top = `${parseFloat(canvas.style.top || 0) - dy}px`;
+
+      constrainCanvas();
+    });
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.target === canvas || e.target === container) {
+        isDraggingCanvas = true;
+        startX = e.pageX;
+        startY = e.pageY;
+        canvasStartX = parseFloat(canvas.style.left || 0);
+        canvasStartY = parseFloat(canvas.style.top || 0);
+      } else if (e.target === draggable) {
+        isDraggingElement = true;
+        startX = e.pageX;
+        startY = e.pageY;
+        elementStartX = draggable.offsetLeft;
+        elementStartY = draggable.offsetTop;
+      }
+    });
+
+    container.addEventListener('mousemove', (e) => {
+      if (isDraggingCanvas) {
+        const dx = (e.pageX - startX);
+        const dy = (e.pageY - startY);
+
+        canvas.style.left = `${canvasStartX + dx}px`;
+        canvas.style.top = `${canvasStartY + dy}px`;
+
+        constrainCanvas();
+      } else if (isDraggingElement) {
+        const dx = (e.pageX - startX) / scale;
+        const dy = (e.pageY - startY) / scale;
+
+        let newLeft = elementStartX + dx;
+        let newTop = elementStartY + dy;
+
+        newLeft = Math.max(0, Math.min(newLeft, canvasWidth - draggable.clientWidth));
+        newTop = Math.max(0, Math.min(newTop, canvasHeight - draggable.clientHeight));
+
+        draggable.style.left = `${newLeft}px`;
+        draggable.style.top = `${newTop}px`;
+      }
+    });
+
+    container.addEventListener('mouseup', () => {
+      isDraggingCanvas = false;
+      isDraggingElement = false;
+    });
+
+    container.addEventListener('mouseleave', () => {
+      isDraggingCanvas = false;
+      isDraggingElement = false;
+    });
+
+    function constrainCanvas() {
+      const containerRect = container.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const scaledWidth = canvas.clientWidth * scale;
+      const scaledHeight = canvas.clientHeight * scale;
+
+      let left = parseFloat(canvas.style.left || 0);
+      let top = parseFloat(canvas.style.top || 0);
+
+      if (scaledWidth <= containerRect.width) {
+        left = (containerRect.width - scaledWidth) / 2;
+      } else {
+        if (left > 0) left = 0;
+        if (left < containerRect.width - scaledWidth) left = containerRect.width - scaledWidth;
+      }
+
+      if (scaledHeight <= containerRect.height) {
+        top = (containerRect.height - scaledHeight) / 2;
+      } else {
+        if (top > 0) top = 0;
+        if (top < containerRect.height - scaledHeight) top = containerRect.height - scaledHeight;
+      }
+
+      canvas.style.left = `${left}px`;
+      canvas.style.top = `${top}px`;
+    }
+
+    async function main() {
+      await renderGame();
+    }
+    main();
+
+  </script>
+</body>
+
+</html>
