@@ -1,9 +1,20 @@
-const { getGameBySerialID, getAllGames, addNewGame } = require('../services/gameDatabase');
+const { getRenderInfoByGameId, getAllGames, addNewGame } = require('../services/gameDatabase');
 
 async function getGames(req, res) {
   try {
     const allGames = await getAllGames();
     return res.status(200).send(allGames);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+}
+
+async function getRenderInfo(req, res) {
+  try {
+    const { gameId } = req.params;
+    const gameRenderInfo = await getRenderInfoByGameId(gameId);
+    return res.status(200).send(gameRenderInfo);
   } catch (error) {
     console.error(error);
     return res.status(500).send(error.message);
@@ -34,4 +45,4 @@ async function createNewGame(req, res) {
   }
 }
 
-module.exports = { getGames, createNewGame };
+module.exports = { getGames, getRenderInfo, createNewGame };

@@ -56,10 +56,10 @@ CREATE TABLE puzzles (
     left_position DECIMAL(10, 3) NOT NULL,
     -- height DECIMAL(10, 3) NOT NULL,
     -- width DECIMAL(10, 3) NOT NULL,
-    locked TINYINT(1) DEFAULT 0,
+    is_locked TINYINT(1) DEFAULT 0,
     locked_by VARCHAR(255) NULL,
-    locked_at TIMESTAMP DEFAULT NULL,
     locked_color VARCHAR(7) DEFAULT NULL,
+    locked_at TIMESTAMP DEFAULT NULL,
     z_index INT NOT NULL DEFAULT 3,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE

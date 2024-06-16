@@ -1,6 +1,6 @@
 const pool = require('./createDatabasePool');
 
-async function getPlayerByID(id) {
+async function getPlayerById(id) {
   const [player] = (await pool.query(`
     SELECT 
       *
@@ -23,4 +23,4 @@ async function getAllPlayers() {
 }
 
 
-module.exports = { getPlayerByID, getAllPlayers };
+module.exports = { getPlayerById, getAllPlayers };

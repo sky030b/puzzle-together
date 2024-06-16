@@ -3,7 +3,7 @@ const { nanoid } = require('nanoid');
 const pool = require('./createDatabasePool');
 const { uploadToS3 } = require('./createS3Client');
 
-async function getGameBySerialID(id) {
+async function getGameBySerialId(id) {
   const [game] = (await pool.query(`
     SELECT 
       *
@@ -15,16 +15,92 @@ async function getGameBySerialID(id) {
   return game;
 }
 
-async function getGameByRandomCharsID(gameId) {
-  const [game] = (await pool.query(`
+async function getRenderInfoByGameId(gameId) {
+  function getOrderedPuzzleInfo(puzzlesArray) {
+    const orderedPuzzlesInfo = puzzlesArray.map((puzzleObj) => {
+      const {
+        puzzle_id, target_id, top_position, left_position,
+        is_locked, locked_by, locked_color, locked_at, z_index
+      } = puzzleObj;
+
+      return {
+        puzzle_id, target_id, top_position, left_position,
+        is_locked, locked_by, locked_color, locked_at, z_index
+      };
+    })
+    return orderedPuzzlesInfo;
+  }
+
+
+  function getOrderedGameRenderInfo(renderInfoFromDB) {
+    const {
+      game_id, title, question_img_url, owner_id,
+      row_qty, col_qty, difficulty, mode,
+      puzzles,
+      is_public, is_open_when_owner_not_in,
+      play_duration, is_completed, completed_at
+    } = renderInfoFromDB;
+
+    return {
+      game_id, title, question_img_url, owner_id,
+      row_qty, col_qty, difficulty, mode,
+      puzzles: getOrderedPuzzleInfo(puzzles),
+      is_public, is_open_when_owner_not_in,
+      play_duration, is_completed, completed_at
+    }
+  }
+
+  const [gameRenderInfo] = (await pool.query(`
     SELECT 
-      *
+      g.game_id AS game_id, 
+      g.title AS title, 
+      g.question_img_url AS question_img_url, 
+      g.owner_id AS owner_id, 
+      g.row_qty AS row_qty, 
+      g.col_qty AS col_qty, 
+      g.difficulty AS difficulty, 
+      g.mode AS mode, 
+      p.puzzles AS puzzles, 
+      g.is_public AS is_public, 
+      g.is_open_when_owner_not_in AS is_open_when_owner_not_in, 
+      g.play_duration AS play_duration, 
+      g.is_completed AS is_completed, 
+      g.completed_at AS completed_at
     FROM 
-      games 
+      games g
+    LEFT JOIN 
+      (
+        SELECT
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'puzzle_id', p.puzzle_id, 
+              'target_id', p.target_id, 
+              'top_position', p.top_position, 
+              'left_position', p.left_position, 
+              'is_locked', p.is_locked, 
+              'locked_by', p.locked_by, 
+              'locked_color', p.locked_color, 
+              'locked_at', p.locked_at, 
+              'z_index', p.z_index
+            )
+          ) AS puzzles,
+          p.game_id AS game_id
+        FROM 
+          games g
+        LEFT JOIN 
+          puzzles p 
+          ON p.game_id = g.game_id
+        GROUP BY 
+          p.game_id
+      ) p ON p.game_id = g.game_id
     WHERE 
-      game_id = ?
+      g.game_id = ?;
   `, [gameId]))[0];
-  return game;
+
+
+  const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
+
+  return orderedGameRenderInfo;
 }
 
 async function getAllGames() {
@@ -49,12 +125,12 @@ async function addNewGame(file, info) {
     const question_img_url = await uploadToS3(file);
 
     const {
-      title, owner_id, row_qty, col_qty, difficulty, mode, 
+      title, owner_id, row_qty, col_qty, difficulty, mode,
       is_public, is_open_when_owner_not_in
     } = info;
 
     const gameInfo = [
-      game_id, title, question_img_url, owner_id, row_qty, col_qty, 
+      game_id, title, question_img_url, owner_id, row_qty, col_qty,
       difficulty, mode, is_public, is_open_when_owner_not_in
     ];
 
@@ -67,7 +143,7 @@ async function addNewGame(file, info) {
       )
     `, gameInfo);
 
-    const newGame = await getGameBySerialID(id);
+    const newGame = await getGameBySerialId(id);
     await addPuzzlesOfGame(newGame);
 
     return newGame;
@@ -118,4 +194,4 @@ async function addPuzzlesOfGame(newGame) {
   }
 }
 
-module.exports = { getGameBySerialID, getAllGames, addNewGame };
+module.exports = { getRenderInfoByGameId, getAllGames, addNewGame };
