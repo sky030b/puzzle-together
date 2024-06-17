@@ -246,7 +246,7 @@
       return new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => {
-          resolve({ width: img.width, height: img.height, src: url });
+          resolve({ width: img.width, height: img.height, src: url, scale: 1 });
         };
         img.onerror = reject;
         img.src = url;
@@ -264,17 +264,15 @@
 
       const img = await getImageDimensions(question_img_url)
       const maxDimension = 600;
-      let scale = 1;
 
       if (img.width > img.height) {
-        scale = maxDimension / img.width;
+        img.scale = maxDimension / img.width;
       } else {
-        scale = maxDimension / img.height;
+        img.scale = maxDimension / img.height;
       }
 
-      const scaledWidth = img.width * scale;
-      const scaledHeight = img.height * scale;
-      img.scale = scale;
+      const scaledWidth = img.width * img.scale;
+      const scaledHeight = img.height * img.scale;
 
       const rows = parseInt(row_qty);
       const cols = parseInt(col_qty);
@@ -288,32 +286,57 @@
 
       puzzles.forEach((puzzleInfo) => {
         const {
-          puzzle_id: pieceId, target_id: targetId, top_ratio, left_ratio,
-          is_locked, locked_by, locked_color, locked_at, z_index
+          puzzle_id: pieceId, target_id: targetId,
+          top_ratio: topRatio, left_ratio: leftRatio,
+          is_locked: isLocked, locked_by: lockedBy,
+          locked_color: lockedColor, locked_at: lockedAt,
+          z_index: zIndex
         } = puzzleInfo;
         puzzleTargetMap[targetId] = pieceId;
 
         const piece = document.createElement('div');
         piece.id = pieceId;
-        piece.className = `puzzle-piece ${is_locked ? 'locked' : ''}`;
+        piece.className = `puzzle-piece ${isLocked ? 'locked' : ''}`;
         piece.style.width = `${pieceWidth}px`;
         piece.style.height = `${pieceHeight}px`;
         piece.style.backgroundImage = `url(${img.src})`;
         piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
         piece.style.backgroundPosition = `-${(targetId - 1) % cols * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
-        piece.style.top = `${canvasHeight * top_ratio / 100}px`;
-        piece.style.left = `${canvasWidth * left_ratio / 100}px`;
-
-        piece.style.zIndex = z_index;
+        piece.style.zIndex = zIndex;
+        if (isLocked) {
+          piece.dataset.isLocked = 'true';
+          piece.dataset.lockedBy = lockedBy;
+          piece.dataset.lockedColor = lockedColor;
+          piece.dataset.lockedAt = lockedAt;
+        } else {
+          piece.style.top = `${canvasHeight * topRatio / 100}px`;
+          piece.style.left = `${canvasWidth * leftRatio / 100}px`;
+        }
         puzzleContainer.appendChild(piece);
         pieces.push(piece);
       })
 
-      createTargetBoxes(img, rows, cols, pieceWidth, pieceHeight);
+      createTargetBoxes(img, gameInfo);
       addDragAndDrop();
     }
 
-    function createTargetBoxes(img, rows, cols, pieceWidth, pieceHeight) {
+    function createTargetBoxes(img, gameInfo) {
+      const {
+        game_id, title, question_img_url, owner_id,
+        row_qty, col_qty, difficulty, mode,
+        puzzles,
+        is_public, is_open_when_owner_not_in,
+        play_duration, is_completed, completed_at
+      } = gameInfo;
+
+      const scaledWidth = img.width * img.scale;
+      const scaledHeight = img.height * img.scale;
+
+      const rows = parseInt(row_qty);
+      const cols = parseInt(col_qty);
+      const pieceWidth = scaledWidth / cols;
+      const pieceHeight = scaledHeight / rows;
+
       const targetContainer = document.getElementById('target-container');
       targetContainer.style.border = '5px solid black';
       targetContainer.innerHTML = '';
@@ -322,20 +345,39 @@
       targetContainer.style.width = `${cols * pieceWidth}px`;
       targetContainer.style.height = `${rows * pieceHeight}px`;
 
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-          const targetBox = document.createElement('div');
-          targetBox.id = 'target' + (row * cols + col + 1);
-          targetBox.className = 'target-box';
-          targetBox.style.width = `${pieceWidth}px`;
-          targetBox.style.height = `${pieceHeight}px`;
-          targetBox.style.backgroundImage = `url(${img.src})`;
-          targetBox.style.backgroundSize = `${img.width * img.scale}px ${img.height * img.scale}px`;
-          targetBox.style.backgroundPosition = `-${col * pieceWidth}px -${row * pieceHeight}px`;
-          targetBox.style.opacity = 0.2;
-          targetContainer.appendChild(targetBox);
+      puzzles.forEach((puzzleInfo) => {
+        const {
+          puzzle_id: pieceId, target_id: targetId,
+          top_ratio: topRatio, left_ratio: leftRatio,
+          is_locked: isLocked, locked_by: lockedBy,
+          locked_color: lockedColor, locked_at: lockedAt,
+          z_index: zIndex
+        } = puzzleInfo;
+
+        const targetBox = document.createElement('div');
+        targetBox.id = 'target' + targetId;
+        targetBox.className = 'target-box';
+        targetBox.style.width = `${pieceWidth}px`;
+        targetBox.style.height = `${pieceHeight}px`;
+        targetBox.style.backgroundImage = `url(${img.src})`;
+        targetBox.style.backgroundSize = `${img.width * img.scale}px ${img.height * img.scale}px`;
+        targetBox.style.backgroundPosition = `-${(targetId - 1) % cols * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
+        targetBox.style.opacity = 0.2;
+
+        if (isLocked) {
+          const piece = document.getElementById(pieceId);
+          targetBox.appendChild(piece);
+          targetBox.style.opacity = 1;
+          targetBox.style.border = 'none';
+          piece.style.border = 'none';
+          piece.style.left = '50%';
+          piece.style.top = '50%';
+          piece.style.transform = 'translate(-50%, -50%)';
         }
-      }
+
+        targetContainer.appendChild(targetBox);
+      })
+
       targetContainer.style.left = `${(canvasWidth - targetContainer.clientWidth) / 2}px`;
       targetContainer.style.top = `${(canvasHeight - targetContainer.clientHeight) / 2}px`;
     }
@@ -392,7 +434,7 @@
             if (overlapRatio >= 0.7) {
               centerInTarget(selectedPiece, target);
               selectedPiece.dataset.isLocked = 'true';
-              selectedPiece.style.zIndex = '2';
+              selectedPiece.style.zIndex = '-1';
               selectedPiece.classList.add('locked');
               selectedPiece.removeEventListener('mousedown', onMouseDown);
 
@@ -400,8 +442,9 @@
                 gameId: currentGameId,
                 puzzleId: selectedPiece.id,
                 targetId: target.id,
-                left: selectedPiece.style.left,
-                top: selectedPiece.style.top,
+                isLocked: true,
+                lockedBy: 'player123',
+                lockedColor: '#123456',
                 zIndex: selectedPiece.style.zIndex
               });
             } else {

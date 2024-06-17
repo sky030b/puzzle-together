@@ -186,9 +186,7 @@ async function addPuzzlesOfGame(newGame) {
 async function updatePuzzleLocation(puzzleInfo) {
   try {
     const { topRatio, leftRatio, gameId, puzzleId } = puzzleInfo;
-    console.log(puzzleInfo)
     const updateInfo = [topRatio, leftRatio, gameId, puzzleId];
-    // return;
     await pool.query(`
       UPDATE puzzles SET top_ratio = ?, left_ratio = ? WHERE game_id = ? AND puzzle_id = ?;
     `, updateInfo);
@@ -198,4 +196,17 @@ async function updatePuzzleLocation(puzzleInfo) {
   }
 }
 
-module.exports = { getRenderInfoByGameId, getAllGames, addNewGame, updatePuzzleLocation };
+async function lockPuzzleBySomeone(lockingInfo) {
+  try {
+    const { isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId } = lockingInfo;
+    const updateInfo = [isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId];
+    await pool.query(`
+      UPDATE puzzles SET is_locked = ?, locked_by = ?, locked_color = ?, z_index = ? WHERE game_id = ? AND puzzle_id = ?;
+    `, updateInfo);
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
+module.exports = { getRenderInfoByGameId, getAllGames, addNewGame, updatePuzzleLocation, lockPuzzleBySomeone };

@@ -58,6 +58,21 @@ CREATE TABLE puzzles (
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
 
+DELIMITER //
+
+CREATE TRIGGER before_puzzle_be_locked
+BEFORE UPDATE ON puzzles
+FOR EACH ROW
+BEGIN
+    IF NEW.is_locked != OLD.is_locked THEN
+        SET NEW.locked_at = CURRENT_TIMESTAMP;
+    END IF;
+END;
+
+//
+
+DELIMITER ;
+
 DROP TABLE puzzles;
 DROP TABLE player_game;
 DROP TABLE games;
