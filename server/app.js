@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
-const socket = require('./services/socket');
+const socket = require('./services/socketio');
 const dotenv = require('dotenv');
 
 dotenv.config();

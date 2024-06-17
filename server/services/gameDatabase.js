@@ -19,12 +19,12 @@ async function getRenderInfoByGameId(gameId) {
   function getOrderedPuzzleInfo(puzzlesArray) {
     const orderedPuzzlesInfo = puzzlesArray.map((puzzleObj) => {
       const {
-        puzzle_id, target_id, top_position, left_position,
+        puzzle_id, target_id, top_ratio, left_ratio,
         is_locked, locked_by, locked_color, locked_at, z_index
       } = puzzleObj;
 
       return {
-        puzzle_id, target_id, top_position, left_position,
+        puzzle_id, target_id, top_ratio, left_ratio,
         is_locked, locked_by, locked_color, locked_at, z_index
       };
     })
@@ -75,8 +75,8 @@ async function getRenderInfoByGameId(gameId) {
             JSON_OBJECT(
               'puzzle_id', p.puzzle_id, 
               'target_id', p.target_id, 
-              'top_position', p.top_position, 
-              'left_position', p.left_position, 
+              'top_ratio', p.top_ratio, 
+              'left_ratio', p.left_ratio, 
               'is_locked', p.is_locked, 
               'locked_by', p.locked_by, 
               'locked_color', p.locked_color, 
@@ -97,7 +97,6 @@ async function getRenderInfoByGameId(gameId) {
       g.game_id = ?;
   `, [gameId]))[0];
 
-
   const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
 
   return orderedGameRenderInfo;
@@ -114,12 +113,6 @@ async function getAllGames() {
 }
 
 async function addNewGame(file, info) {
-  // function changeTrueTo1(originalArray) {
-  //   return originalArray
-  //     .map((item) => item === true ? 1 : item)
-  //     .map((item) => item === false ? 0 : item);
-  // }
-
   try {
     const game_id = nanoid(10);
     const question_img_url = await uploadToS3(file);
@@ -164,26 +157,22 @@ async function addPuzzlesOfGame(newGame) {
   try {
     const { game_id, row_qty, col_qty } = newGame;
 
-    const canvaHorizontalMidpoint = process.env.CANVA_WIDTH / 2;
-    const canvaVerticalMidpoint = process.env.CANVA_HEIGHT / 2;
-    const targetBaseSize = process.env.TARGET_BASE_SIZE;
-
     const targetPuzzlePairingObject = {};
     Array(row_qty * col_qty).fill().forEach((_, index) => targetPuzzlePairingObject[index + 1] = nanoid(10));
 
     const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) =>
       [
         game_id, targetPuzzlePairingObject[targetId], targetId,
-        getRandomInt(canvaVerticalMidpoint - targetBaseSize * 3 / 2, canvaVerticalMidpoint + targetBaseSize * 3 / 2),
-        getRandomInt(canvaHorizontalMidpoint - targetBaseSize * 4 / 3, canvaHorizontalMidpoint + targetBaseSize * 4 / 3)
+        getRandomInt(20, 80),
+        getRandomInt(20, 80)
       ]
     );
 
     const sql = `
       INSERT INTO puzzles (
         game_id, puzzle_id, target_id, 
-        top_position, 
-        left_position
+        top_ratio, 
+        left_ratio
       ) VALUES ?
     `;
 

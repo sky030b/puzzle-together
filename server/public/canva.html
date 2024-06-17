@@ -288,7 +288,7 @@
 
       puzzles.forEach((puzzleInfo) => {
         const {
-          puzzle_id: pieceId, target_id: targetId, top_position, left_position,
+          puzzle_id: pieceId, target_id: targetId, top_ratio, left_ratio,
           is_locked, locked_by, locked_color, locked_at, z_index
         } = puzzleInfo;
         puzzleTargetMap[targetId] = pieceId;
@@ -302,8 +302,8 @@
         piece.style.backgroundImage = `url(${img.src})`;
         piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
         piece.style.backgroundPosition = `-${(targetId - 1) % cols * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
-        piece.style.top = `${top_position}px`;
-        piece.style.left = `${left_position}px`;
+        piece.style.top = `${canvasHeight * top_ratio / 100}px`;
+        piece.style.left = `${canvasWidth * left_ratio / 100}px`;
 
         piece.style.zIndex = z_index;
         puzzleContainer.appendChild(piece);
