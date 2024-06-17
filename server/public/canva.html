@@ -71,7 +71,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    let currentRoom = '';
+    let currentGameId = '';
     const puzzleTargetMap = {};
 
     function joinRoom() {
@@ -80,7 +80,7 @@
       const gameId = urlParams.get('gameId');
       if (gameId) {
         socket.emit('joinRoom', gameId);
-        currentRoom = gameId;
+        currentGameId = gameId;
       }
     }
 
@@ -263,7 +263,7 @@
       } = gameInfo;
 
       const img = await getImageDimensions(question_img_url)
-      const maxDimension = 1500;
+      const maxDimension = 600;
       let scale = 1;
 
       if (img.width > img.height) {
@@ -292,7 +292,6 @@
           is_locked, locked_by, locked_color, locked_at, z_index
         } = puzzleInfo;
         puzzleTargetMap[targetId] = pieceId;
-
 
         const piece = document.createElement('div');
         piece.id = pieceId;
@@ -370,10 +369,12 @@
         selectedPiece.style.left = `${dx}px`;
         selectedPiece.style.top = `${dy}px`;
         socket.emit('movePiece', {
-          room: currentRoom,
+          gameId: currentGameId,
           puzzleId: selectedPiece.id,
           left: selectedPiece.style.left,
           top: selectedPiece.style.top,
+          leftRatio: dx / canvasWidth * 100,
+          topRatio: dy / canvasHeight * 100
         });
       }
 
@@ -396,7 +397,7 @@
               selectedPiece.removeEventListener('mousedown', onMouseDown);
 
               socket.emit('lockPiece', {
-                room: currentRoom,
+                gameId: currentGameId,
                 puzzleId: selectedPiece.id,
                 targetId: target.id,
                 left: selectedPiece.style.left,
@@ -453,7 +454,7 @@
       }
 
       socket.on('movePiece', (data) => {
-        if (data.room === currentRoom) {
+        if (data.gameId === currentGameId) {
           const piece = document.getElementById(data.puzzleId);
           if (piece) {
             piece.style.left = data.left;
@@ -463,7 +464,7 @@
       });
 
       socket.on('lockPiece', (data) => {
-        if (data.room === currentRoom) {
+        if (data.gameId === currentGameId) {
           const piece = document.getElementById(data.puzzleId);
           const target = document.getElementById(data.targetId);
           if (piece && target) {

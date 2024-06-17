@@ -1,3 +1,5 @@
+const { updatePuzzleLocation } = require("./gameDatabase");
+
 const socket = (io) => {
   // 當有用戶連接時
   io.on('connection', (socket) => {
@@ -5,6 +7,7 @@ const socket = (io) => {
 
     socket.on('movePiece', (data) => {
       socket.broadcast.emit('movePiece', data);
+      updatePuzzleLocation(data);
     });
 
     socket.on('lockPiece', (data) => {

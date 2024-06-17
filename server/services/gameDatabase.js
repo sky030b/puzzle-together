@@ -163,8 +163,8 @@ async function addPuzzlesOfGame(newGame) {
     const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) =>
       [
         game_id, targetPuzzlePairingObject[targetId], targetId,
-        getRandomInt(20, 80),
-        getRandomInt(20, 80)
+        getRandomInt(30, 70),
+        getRandomInt(30, 70)
       ]
     );
 
@@ -183,4 +183,19 @@ async function addPuzzlesOfGame(newGame) {
   }
 }
 
-module.exports = { getRenderInfoByGameId, getAllGames, addNewGame };
+async function updatePuzzleLocation(puzzleInfo) {
+  try {
+    const { topRatio, leftRatio, gameId, puzzleId } = puzzleInfo;
+    console.log(puzzleInfo)
+    const updateInfo = [topRatio, leftRatio, gameId, puzzleId];
+    // return;
+    await pool.query(`
+      UPDATE puzzles SET top_ratio = ?, left_ratio = ? WHERE game_id = ? AND puzzle_id = ?;
+    `, updateInfo);
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
+module.exports = { getRenderInfoByGameId, getAllGames, addNewGame, updatePuzzleLocation };

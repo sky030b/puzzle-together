@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
-const socket = require('./services/socketio');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -16,6 +15,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, '../client/')));
+
+const socket = require('./services/socketio');
 
 const server = http.createServer(app);
 const io = socketIo(server);
