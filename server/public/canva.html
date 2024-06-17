@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
+    /* * {
       box-sizing: border-box;
-    }
+    } */
 
     body,
     html {
@@ -33,9 +33,13 @@
     .puzzle-piece {
       border: 1px solid black;
       position: absolute;
-      cursor: move;
+      cursor: grab;
       overflow: hidden;
-      background-size: cover;
+      /* background-size: cover; */
+      outline: 1px solid rgba(0, 0, 0, 0);
+      /* Hide outline */
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0);
+      /* Hide box shadow */
     }
 
     .locked {
@@ -51,6 +55,7 @@
       display: grid;
       position: relative;
       background-color: white;
+      /* border-collapse: collapse; */
     }
 
     #puzzle-container {
@@ -63,7 +68,7 @@
 <body>
   <div id="container">
     <div id="canvas">
-      <div id="target-container" style="margin-right: auto; margin-left: auto;"></div>
+      <div id="target-container"></div>
       <div id="puzzle-container"></div>
     </div>
   </div>
@@ -74,6 +79,8 @@
     const socket = io();
     let currentRoom = '';
     const puzzleTargetMap = {};
+    let targetContainerWidth;
+    let targetContainerHeight;
 
     function joinRoom() {
       const queryString = window.location.search;
@@ -115,12 +122,9 @@
     const targetContainer = document.getElementById('target-container');
 
     const canvasWidth = 8000;
-    const canvasHeight = 4000;
+    const canvasHeight = 6000;
     canvas.style.width = `${canvasWidth}px`;
     canvas.style.height = `${canvasHeight}px`;
-
-    targetContainer.style.left = `${(canvasWidth - targetContainer.clientWidth) / 2}px`;
-    targetContainer.style.top = `${(canvasHeight - targetContainer.clientHeight) / 2}px`;
 
     let scale = 1;
     let isDraggingCanvas = false;
@@ -139,8 +143,6 @@
       canvas.style.left = `${offsetX}px`;
       canvas.style.top = `${offsetY}px`;
     };
-
-    centerView();
 
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
@@ -173,19 +175,14 @@
     });
 
     container.addEventListener('mousedown', (e) => {
-      if (e.target === targetContainer) return;
-      if (e.target === canvas || e.target === container) {
+      if (e.target === canvas || e.target === container || e.target.parentNode === targetContainer
+        || e.target.parentNode.parentNode === targetContainer) {
+        e.target.style.cursor = 'move';
         isDraggingCanvas = true;
         startX = e.pageX;
         startY = e.pageY;
         canvasStartX = parseFloat(canvas.style.left || 0);
         canvasStartY = parseFloat(canvas.style.top || 0);
-      } else {
-        isDraggingElement = true;
-        startX = e.pageX;
-        startY = e.pageY;
-        elementStartX = e.target.offsetLeft;
-        elementStartY = e.target.offsetTop;
       }
     });
 
@@ -213,12 +210,14 @@
       }
     });
 
-    container.addEventListener('mouseup', () => {
+    container.addEventListener('mouseup', (e) => {
+      e.target.style.cursor = 'default';
       isDraggingCanvas = false;
       isDraggingElement = false;
     });
 
-    container.addEventListener('mouseleave', () => {
+    container.addEventListener('mouseleave', (e) => {
+      e.target.style.cursor = 'default';
       isDraggingCanvas = false;
       isDraggingElement = false;
     });
@@ -272,28 +271,27 @@
       } = gameInfo;
 
       const img = await getImageDimensions(question_img_url)
-      const maxDimension = 750;
+      const maxDimension = 1500;
       let scale = 1;
 
-      if (img.width > img.height && img.width > maxDimension) {
+      if (img.width > img.height) {
         scale = maxDimension / img.width;
-      } else if (img.height > img.width && img.height > maxDimension) {
-        scale = maxDimension / img.height;
-      } else if (img.width > maxDimension) {
-        scale = maxDimension / img.width;
-      } else if (img.height > maxDimension) {
+      } else {
         scale = maxDimension / img.height;
       }
 
       const scaledWidth = img.width * scale;
       const scaledHeight = img.height * scale;
+      img.scale = scale;
 
       const rows = parseInt(row_qty);
       const cols = parseInt(col_qty);
       const pieceWidth = scaledWidth / cols;
       const pieceHeight = scaledHeight / rows;
-      const pieces = [];
+      targetContainerWidth = cols * pieceWidth;
+      targetContainerHeight = rows * pieceHeight;
 
+      const pieces = [];
       const puzzleContainer = document.getElementById('puzzle-container');
       puzzleContainer.innerHTML = '';
       Object.keys(puzzleTargetMap).forEach(key => delete puzzleTargetMap[key]);
@@ -305,6 +303,7 @@
         } = puzzleInfo;
         puzzleTargetMap[targetId] = pieceId;
 
+
         const piece = document.createElement('div');
         piece.id = pieceId;
         piece.className = `puzzle-piece ${is_locked ? 'locked' : ''}`;
@@ -312,21 +311,22 @@
         piece.style.height = `${pieceHeight}px`;
         piece.style.backgroundImage = `url(${img.src})`;
         piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
-        piece.style.backgroundPosition = `-${(targetId - 1) % cols * pieceWidth}px -${Math.floor((targetId - 1) / rows) * pieceHeight}px`;
-        piece.style.top = `${top_position}px`;
+        piece.style.backgroundPosition = `-${(targetId - 1) % cols * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
+        piece.style.top = `${top_position - targetContainerHeight * scale}px`;
         piece.style.left = `${left_position}px`;
-        piece.style.zIndex = `${z_index}`;
+
+        piece.style.zIndex = z_index;
         puzzleContainer.appendChild(piece);
         pieces.push(piece);
       })
 
-      createTargetBoxes(rows, cols, pieceWidth, pieceHeight);
+      createTargetBoxes(img, rows, cols, pieceWidth, pieceHeight);
       addDragAndDrop();
     }
 
-    function createTargetBoxes(rows, cols, pieceWidth, pieceHeight) {
+    function createTargetBoxes(img, rows, cols, pieceWidth, pieceHeight) {
       const targetContainer = document.getElementById('target-container');
-      targetContainer.style.border = '1px solid black';
+      targetContainer.style.border = '5px solid black';
       targetContainer.innerHTML = '';
       targetContainer.style.gridTemplateColumns = `repeat(${cols}, ${pieceWidth}px)`;
       targetContainer.style.gridTemplateRows = `repeat(${rows}, ${pieceHeight}px)`;
@@ -340,13 +340,15 @@
           targetBox.className = 'target-box';
           targetBox.style.width = `${pieceWidth}px`;
           targetBox.style.height = `${pieceHeight}px`;
+          targetBox.style.backgroundImage = `url(${img.src})`;
+          targetBox.style.backgroundSize = `${img.width * img.scale}px ${img.height * img.scale}px`;
+          targetBox.style.backgroundPosition = `-${col * pieceWidth}px -${row * pieceHeight}px`;
+          targetBox.style.opacity = 0.2;
           targetContainer.appendChild(targetBox);
         }
       }
-    }
-
-    function generateRandomId() {
-      return Math.random().toString(36).substring(2, 10);
+      targetContainer.style.left = `${(canvasWidth - targetContainer.clientWidth) / 2}px`;
+      targetContainer.style.top = `${(canvasHeight - targetContainer.clientHeight) / 2}px`;
     }
 
     function addDragAndDrop() {
@@ -359,29 +361,29 @@
       });
 
       function onMouseDown(e) {
-        if (e.target.dataset.locked === 'true') return;
+        if (e.target.dataset.isLocked === 'true') return;
         selectedPiece = e.target;
         selectedPiece.style.zIndex = '10';
+        selectedPiece.style.cursor = 'grabbing';
         const rect = selectedPiece.getBoundingClientRect();
-        const parentRect = selectedPiece.parentNode.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-
+        offsetY = e.clientY - rect.top + targetContainerHeight * scale;
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
       }
 
       function onMouseMove(e) {
         if (!selectedPiece) return;
-        const parentRect = selectedPiece.parentNode.getBoundingClientRect();
-        selectedPiece.style.left = `${e.clientX - offsetX - parentRect.left}px`;
-        selectedPiece.style.top = `${e.clientY - offsetY - parentRect.top}px`;
-
+        const canvasRect = canvas.getBoundingClientRect();
+        const dx = (e.clientX - canvasRect.left - offsetX) / scale;
+        const dy = (e.clientY - canvasRect.top - offsetY) / scale;
+        selectedPiece.style.left = `${dx}px`;
+        selectedPiece.style.top = `${dy}px`;
         socket.emit('movePiece', {
           room: currentRoom,
-          id: selectedPiece.id,
+          puzzleId: selectedPiece.id,
           left: selectedPiece.style.left,
-          top: selectedPiece.style.top
+          top: selectedPiece.style.top,
         });
       }
 
@@ -389,30 +391,29 @@
         if (!selectedPiece) return;
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
+        selectedPiece.style.cursor = 'grab';
 
         targetBoxes.forEach(target => {
           const targetId = parseInt(target.id.replace('target', ''));
-          const pieceId = +selectedPiece.id;
-
+          const pieceId = selectedPiece.id;
           if (isNearTarget(selectedPiece, target) && puzzleTargetMap[targetId] === pieceId) {
             const overlapRatio = calculateOverlap(selectedPiece, target);
             if (overlapRatio >= 0.7) {
               centerInTarget(selectedPiece, target);
-              selectedPiece.dataset.locked = 'true';
-              selectedPiece.style.zIndex = '-1';
+              selectedPiece.dataset.isLocked = 'true';
+              selectedPiece.style.zIndex = '2';
               selectedPiece.classList.add('locked');
               selectedPiece.removeEventListener('mousedown', onMouseDown);
 
               socket.emit('lockPiece', {
                 room: currentRoom,
-                id: selectedPiece.id,
-                parentId: target.id,
+                puzzleId: selectedPiece.id,
+                targetId: target.id,
                 left: selectedPiece.style.left,
                 top: selectedPiece.style.top,
                 zIndex: selectedPiece.style.zIndex
               });
-            }
-            else {
+            } else {
               selectedPiece.style.zIndex = '5';
             }
           }
@@ -450,6 +451,12 @@
       function centerInTarget(element, target) {
         target.innerHTML = '';
         target.appendChild(element);
+        target.style.width = '100%';
+        target.style.height = '100%';
+        target.style.border = 'none';
+        target.style.opacity = 1;
+        target.style.backgroundImage = 'none';
+        element.style.border = 'none';
         element.style.position = 'absolute';
         element.style.left = '50%';
         element.style.top = '50%';
@@ -458,7 +465,7 @@
 
       socket.on('movePiece', (data) => {
         if (data.room === currentRoom) {
-          const piece = document.getElementById(data.id);
+          const piece = document.getElementById(data.puzzleId);
           if (piece) {
             piece.style.left = data.left;
             piece.style.top = data.top;
@@ -468,14 +475,19 @@
 
       socket.on('lockPiece', (data) => {
         if (data.room === currentRoom) {
-          const piece = document.getElementById(data.id);
-          const target = document.getElementById(data.parentId);
+          const piece = document.getElementById(data.puzzleId);
+          const target = document.getElementById(data.targetId);
           if (piece && target) {
             target.appendChild(piece);
+            target.style.border = 'none';
+            target.style.opacity = 1;
+            target.style.backgroundImage = 'none';
+            piece.style.border = 'none';
             piece.style.left = '50%';
             piece.style.top = '50%';
+            piece.style.zIndex = data.zIndex;
             piece.style.transform = 'translate(-50%, -50%)';
-            piece.dataset.locked = 'true';
+            piece.dataset.isLocked = 'true';
             piece.classList.add('locked');
             piece.removeEventListener('mousedown', onMouseDown);
           }
@@ -483,11 +495,11 @@
       });
     }
 
-
     async function main() {
       joinRoom();
       const renderInfo = await renderGame();
       await renderGame2(renderInfo);
+      centerView();
     }
     main();
 

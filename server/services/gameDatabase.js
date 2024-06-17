@@ -174,8 +174,8 @@ async function addPuzzlesOfGame(newGame) {
     const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) =>
       [
         game_id, targetPuzzlePairingObject[targetId], targetId,
-        getRandomInt(canvaHorizontalMidpoint - targetBaseSize * 4 / 3, canvaHorizontalMidpoint + targetBaseSize * 4 / 3),
-        getRandomInt(canvaVerticalMidpoint - targetBaseSize * 3 / 2, canvaVerticalMidpoint + targetBaseSize * 3 / 2)
+        getRandomInt(canvaVerticalMidpoint - targetBaseSize * 3 / 2, canvaVerticalMidpoint + targetBaseSize * 3 / 2),
+        getRandomInt(canvaHorizontalMidpoint - targetBaseSize * 4 / 3, canvaHorizontalMidpoint + targetBaseSize * 4 / 3)
       ]
     );
 
