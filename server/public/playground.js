@@ -121,9 +121,10 @@ import { renderGame, renderGame2 } from './puzzle.js';
 async function main() {
   joinRoom();
   const renderInfo = await renderGame();
+  console.log(renderInfo)
   await renderGame2(renderInfo);
 
-  scale = 0.8;
+  scale = 0.5;
   canvas.style.transform = `scale(${scale})`;
   constrainCanvas();
 

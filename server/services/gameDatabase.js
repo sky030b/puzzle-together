@@ -192,7 +192,7 @@ async function addPuzzlesOfGame(newGame) {
     Array(row_qty * col_qty).fill().forEach((_, index) => targetPuzzlePairingObject[index + 1] = nanoid(10));
 
     const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) => {
-      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(30, 15);
+      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(20, 20);
       return [
         game_id, targetPuzzlePairingObject[targetId], targetId,
         topRatio, leftRatio
