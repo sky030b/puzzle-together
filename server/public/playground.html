@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/playground.css">
+  <title>Interactive Canvas</title>
+</head>
+
+<body>
+  <div id="container">
+    <div id="canvas">
+      <div id="target-container"></div>
+      <div id="puzzle-container"></div>
+      <button id="generate-locked-box-button" style="position:absolute; top: 50%;left: 30%;">生成 Locked Color Box</button>
+      <button id="toggle-opacity-button" style="position:absolute; top: 50%;left: 36%;">切換透明度</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="socket.js"></script>
+  <script type="module" src="utils.js"></script>
+  <script type="module" src="puzzle.js"></script>
+  <script type="module" src="playground.js"></script>
+</body>
+
+</html>

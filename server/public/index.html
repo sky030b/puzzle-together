@@ -5,54 +5,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Draggable Puzzle</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 
 <body>
-  <form id="game-form" class="game-form" enctype="multipart/form-data">
-    <!-- <input type="text" id="room-input" placeholder="Enter room name">
-    <button id="join-room">Join Room</button><br> -->
-    <label for="rows">Rows:</label>
-    <input type="number" id="rows" name="row_qty" value="4" min="1" required>
-    <label for="cols">Cols:</label>
-    <input type="number" id="cols" name="col_qty" value="4" min="1" required><br>
-    <input type="file" id="upload" name="question_img" accept="image/*">
-    <input type="text" name="owner_id" id="owner_id" value="" style="display: none;">
+  <div class="container-md py-4">
+    <h2 class="text-center mb-3">快來創建自己的拼圖遊戲吧 ～</h2>
+    <form id="game-form" class="game-form" enctype="multipart/form-data">
+      <input type="text" class="form-control" name="owner_id" id="owner_id" value="" style="display: none;">
 
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required>
-    <label for="difficulty">Difficulty:</label>
-    <input type="text" id="difficulty" name="difficulty" value='easy' required>
-    <label for="mode">Mode:</label>
-    <input type="text" id="mode" name="mode" value='cooperation' required>
+      <div class="row g-3">
 
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="is_public" name="is_public">
-      <label class="form-check-label" for="is_public">is_public</label>
-    </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="is_open_when_owner_not_in" name="is_open_when_owner_not_in">
-      <label class="form-check-label" for="is_open_when_owner_not_in">is_open_when_owner_not_in</label>
-    </div>
-    <button type="submit">送出</button>
-  </form>
-  <div id="target-container" style="margin-right: auto; margin-left: auto;"></div>
-  <div id="puzzle-container"></div>
+        <div class="col-6">
+          <label for="title" class="col-form-label">遊戲關卡標題：</label>
+          <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="col-6">
+          <label for="question_img" class="col-form-label">遊戲題目圖片：</label>
+          <input type="file" class="form-control" id="question_img" name="question_img" accept="image/*">
+        </div>
 
+        <div class="col-6">
+          <label for="rows" class="col-form-label">列數：</label>
+          <input type="number" class="form-control" id="rows" name="row_qty" value="4" min="1" required>
+        </div>
+        <div class="col-6">
+          <label for="cols" class="col-form-label">行數：</label>
+          <input type="number" class="form-control" id="cols" name="col_qty" value="4" min="1" required>
+        </div>
+
+        <div class="col-6">
+          <label class="form-label" for="mode">模式：</label>
+          <select class="form-select" name="mode" id="mode">
+            <!-- <option selected disabled>請選擇遊玩模式</option> -->
+            <option value="cooperation" selected>合作模式</option>
+            <option value="competition">競賽模式</option>
+            <option value="relay">接力模式</option>
+          </select>
+        </div>
+
+        <div class="col-6">
+          <label class="form-label" for="difficulty">難度：</label>
+          <select class="form-select" name="difficulty" id="difficulty">
+            <!-- <option selected disabled>請選擇遊玩難度</option> -->
+            <option value="easy" selected>簡單</option>
+            <option value="medium">中等</option>
+            <option value="hard">困難</option>
+          </select>
+        </div>
+
+
+        <div class="col-auto">
+          <input type="checkbox" class="form-check-input me-2" id="is_public" name="is_public">
+          <label class="form-label form-check-label" for="is_public">開放所有玩家加入</label>
+        </div>
+        <div class="col-auto">
+          <input type="checkbox" class="form-check-input me-2" id="is_open_when_owner_not_in"
+            name="is_open_when_owner_not_in">
+          <label class="form-label form-check-label" for="is_open_when_owner_not_in">當您不在遊戲內也開放進入</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">送出</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     document.getElementById('owner_id').value = "player123";
-
-    // const socket = io();
-    // let currentRoom = '';
-    // const puzzleTargetMap = {};
-
-    // document.getElementById('join-room').addEventListener('click', joinRoom);
-    // document.getElementById('upload').addEventListener('change', handleImage, false);
     const form = document.querySelector(".game-form");
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
       const res = await axios.post(
         '/api/1.0/games/',
         formData,
@@ -62,239 +94,8 @@
           }
         }
       );
-      window.location.href = `/canva.html?gameId=${res.data.game_id}`;
+      window.location.href = `/playground.html?gameId=${res.data.game_id}`;
     })
-
-    // function joinRoom() {
-    //   const roomInput = document.getElementById('room-input');
-    //   const roomName = roomInput.value.trim();
-    //   if (roomName) {
-    //     socket.emit('joinRoom', roomName);
-    //     currentRoom = roomName;
-    //     roomInput.disabled = true;
-    //     document.getElementById('join-room').disabled = true;
-    //   }
-    // }
-
-    // function handleImage(e) {
-    //   const reader = new FileReader();
-    //   reader.onload = function (event) {
-    //     const img = new Image();
-    //     img.onload = function () {
-    //       const maxDimension = 400;
-    //       let scale = 1;
-
-    //       if (img.width > img.height && img.width > maxDimension) {
-    //         scale = maxDimension / img.width;
-    //       } else if (img.height > img.width && img.height > maxDimension) {
-    //         scale = maxDimension / img.height;
-    //       } else if (img.width > maxDimension) {
-    //         scale = maxDimension / img.width;
-    //       } else if (img.height > maxDimension) {
-    //         scale = maxDimension / img.height;
-    //       }
-
-    //       const scaledWidth = img.width * scale;
-    //       const scaledHeight = img.height * scale;
-
-    //       const rows = parseInt(document.getElementById('rows').value);
-    //       const cols = parseInt(document.getElementById('cols').value);
-    //       const pieceWidth = scaledWidth / cols;
-    //       const pieceHeight = scaledHeight / rows;
-    //       const pieces = [];
-
-    //       const puzzleContainer = document.getElementById('puzzle-container');
-    //       puzzleContainer.innerHTML = '';
-    //       Object.keys(puzzleTargetMap).forEach(key => delete puzzleTargetMap[key]);
-
-    //       for (let row = 0; row < rows; row++) {
-    //         for (let col = 0; col < cols; col++) {
-    //           // const pieceId = generateRandomId();
-    //           const pieceId = row * cols + col + 1;
-    //           const targetId = row * cols + col + 1;
-    //           puzzleTargetMap[targetId] = pieceId;
-
-    //           const piece = document.createElement('div');
-    //           piece.id = pieceId;
-    //           piece.className = 'puzzle-piece';
-    //           piece.style.width = `${pieceWidth}px`;
-    //           piece.style.height = `${pieceHeight}px`;
-    //           piece.style.backgroundImage = `url(${img.src})`;
-    //           piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
-    //           piece.style.backgroundPosition = `-${col * pieceWidth}px -${row * pieceHeight}px`;
-    //           piece.style.left = `${Math.random() * (puzzleContainer.clientWidth - pieceWidth)}px`;
-    //           piece.style.top = `${Math.random() * (puzzleContainer.clientHeight - pieceHeight)}px`;
-    //           puzzleContainer.appendChild(piece);
-    //           pieces.push(piece);
-    //         }
-    //       }
-
-    //       createTargetBoxes(rows, cols, pieceWidth, pieceHeight);
-    //       addDragAndDrop();
-    //     }
-    //     img.src = event.target.result;
-    //   }
-    //   reader.readAsDataURL(e.target.files[0]);
-    // }
-
-    // function createTargetBoxes(rows, cols, pieceWidth, pieceHeight) {
-    //   const targetContainer = document.getElementById('target-container');
-    //   targetContainer.style.border = '1px solid black';
-    //   targetContainer.innerHTML = '';
-    //   targetContainer.style.gridTemplateColumns = `repeat(${cols}, ${pieceWidth}px)`;
-    //   targetContainer.style.gridTemplateRows = `repeat(${rows}, ${pieceHeight}px)`;
-    //   targetContainer.style.width = `${cols * pieceWidth}px`;
-    //   targetContainer.style.height = `${rows * pieceHeight}px`;
-
-    //   for (let row = 0; row < rows; row++) {
-    //     for (let col = 0; col < cols; col++) {
-    //       const targetBox = document.createElement('div');
-    //       targetBox.id = 'target' + (row * cols + col + 1);
-    //       targetBox.className = 'target-box';
-    //       targetBox.style.width = `${pieceWidth}px`;
-    //       targetBox.style.height = `${pieceHeight}px`;
-    //       targetContainer.appendChild(targetBox);
-    //     }
-    //   }
-    // }
-
-    // function generateRandomId() {
-    //   return Math.random().toString(36).substring(2, 10);
-    // }
-
-    // function addDragAndDrop() {
-    //   const puzzlePieces = document.querySelectorAll('.puzzle-piece');
-    //   const targetBoxes = document.querySelectorAll('.target-box');
-    //   let offsetX, offsetY, selectedPiece;
-
-    //   puzzlePieces.forEach(piece => {
-    //     piece.addEventListener('mousedown', onMouseDown);
-    //   });
-
-    //   function onMouseDown(e) {
-    //     if (e.target.dataset.locked === 'true') return;
-    //     selectedPiece = e.target;
-    //     selectedPiece.style.zIndex = '10';
-    //     const rect = selectedPiece.getBoundingClientRect();
-    //     const parentRect = selectedPiece.parentNode.getBoundingClientRect();
-    //     offsetX = e.clientX - rect.left;
-    //     offsetY = e.clientY - rect.top;
-
-    //     document.addEventListener('mousemove', onMouseMove);
-    //     document.addEventListener('mouseup', onMouseUp);
-    //   }
-
-    //   function onMouseMove(e) {
-    //     if (!selectedPiece) return;
-    //     const parentRect = selectedPiece.parentNode.getBoundingClientRect();
-    //     selectedPiece.style.left = `${e.clientX - offsetX - parentRect.left}px`;
-    //     selectedPiece.style.top = `${e.clientY - offsetY - parentRect.top}px`;
-
-    //     socket.emit('movePiece', {
-    //       room: currentRoom,
-    //       id: selectedPiece.id,
-    //       left: selectedPiece.style.left,
-    //       top: selectedPiece.style.top
-    //     });
-    //   }
-
-    //   function onMouseUp() {
-    //     if (!selectedPiece) return;
-    //     document.removeEventListener('mousemove', onMouseMove);
-    //     document.removeEventListener('mouseup', onMouseUp);
-
-    //     targetBoxes.forEach(target => {
-    //       const targetId = parseInt(target.id.replace('target', ''));
-    //       const pieceId = +selectedPiece.id;
-
-    //       if (isNearTarget(selectedPiece, target) && puzzleTargetMap[targetId] === pieceId) {
-    //         const overlapRatio = calculateOverlap(selectedPiece, target);
-    //         if (overlapRatio >= 0.7) {
-    //           centerInTarget(selectedPiece, target);
-    //           selectedPiece.dataset.locked = 'true';
-    //           selectedPiece.style.zIndex = '-1';
-    //           selectedPiece.classList.add('locked');
-    //           selectedPiece.removeEventListener('mousedown', onMouseDown);
-
-    //           socket.emit('lockPiece', {
-    //             room: currentRoom,
-    //             id: selectedPiece.id,
-    //             parentId: target.id,
-    //             left: selectedPiece.style.left,
-    //             top: selectedPiece.style.top,
-    //             zIndex: selectedPiece.style.zIndex
-    //           });
-    //         }
-    //         else {
-    //           selectedPiece.style.zIndex = '5';
-    //         }
-    //       }
-    //     });
-    //     selectedPiece = null;
-    //   }
-
-    //   function isNearTarget(element, target) {
-    //     const rect1 = element.getBoundingClientRect();
-    //     const rect2 = target.getBoundingClientRect();
-
-    //     const isInHorizontalBound = rect1.left < rect2.right && rect1.right > rect2.left;
-    //     const isInVerticalBound = rect1.top < rect2.bottom && rect1.bottom > rect2.top;
-
-    //     return isInHorizontalBound && isInVerticalBound;
-    //   }
-
-    //   function calculateOverlap(element, target) {
-    //     const rect1 = element.getBoundingClientRect();
-    //     const rect2 = target.getBoundingClientRect();
-
-    //     const overlapWidth = Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left);
-    //     const overlapHeight = Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top);
-
-    //     if (overlapWidth <= 0 || overlapHeight <= 0) {
-    //       return 0;
-    //     }
-
-    //     const overlapArea = overlapWidth * overlapHeight;
-    //     const elementArea = rect1.width * rect1.height;
-
-    //     return overlapArea / elementArea;
-    //   }
-
-    //   function centerInTarget(element, target) {
-    //     target.innerHTML = '';
-    //     target.appendChild(element);
-    //     element.style.position = 'absolute';
-    //     element.style.left = '50%';
-    //     element.style.top = '50%';
-    //     element.style.transform = 'translate(-50%, -50%)';
-    //   }
-
-    //   socket.on('movePiece', (data) => {
-    //     if (data.room === currentRoom) {
-    //       const piece = document.getElementById(data.id);
-    //       if (piece) {
-    //         piece.style.left = data.left;
-    //         piece.style.top = data.top;
-    //       }
-    //     }
-    //   });
-
-    //   socket.on('lockPiece', (data) => {
-    //     if (data.room === currentRoom) {
-    //       const piece = document.getElementById(data.id);
-    //       const target = document.getElementById(data.parentId);
-    //       if (piece && target) {
-    //         target.appendChild(piece);
-    //         piece.style.left = '50%';
-    //         piece.style.top = '50%';
-    //         piece.style.transform = 'translate(-50%, -50%)';
-    //         piece.dataset.locked = 'true';
-    //         piece.classList.add('locked');
-    //         piece.removeEventListener('mousedown', onMouseDown);
-    //       }
-    //     }
-    //   });
-    // }
   </script>
 </body>
 
