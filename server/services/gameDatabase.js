@@ -70,7 +70,8 @@ async function getRenderInfoByGameId(gameId) {
       games g
     LEFT JOIN 
       (
-        SELECT
+        SELECT 
+          game_id, 
           JSON_ARRAYAGG(
             JSON_OBJECT(
               'puzzle_id', p.puzzle_id, 
@@ -83,19 +84,33 @@ async function getRenderInfoByGameId(gameId) {
               'locked_at', p.locked_at, 
               'z_index', p.z_index
             )
-          ) AS puzzles,
-          p.game_id AS game_id
+          ) AS puzzles
         FROM 
-          games g
-        LEFT JOIN 
-          puzzles p 
-          ON p.game_id = g.game_id
+          (
+            SELECT 
+              game_id, 
+              puzzle_id, 
+              target_id, 
+              top_ratio, 
+              left_ratio, 
+              is_locked, 
+              locked_by, 
+              locked_color, 
+              locked_at, 
+              z_index
+            FROM 
+              puzzles
+            WHERE
+              game_id = ?
+            ORDER BY 
+              target_id ASC
+          ) p
         GROUP BY 
-          p.game_id
+          game_id
       ) p ON p.game_id = g.game_id
     WHERE 
       g.game_id = ?;
-  `, [gameId]))[0];
+  `, [gameId, gameId]))[0];
 
   const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
 
