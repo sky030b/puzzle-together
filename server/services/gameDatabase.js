@@ -148,10 +148,26 @@ async function addNewGame(file, info) {
 
 async function addPuzzlesOfGame(newGame) {
 
-  function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  function getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent) {
+    const min = 0 + edgeAvoidPercent;
+    const max = 100 - edgeAvoidPercent;
+
+    const centerStart = 50 - centerAvoidPercent / 2;
+    const centerEnd = 50 + centerAvoidPercent / 2;
+
+    function isInAvoidRange(value) {
+      return (value >= centerStart && value <= centerEnd) ||
+        (value <= min) ||
+        (value >= max);
+    }
+
+    let leftRatio, topRatio;
+    do {
+      leftRatio = Math.floor(Math.random() * (max - min + 1)) + min;
+      topRatio = Math.floor(Math.random() * (max - min + 1)) + min;
+    } while (isInAvoidRange(leftRatio) && isInAvoidRange(topRatio));
+
+    return { leftRatio, topRatio };
   }
 
   try {
@@ -160,19 +176,19 @@ async function addPuzzlesOfGame(newGame) {
     const targetPuzzlePairingObject = {};
     Array(row_qty * col_qty).fill().forEach((_, index) => targetPuzzlePairingObject[index + 1] = nanoid(10));
 
-    const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) =>
-      [
+    const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) => {
+      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(30, 15);
+      return [
         game_id, targetPuzzlePairingObject[targetId], targetId,
-        getRandomInt(30, 70),
-        getRandomInt(30, 70)
+        topRatio, leftRatio
       ]
+    }
     );
 
     const sql = `
       INSERT INTO puzzles (
         game_id, puzzle_id, target_id, 
-        top_ratio, 
-        left_ratio
+        top_ratio, left_ratio
       ) VALUES ?
     `;
 
