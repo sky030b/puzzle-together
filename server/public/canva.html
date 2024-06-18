@@ -36,6 +36,11 @@
       /* Hide box shadow */
     }
 
+    .locked-color-box {
+      position: absolute;
+      z-index: 11;
+    }
+
     .locked {
       cursor: default;
     }
@@ -64,6 +69,9 @@
     <div id="canvas">
       <div id="target-container"></div>
       <div id="puzzle-container"></div>
+      <button id="generate-locked-box-button" style="position:absolute; top: 50%;left: 30%;">生成 Locked Color
+        Box</button>
+      <button id="toggle-opacity-button" style="position:absolute; top: 50%;left: 36%;">切換透明度</button>
     </div>
   </div>
 
@@ -82,6 +90,15 @@
         socket.emit('joinRoom', gameId);
         currentGameId = gameId;
       }
+    }
+    function getRandomHexCode() {
+      let hexCode = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+
+      while (hexCode.length < 6) {
+        hexCode = '0' + hexCode;
+      }
+
+      return hexCode;
     }
 
     async function renderGame() {
@@ -117,6 +134,8 @@
     const canvasHeight = 6000;
     canvas.style.width = `${canvasWidth}px`;
     canvas.style.height = `${canvasHeight}px`;
+
+    const maxDimension = 1500;
 
     let scale = 1;
     let isDraggingCanvas = false;
@@ -263,7 +282,6 @@
       } = gameInfo;
 
       const img = await getImageDimensions(question_img_url)
-      const maxDimension = 600;
 
       if (img.width > img.height) {
         img.scale = maxDimension / img.width;
@@ -366,13 +384,25 @@
 
         if (isLocked) {
           const piece = document.getElementById(pieceId);
-          targetBox.appendChild(piece);
-          targetBox.style.opacity = 1;
-          targetBox.style.border = 'none';
           piece.style.border = 'none';
           piece.style.left = '50%';
           piece.style.top = '50%';
           piece.style.transform = 'translate(-50%, -50%)';
+          piece.style.opacity = 1;
+          targetBox.appendChild(piece);
+
+          // const lockedColorBox = document.createElement('div');
+          // lockedColorBox.className = 'locked-color-box';
+          // lockedColorBox.style.width = '100%';
+          // lockedColorBox.style.height = '100%';
+          // lockedColorBox.style.backgroundColor = '#555555';
+          // lockedColorBox.style.zIndex = 11;
+          // lockedColorBox.style.opacity = 0;
+          // targetBox.appendChild(lockedColorBox);
+
+          targetBox.style.opacity = 1;
+          targetBox.style.backgroundImage = 'none';
+          targetBox.style.border = 'none';
         }
 
         targetContainer.appendChild(targetBox);
@@ -434,7 +464,7 @@
             if (overlapRatio >= 0.7) {
               centerInTarget(selectedPiece, target);
               selectedPiece.dataset.isLocked = 'true';
-              selectedPiece.style.zIndex = '-1';
+              selectedPiece.style.zIndex = '1';
               selectedPiece.classList.add('locked');
               selectedPiece.removeEventListener('mousedown', onMouseDown);
 
@@ -488,6 +518,7 @@
         target.style.width = '100%';
         target.style.height = '100%';
         target.style.opacity = 1;
+        target.style.backgroundImage = 'none';
         target.style.border = 'none';
         element.style.border = 'none';
         element.style.position = 'absolute';
@@ -513,6 +544,7 @@
           if (piece && target) {
             target.appendChild(piece);
             target.style.opacity = 1;
+            target.style.backgroundImage = 'none';
             target.style.border = 'none';
             piece.style.border = 'none';
             piece.style.left = '50%';
@@ -527,10 +559,51 @@
       });
     }
 
+    document.getElementById('generate-locked-box-button').addEventListener('click', () => {
+      const targetBoxes = document.querySelectorAll('.target-box');
+      targetBoxes.forEach(targetBox => {
+        const piece = targetBox.querySelector('.puzzle-piece');
+        if (piece && !targetBox.querySelector('.locked-color-box')) {
+          const lockedColorBox = document.createElement('div');
+          lockedColorBox.className = 'locked-color-box';
+          lockedColorBox.dataset.lockedBy = piece.dataset.lockedBy;
+          lockedColorBox.dataset.lockedColor = piece.dataset.lockedColor;
+          lockedColorBox.style.backgroundColor = `#${getRandomHexCode()}`;
+          // lockedColorBox.style.backgroundColor = piece.dataset.lockedColor;
+          lockedColorBox.style.width = '100%';
+          lockedColorBox.style.height = '100%';
+          lockedColorBox.style.zIndex = '2';
+          lockedColorBox.style.opacity = 0;
+          targetBox.appendChild(lockedColorBox);
+        }
+      });
+    });
+
+    document.getElementById('toggle-opacity-button').addEventListener('click', () => {
+      const puzzlePieces = document.querySelectorAll('.puzzle-piece');
+      puzzlePieces.forEach(piece => {
+        const lockedColorBox = piece.parentNode.querySelector('.locked-color-box');
+        if (lockedColorBox) {
+          if (piece.style.opacity === '0') {
+            piece.style.opacity = '1';
+            lockedColorBox.style.opacity = '0';
+          } else {
+            piece.style.opacity = '0';
+            lockedColorBox.style.opacity = '1';
+          }
+        }
+      });
+    });
+
     async function main() {
       joinRoom();
       const renderInfo = await renderGame();
       await renderGame2(renderInfo);
+
+      scale = 0.5;
+      canvas.style.transform = `scale(${scale})`;
+      constrainCanvas();
+
       centerView();
     }
     main();
