@@ -22,5 +22,12 @@ async function getAllPlayers() {
   return players;
 }
 
+async function getNickname() {
+  const [nickname] = await pool.query(`
+    SELECT animal FROM anonymous_players ORDER BY RAND() LIMIT 1;
+  `);
+  const { animal } = nickname[0];
+  return animal;
+}
 
-module.exports = { getPlayerById, getAllPlayers };
+module.exports = { getPlayerById, getAllPlayers, getNickname };

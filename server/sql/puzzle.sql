@@ -73,6 +73,12 @@ END;
 
 DELIMITER ;
 
+CREATE TABLE anonymous_players (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    animal VARCHAR(255) NOT NULL
+);
+
+DROP TABLE anonymous_players;
 DROP TABLE puzzles;
 DROP TABLE player_game;
 DROP TABLE games;
