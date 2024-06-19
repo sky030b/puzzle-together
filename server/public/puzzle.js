@@ -1,10 +1,10 @@
-import { canvasWidth, canvasHeight, scale, canvas } from './playground.js';
+import { container, canvas, canvasWidth, canvasHeight, scale, maxDimension } from './playground.js';
 import { getRandomHexCode, getImageDimensions } from './utils.js';
 import { socket, currentGameId } from './socket.js';
 
 const puzzleTargetMap = {};
 
-export async function renderGame() {
+async function getRenderInfo() {
   try {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -27,9 +27,7 @@ export async function renderGame() {
   }
 }
 
-export async function renderGame2(gameInfo) {
-  const maxDimension = 1500;
-
+function createPuzzles(img, gameInfo) {
   const {
     game_id, title, question_img_url, owner_id,
     row_qty, col_qty, difficulty, mode,
@@ -37,11 +35,6 @@ export async function renderGame2(gameInfo) {
     is_public, is_open_when_owner_not_in,
     play_duration, is_completed, completed_at
   } = gameInfo;
-
-  const gameTitle = document.querySelector(".game-title");
-  gameTitle.textContent = title;
-
-  const img = await getImageDimensions(question_img_url);
 
   if (img.width > img.height) {
     img.scale = maxDimension / img.width;
@@ -76,7 +69,7 @@ export async function renderGame2(gameInfo) {
     piece.style.height = `${pieceHeight}px`;
     piece.style.backgroundImage = `url(${img.src})`;
     piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
-    piece.style.backgroundPosition = `-${(puzzleInfo.target_id - 1) % cols * pieceWidth}px -${Math.floor((target_id - 1) / cols) * pieceHeight}px`;
+    piece.style.backgroundPosition = `-${(target_id - 1) % cols * pieceWidth}px -${Math.floor((target_id - 1) / cols) * pieceHeight}px`;
     piece.style.zIndex = z_index;
     if (is_locked) {
       piece.dataset.isLocked = 'true';
@@ -89,17 +82,16 @@ export async function renderGame2(gameInfo) {
     }
     puzzleContainer.appendChild(piece);
   });
-
-  createTargetBoxes(img, gameInfo);
-  addDragAndDrop();
 }
 
 function createTargetBoxes(img, gameInfo) {
+  const { row_qty, col_qty, puzzles } = gameInfo;
+
   const scaledWidth = img.width * img.scale;
   const scaledHeight = img.height * img.scale;
 
-  const rows = parseInt(gameInfo.row_qty);
-  const cols = parseInt(gameInfo.col_qty);
+  const rows = parseInt(row_qty);
+  const cols = parseInt(col_qty);
   const pieceWidth = scaledWidth / cols;
   const pieceHeight = scaledHeight / rows;
 
@@ -111,19 +103,21 @@ function createTargetBoxes(img, gameInfo) {
   targetContainer.style.width = `${cols * pieceWidth}px`;
   targetContainer.style.height = `${rows * pieceHeight}px`;
 
-  gameInfo.puzzles.forEach((puzzleInfo) => {
+  puzzles.forEach((puzzleInfo) => {
+    const { target_id, puzzle_id, is_locked } = puzzleInfo;
+
     const targetBox = document.createElement('div');
-    targetBox.id = 'target' + puzzleInfo.target_id;
+    targetBox.id = 'target' + target_id;
     targetBox.className = 'target-box';
     targetBox.style.width = `${pieceWidth}px`;
     targetBox.style.height = `${pieceHeight}px`;
     targetBox.style.backgroundImage = `url(${img.src})`;
     targetBox.style.backgroundSize = `${img.width * img.scale}px ${img.height * img.scale}px`;
-    targetBox.style.backgroundPosition = `-${(puzzleInfo.target_id - 1) % cols * pieceWidth}px -${Math.floor((puzzleInfo.target_id - 1) / cols) * pieceHeight}px`;
+    targetBox.style.backgroundPosition = `-${(target_id - 1) % cols * pieceWidth}px -${Math.floor((target_id - 1) / cols) * pieceHeight}px`;
     targetBox.style.opacity = 0.2;
 
-    if (puzzleInfo.is_locked) {
-      const piece = document.getElementById(puzzleInfo.puzzle_id);
+    if (is_locked) {
+      const piece = document.getElementById(puzzle_id);
       piece.style.border = 'none';
       piece.style.left = '50%';
       piece.style.top = '50%';
@@ -256,6 +250,22 @@ function addDragAndDrop() {
     element.style.top = '50%';
     element.style.transform = 'translate(-50%, -50%)';
   }
+}
+
+export async function renderGame() {
+  const gameInfo = await getRenderInfo();
+  const img = await getImageDimensions(gameInfo.question_img_url);
+  console.log(gameInfo)
+
+  const gameTitle = document.querySelector(".game-title");
+  gameTitle.textContent = gameInfo.title;
+  gameTitle.addEventListener("click", () => window.location.reload());
+
+  document.title += ' ' + gameInfo.title;
+
+  createPuzzles(img, gameInfo);
+  createTargetBoxes(img, gameInfo);
+  addDragAndDrop();
 }
 
 document.getElementById('generate-locked-box-button').addEventListener('click', () => {

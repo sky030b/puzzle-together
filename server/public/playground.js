@@ -2,12 +2,14 @@ export const container = document.getElementById('container');
 export const canvas = document.getElementById('canvas');
 export const targetContainer = document.getElementById('target-container');
 
+export let scale = 1;
+export const maxDimension = 1500;
 export const canvasWidth = 8000;
 export const canvasHeight = 6000;
+
 canvas.style.width = `${canvasWidth}px`;
 canvas.style.height = `${canvasHeight}px`;
 
-export let scale = 1;
 let isDraggingCanvas = false;
 let startX, startY;
 let canvasStartX, canvasStartY;
@@ -115,14 +117,12 @@ container.addEventListener('mouseleave', (e) => {
 });
 
 
-import { joinRoom, currentGameId } from './socket.js';
-import { renderGame, renderGame2 } from './puzzle.js';
+import { joinRoom } from './socket.js';
+import { renderGame } from './puzzle.js';
 
 async function main() {
   joinRoom();
-  const renderInfo = await renderGame();
-  console.log(renderInfo)
-  await renderGame2(renderInfo);
+  await renderGame();
 
   scale = 0.5;
   canvas.style.transform = `scale(${scale})`;
