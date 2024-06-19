@@ -159,9 +159,38 @@ function addDragAndDrop() {
 
   function onMouseMove(e) {
     if (!selectedPiece) return;
+
+    const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
-    const dx = (e.clientX - canvasRect.left - offsetX) / scale;
-    const dy = (e.clientY - canvasRect.top - offsetY) / scale;
+
+    let dx = (e.clientX - canvasRect.left - offsetX) / scale;
+    let dy = (e.clientY - canvasRect.top - offsetY) / scale;
+
+    const pieceWidth = selectedPiece.clientWidth;
+    const pieceHeight = selectedPiece.clientHeight;
+
+    dx = Math.max(0, Math.min(dx, canvasWidth - pieceWidth));
+    dy = Math.max(0, Math.min(dy, canvasHeight - pieceHeight));
+
+    const pieceRect = selectedPiece.getBoundingClientRect();
+    const containerLeft = containerRect.left;
+    const containerRight = containerRect.right;
+    const containerTop = containerRect.top;
+    const containerBottom = containerRect.bottom;
+
+    if (pieceRect.left < containerLeft) {
+      dx = dx + (containerLeft - pieceRect.left) / scale;
+    }
+    if (pieceRect.right > containerRight) {
+      dx = dx - (pieceRect.right - containerRight) / scale;
+    }
+    if (pieceRect.top < containerTop) {
+      dy = dy + (containerTop - pieceRect.top) / scale;
+    }
+    if (pieceRect.bottom > containerBottom) {
+      dy = dy - (pieceRect.bottom - containerBottom) / scale;
+    }
+
     selectedPiece.style.left = `${dx}px`;
     selectedPiece.style.top = `${dy}px`;
     socket.emit('movePiece', {
