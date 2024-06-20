@@ -1,5 +1,5 @@
 const express = require('express');
-const { getGames, getRenderInfo, createNewGame } = require('../controllers/gameController');
+const { getRenderInfo, createNewGame } = require('../controllers/gameController');
 const uploadImageMiddleware = require('../middleware/uploadImageMiddleware');
 
 const router = express.Router();

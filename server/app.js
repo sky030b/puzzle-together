@@ -26,8 +26,8 @@ socket(io);
 const API_VERSION = '1.0';
 const PORT = process.env.PORT || 3000;
 
-const playerRoutes = require('./routers/playerRoutes.js');
-const gameRoutes = require('./routers/gameRoutes.js');
+const playerRoutes = require('./routers/playerRoutes');
+const gameRoutes = require('./routers/gameRoutes');
 
 app.use(`/api/${API_VERSION}/players`, playerRoutes);
 app.use(`/api/${API_VERSION}/games`, gameRoutes);

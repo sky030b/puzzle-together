@@ -19,35 +19,43 @@ async function getRenderInfoByGameId(gameId) {
   function getOrderedPuzzleInfo(puzzlesArray) {
     const orderedPuzzlesInfo = puzzlesArray.map((puzzleObj) => {
       const {
-        puzzle_id, target_id, top_ratio, left_ratio,
-        is_locked, locked_by, locked_color, locked_at, z_index
+        puzzle_id: puzzleId, target_id: targetId, top_ratio: topRatio, left_ratio: leftRatio,
+        is_locked: isLocked, locked_by: lockedBy, locked_color: lockedColor, locked_at: lockedAt,
+        z_index: zIndex
       } = puzzleObj;
 
       return {
-        puzzle_id, target_id, top_ratio, left_ratio,
-        is_locked, locked_by, locked_color, locked_at, z_index
+        puzzleId, targetId, topRatio, leftRatio, isLocked, lockedBy, lockedColor, lockedAt, zIndex
       };
-    })
+    });
     return orderedPuzzlesInfo;
   }
 
-
   function getOrderedGameRenderInfo(renderInfoFromDB) {
     const {
-      game_id, title, question_img_url, owner_id,
-      row_qty, col_qty, difficulty, mode,
+      title, question_img_url: questionImgUrl, owner_id: ownerId,
+      row_qty: rowQty, col_qty: colQty, difficulty, mode,
       puzzles,
-      is_public, is_open_when_owner_not_in,
-      play_duration, is_completed, completed_at
+      is_public: isPublic, is_open_when_owner_not_in: isOpenWhenOwnerNotIn,
+      play_duration: playDuration, is_completed: isCompleted, completed_at: completedAt
     } = renderInfoFromDB;
 
     return {
-      game_id, title, question_img_url, owner_id,
-      row_qty, col_qty, difficulty, mode,
+      gameId,
+      title,
+      questionImgUrl,
+      ownerId,
+      rowQty,
+      colQty,
+      difficulty,
+      mode,
       puzzles: getOrderedPuzzleInfo(puzzles),
-      is_public, is_open_when_owner_not_in,
-      play_duration, is_completed, completed_at
-    }
+      isPublic,
+      isOpenWhenOwnerNotIn,
+      playDuration,
+      isCompleted,
+      completedAt
+    };
   }
 
   const [gameRenderInfo] = (await pool.query(`
@@ -127,19 +135,74 @@ async function getAllGames() {
   return games;
 }
 
+async function addPuzzlesOfGame(newGame) {
+  function getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent) {
+    const min = 0 + edgeAvoidPercent;
+    const max = 100 - edgeAvoidPercent;
+
+    const centerStart = 50 - centerAvoidPercent / 2;
+    const centerEnd = 50 + centerAvoidPercent / 2;
+
+    function isInAvoidRange(value) {
+      return (value >= centerStart && value <= centerEnd)
+        || (value <= min)
+        || (value >= max);
+    }
+
+    let leftRatio;
+    let topRatio;
+    do {
+      leftRatio = Math.floor(Math.random() * (max - min + 1)) + min;
+      topRatio = Math.floor(Math.random() * (max - min + 1)) + min;
+    } while (isInAvoidRange(leftRatio) && isInAvoidRange(topRatio));
+
+    return { leftRatio, topRatio };
+  }
+
+  try {
+    const { game_id: gameId, row_qty: rowQty, col_qty: colQty } = newGame;
+
+    const targetPuzzlePairingObject = {};
+    Array(rowQty * colQty).fill().forEach((_, index) => {
+      targetPuzzlePairingObject[index + 1] = nanoid(10);
+    });
+
+    const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) => {
+      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(20, 20);
+      return [
+        gameId, targetPuzzlePairingObject[targetId], targetId,
+        topRatio, leftRatio
+      ];
+    });
+
+    const sql = `
+      INSERT INTO puzzles (
+        game_id, puzzle_id, target_id, 
+        top_ratio, left_ratio
+      ) VALUES ?
+    `;
+
+    const res = await pool.query(sql, [puzzlesInfo]);
+    const { affectedRows } = res;
+    return affectedRows;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function addNewGame(file, info) {
   try {
-    const game_id = nanoid(10);
-    const question_img_url = await uploadToS3(file);
+    const gameId = nanoid(10);
+    const questionImgUrl = await uploadToS3(file);
 
     const {
-      title, owner_id, row_qty, col_qty, difficulty, mode,
-      is_public, is_open_when_owner_not_in
+      title, ownerId, rowQty, colQty, difficulty, mode, isPublic, isOpenWhenOwnerNotIn
     } = info;
 
     const gameInfo = [
-      game_id, title, question_img_url, owner_id, row_qty, col_qty,
-      difficulty, mode, is_public, is_open_when_owner_not_in
+      gameId, title, questionImgUrl, ownerId, rowQty, colQty,
+      difficulty, mode, isPublic, isOpenWhenOwnerNotIn
     ];
 
     const [{ insertId: id }] = await pool.query(`
@@ -161,66 +224,17 @@ async function addNewGame(file, info) {
   }
 }
 
-async function addPuzzlesOfGame(newGame) {
-
-  function getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent) {
-    const min = 0 + edgeAvoidPercent;
-    const max = 100 - edgeAvoidPercent;
-
-    const centerStart = 50 - centerAvoidPercent / 2;
-    const centerEnd = 50 + centerAvoidPercent / 2;
-
-    function isInAvoidRange(value) {
-      return (value >= centerStart && value <= centerEnd) ||
-        (value <= min) ||
-        (value >= max);
-    }
-
-    let leftRatio, topRatio;
-    do {
-      leftRatio = Math.floor(Math.random() * (max - min + 1)) + min;
-      topRatio = Math.floor(Math.random() * (max - min + 1)) + min;
-    } while (isInAvoidRange(leftRatio) && isInAvoidRange(topRatio));
-
-    return { leftRatio, topRatio };
-  }
-
-  try {
-    const { game_id, row_qty, col_qty } = newGame;
-
-    const targetPuzzlePairingObject = {};
-    Array(row_qty * col_qty).fill().forEach((_, index) => targetPuzzlePairingObject[index + 1] = nanoid(10));
-
-    const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) => {
-      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(20, 20);
-      return [
-        game_id, targetPuzzlePairingObject[targetId], targetId,
-        topRatio, leftRatio
-      ]
-    }
-    );
-
-    const sql = `
-      INSERT INTO puzzles (
-        game_id, puzzle_id, target_id, 
-        top_ratio, left_ratio
-      ) VALUES ?
-    `;
-
-    await pool.query(sql, [puzzlesInfo]);
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
-
 async function updatePuzzleLocation(puzzleInfo) {
   try {
-    const { topRatio, leftRatio, gameId, puzzleId } = puzzleInfo;
+    const {
+      topRatio, leftRatio, gameId, puzzleId
+    } = puzzleInfo;
     const updateInfo = [topRatio, leftRatio, gameId, puzzleId];
-    await pool.query(`
+    const res = await pool.query(`
       UPDATE puzzles SET top_ratio = ?, left_ratio = ? WHERE game_id = ? AND puzzle_id = ?;
     `, updateInfo);
+    const { affectedRows } = res;
+    return affectedRows;
   } catch (error) {
     console.error(error);
     return error;
@@ -229,15 +243,21 @@ async function updatePuzzleLocation(puzzleInfo) {
 
 async function lockPuzzleBySomeone(lockingInfo) {
   try {
-    const { isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId } = lockingInfo;
+    const {
+      isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId
+    } = lockingInfo;
     const updateInfo = [isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId];
-    await pool.query(`
+    const res = await pool.query(`
       UPDATE puzzles SET is_locked = ?, locked_by = ?, locked_color = ?, z_index = ? WHERE game_id = ? AND puzzle_id = ?;
     `, updateInfo);
+    const { affectedRows } = res;
+    return affectedRows;
   } catch (error) {
     console.error(error);
     return error;
   }
 }
 
-module.exports = { getRenderInfoByGameId, getAllGames, addNewGame, updatePuzzleLocation, lockPuzzleBySomeone };
+module.exports = {
+  getRenderInfoByGameId, getAllGames, addNewGame, updatePuzzleLocation, lockPuzzleBySomeone
+};

@@ -1,5 +1,8 @@
+import { addDragAndDrop } from './puzzle.js';
+import { getCurrentGameId, setCurrentGameId } from './variable.js';
+
+// eslint-disable-next-line no-undef
 export const socket = io();
-export let currentGameId = '';
 
 export function joinRoom() {
   const queryString = window.location.search;
@@ -7,12 +10,12 @@ export function joinRoom() {
   const gameId = urlParams.get('gameId');
   if (gameId) {
     socket.emit('joinRoom', gameId);
-    currentGameId = gameId;
+    setCurrentGameId(gameId);
   }
 }
 
 socket.on('movePiece', (data) => {
-  if (data.gameId === currentGameId) {
+  if (data.gameId === getCurrentGameId()) {
     const piece = document.getElementById(data.puzzleId);
     if (piece) {
       piece.style.left = data.left;
@@ -22,7 +25,7 @@ socket.on('movePiece', (data) => {
 });
 
 socket.on('lockPiece', (data) => {
-  if (data.gameId === currentGameId) {
+  if (data.gameId === getCurrentGameId()) {
     const piece = document.getElementById(data.puzzleId);
     const target = document.getElementById(data.targetId);
     if (piece && target) {
@@ -37,7 +40,7 @@ socket.on('lockPiece', (data) => {
       piece.style.transform = 'translate(-50%, -50%)';
       piece.dataset.isLocked = 'true';
       piece.classList.add('locked');
-      piece.removeEventListener('mousedown', onMouseDown);
+      piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
     }
   }
 });

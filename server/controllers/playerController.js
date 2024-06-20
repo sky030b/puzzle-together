@@ -11,13 +11,12 @@ async function getPlayers(req, res) {
 }
 
 async function generateAnonymousPlayer(req, res) {
-
   function getRandomColorCode() {
     let hexCode = Math.floor(Math.random() * 0xFFFFFF).toString(16);
     while (hexCode.length < 6) {
-      hexCode = '0' + hexCode;
+      hexCode = `0${hexCode}`;
     }
-    return '#' + hexCode;
+    return `#${hexCode}`;
   }
 
   try {
@@ -25,7 +24,7 @@ async function generateAnonymousPlayer(req, res) {
     const anonymousPlayer = {
       nickname,
       represent_color: getRandomColorCode()
-    }
+    };
     return res.status(200).send(anonymousPlayer);
   } catch (error) {
     console.error(error);

@@ -23,8 +23,6 @@ const uploadImageMiddleware = (config) => {
     uploads = upload.single(config.fieldName);
   } else if (config.fields) {
     uploads = upload.fields(config.fields);
-  } else {
-    res.status(500).send('500 Internal Server Error: Invalid upload configuration');
   }
 
   return (req, res, next) => {

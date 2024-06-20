@@ -15,6 +15,7 @@
         "comma-dangle": [
             "error",
             "never"
-        ]
+        ],
+        "import/extensions": "off"
     }
 }

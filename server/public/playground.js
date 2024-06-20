@@ -1,25 +1,27 @@
-export const container = document.getElementById('container');
-export const canvas = document.getElementById('canvas');
-export const targetContainer = document.getElementById('target-container');
-
-export let scale = 1;
-export const maxDimension = 1500;
-export const canvasWidth = 8000;
-export const canvasHeight = 6000;
+import { joinRoom } from './socket.js';
+import renderGame from './puzzle.js';
+import { container, canvas, targetContainer } from './dom.js';
+import {
+  setScale, getScale, canvasWidth, canvasHeight
+} from './variable.js';
 
 canvas.style.width = `${canvasWidth}px`;
 canvas.style.height = `${canvasHeight}px`;
 
 let isDraggingCanvas = false;
-let startX, startY;
-let canvasStartX, canvasStartY;
+let startX;
+let startY;
+let canvasStartX;
+let canvasStartY;
 
 export function centerView() {
   const containerRect = container.getBoundingClientRect();
   const targetContainerRect = targetContainer.getBoundingClientRect();
 
-  const offsetX = (containerRect.width / 2) - (targetContainerRect.left + targetContainerRect.width / 2);
-  const offsetY = (containerRect.height / 2) - (targetContainerRect.top + targetContainerRect.height / 2);
+  const offsetX = (containerRect.width / 2)
+    - (targetContainerRect.left + targetContainerRect.width / 2);
+  const offsetY = (containerRect.height / 2)
+    - (targetContainerRect.top + targetContainerRect.height / 2);
 
   canvas.style.left = `${offsetX}px`;
   canvas.style.top = `${offsetY}px`;
@@ -27,9 +29,8 @@ export function centerView() {
 
 export function constrainCanvas() {
   const containerRect = container.getBoundingClientRect();
-  const canvasRect = canvas.getBoundingClientRect();
-  const scaledWidth = canvas.clientWidth * scale;
-  const scaledHeight = canvas.clientHeight * scale;
+  const scaledWidth = canvas.clientWidth * getScale();
+  const scaledHeight = canvas.clientHeight * getScale();
 
   let left = parseFloat(canvas.style.left || 0);
   let top = parseFloat(canvas.style.top || 0);
@@ -53,34 +54,35 @@ export function constrainCanvas() {
 }
 
 container.addEventListener('wheel', (e) => {
-  e.preventDefault();
+  // e.preventDefault();
   const scaleAmount = 0.1;
-  const previousScale = scale;
+  const previousScale = getScale();
+  let scaleTemp = getScale();
 
   if (e.deltaY < 0) {
-    scale += scaleAmount;
+    scaleTemp += scaleAmount;
   } else {
-    scale -= scaleAmount;
+    scaleTemp -= scaleAmount;
   }
 
-  scale = Math.min(Math.max(0.3, scale), 3);
+  setScale(Math.min(Math.max(0.3, scaleTemp), 3));
 
   const rect = canvas.getBoundingClientRect();
   const offsetX = (e.pageX - rect.left) / rect.width;
   const offsetY = (e.pageY - rect.top) / rect.height;
 
-  const newCanvasWidth = canvas.clientWidth * scale;
-  const newCanvasHeight = canvas.clientHeight * scale;
+  const newCanvasWidth = canvas.clientWidth * getScale();
+  const newCanvasHeight = canvas.clientHeight * getScale();
 
   const dx = (newCanvasWidth - canvas.clientWidth * previousScale) * offsetX;
   const dy = (newCanvasHeight - canvas.clientHeight * previousScale) * offsetY;
 
-  canvas.style.transform = `scale(${scale})`;
+  canvas.style.transform = `scale(${getScale()})`;
   canvas.style.left = `${parseFloat(canvas.style.left || 0) - dx}px`;
   canvas.style.top = `${parseFloat(canvas.style.top || 0) - dy}px`;
 
   constrainCanvas();
-});
+}, { passive: true });
 
 container.addEventListener('mousedown', (e) => {
   if (e.target === canvas || e.target === container || e.target.parentNode === targetContainer
@@ -114,18 +116,15 @@ container.addEventListener('mouseup', (e) => {
 container.addEventListener('mouseleave', (e) => {
   e.target.style.cursor = 'default';
   isDraggingCanvas = false;
+  console.log(222);
 });
-
-
-import { joinRoom } from './socket.js';
-import { renderGame } from './puzzle.js';
 
 async function main() {
   joinRoom();
   await renderGame();
 
-  scale = 0.5;
-  canvas.style.transform = `scale(${scale})`;
+  setScale(0.5);
+  canvas.style.transform = `scale(${getScale()})`;
   constrainCanvas();
 
   centerView();

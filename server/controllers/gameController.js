@@ -24,18 +24,21 @@ async function getRenderInfo(req, res) {
 async function createNewGame(req, res) {
   try {
     const { file } = req;
-    const { title, owner_id, row_qty, col_qty, difficulty, mode, is_public, is_open_when_owner_not_in } = req.body;
+    const {
+      title, owner_id: ownerId, row_qty: rowQty, col_qty: colQty, difficulty, mode,
+      is_public: isPublic, is_open_when_owner_not_in: isOpenWhenOwnerNotIn
+    } = req.body;
 
     const gameInfo = {
       title,
-      owner_id,
-      row_qty,
-      col_qty,
+      ownerId,
+      rowQty,
+      colQty,
       difficulty,
       mode,
-      is_public: is_public && is_public === 'on' ? true : false,
-      is_open_when_owner_not_in: is_open_when_owner_not_in && is_open_when_owner_not_in === 'on' ? true : false
-    }
+      isPublic: isPublic === 'on',
+      isOpenWhenOwnerNotIn: isOpenWhenOwnerNotIn === 'on'
+    };
 
     const newGame = await addNewGame(file, gameInfo);
     return res.status(200).send(newGame);
