@@ -1,4 +1,6 @@
-const { getAllPlayers, getNickname } = require('../services/playerDatabase');
+const bcrypt = require('bcrypt');
+const { nanoid } = require('nanoid');
+const { getAllPlayers, getAnonymousNickname, addNewPlayer } = require('../services/playerDatabase');
 
 async function getPlayers(req, res) {
   try {
@@ -20,10 +22,10 @@ async function generateAnonymousPlayer(req, res) {
   }
 
   try {
-    const nickname = await getNickname();
+    const nickname = await getAnonymousNickname();
     const anonymousPlayer = {
       nickname,
-      represent_color: getRandomColorCode()
+      representColor: getRandomColorCode()
     };
     return res.status(200).send(anonymousPlayer);
   } catch (error) {
@@ -32,4 +34,25 @@ async function generateAnonymousPlayer(req, res) {
   }
 }
 
-module.exports = { getPlayers, generateAnonymousPlayer };
+async function createNewPlayer(req, res) {
+  try {
+    const {
+      email, password, nickname, representColor, isRoomPublic
+    } = req.body;
+
+    const playerId = nanoid(10);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const playerInfo = {
+      playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'on'
+    };
+
+    const newPlayer = await addNewPlayer(playerInfo);
+    return res.status(200).send(newPlayer);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+}
+
+module.exports = { getPlayers, generateAnonymousPlayer, createNewPlayer };
