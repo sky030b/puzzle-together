@@ -4,7 +4,8 @@
   "description": "A puzzle game that everyone can have fun together. ",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -30,5 +31,10 @@
     "mysql2": "^3.10.0",
     "nanoid": "^3.3.7",
     "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1"
   }
 }
