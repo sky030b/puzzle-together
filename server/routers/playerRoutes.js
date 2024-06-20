@@ -1,10 +1,13 @@
 const express = require('express');
-const { getPlayers, generateAnonymousPlayer, createNewPlayer } = require('../controllers/playerController');
+const {
+  getPlayers, generateAnonymousPlayer, signup, signin
+} = require('../controllers/playerController');
 
 const router = express.Router();
 
 router.get('/', getPlayers);
-router.post('/', createNewPlayer);
+router.post('/signup', signup);
+router.post('/signin', signin);
 router.get('/anonymous', generateAnonymousPlayer);
 
 module.exports = router;

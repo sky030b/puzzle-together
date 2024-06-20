@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const pool = require('./createDatabasePool');
 
 async function getPlayerById(id) {
@@ -12,6 +11,32 @@ async function getPlayerById(id) {
       id = ?
   `, [id]))[0];
   return player;
+}
+
+async function getPlayerByEmail(email) {
+  const [player] = (await pool.query(`
+    SELECT 
+      player_id, email, nickname, represent_color, is_room_public,
+      games_played, games_completed, puzzles_locked, profile
+    FROM 
+      players 
+    WHERE 
+      email = ?
+  `, [email]))[0];
+  return player;
+}
+
+async function getHashPWDByEmail(email) {
+  const [player] = (await pool.query(`
+    SELECT 
+      password 
+    From 
+      players 
+    WHERE 
+      email = ?
+  `, [email]))[0];
+
+  return player ? player.password : null;
 }
 
 async function getAllPlayers() {
@@ -33,31 +58,6 @@ async function getAnonymousNickname() {
   return animal;
 }
 
-function getPlayerToken(player) {
-  try {
-    const accessExpired = 4 * 60 * 60;
-    const options = {
-      expiresIn: accessExpired
-    };
-
-    const {
-      player_id: playerId, email, nickname, represent_color: representColor
-    } = player;
-
-    const playerInfo = {
-      playerId, email, nickname, representColor
-    };
-
-    const accessToken = jwt.sign(playerInfo, process.env.JWT_PRIVATE_KEY, options);
-    const data = { accessToken, accessExpired, playerInfo };
-
-    return { data };
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
-
 async function addNewPlayer(info) {
   const {
     playerId, email, hashedPassword, nickname, representColor, isRoomPublic
@@ -76,9 +76,14 @@ async function addNewPlayer(info) {
   `, playerInfo);
 
   const newPlayer = await getPlayerById(id);
-  return getPlayerToken(newPlayer);
+  return newPlayer;
 }
 
 module.exports = {
-  getPlayerById, getAllPlayers, getAnonymousNickname, addNewPlayer
+  getPlayerById,
+  getPlayerByEmail,
+  getHashPWDByEmail,
+  getAllPlayers,
+  getAnonymousNickname,
+  addNewPlayer
 };

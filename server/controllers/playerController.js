@@ -1,6 +1,35 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { nanoid } = require('nanoid');
-const { getAllPlayers, getAnonymousNickname, addNewPlayer } = require('../services/playerDatabase');
+const {
+  getAllPlayers, getAnonymousNickname, addNewPlayer,
+  getPlayerByEmail, getHashPWDByEmail
+} = require('../services/playerDatabase');
+
+function getPlayerToken(player) {
+  try {
+    const accessExpired = 4 * 60 * 60;
+    const options = {
+      expiresIn: accessExpired
+    };
+
+    const {
+      player_id: playerId, email, nickname, represent_color: representColor
+    } = player;
+
+    const playerInfo = {
+      playerId, email, nickname, representColor
+    };
+
+    const accessToken = jwt.sign(playerInfo, process.env.JWT_PRIVATE_KEY, options);
+    const data = { accessToken, accessExpired, playerInfo };
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
 
 async function getPlayers(req, res) {
   try {
@@ -34,7 +63,7 @@ async function generateAnonymousPlayer(req, res) {
   }
 }
 
-async function createNewPlayer(req, res) {
+async function signup(req, res) {
   try {
     const {
       email, password, nickname, representColor, isRoomPublic
@@ -48,11 +77,41 @@ async function createNewPlayer(req, res) {
     };
 
     const newPlayer = await addNewPlayer(playerInfo);
-    return res.status(200).send(newPlayer);
+    const playerToken = getPlayerToken(newPlayer);
+    return res.status(200).send(playerToken);
   } catch (error) {
     console.error(error);
     return res.status(500).send(error.message);
   }
 }
 
-module.exports = { getPlayers, generateAnonymousPlayer, createNewPlayer };
+async function signin(req, res) {
+  try {
+    const {
+      email, password
+    } = req.body;
+
+    const hashedPasswordFromDatabase = await getHashPWDByEmail(email);
+    if (!hashedPasswordFromDatabase) {
+      return res.status(401).send('401 Unauthorized: User does not exist.');
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, hashedPasswordFromDatabase);
+    if (!isPasswordCorrect) {
+      console.log('Password is incorrect');
+      return res.status(403).send('403 Forbidden: Password is incorrect.');
+    }
+
+    const player = await getPlayerByEmail(email);
+    const playerToken = getPlayerToken(player);
+
+    return res.status(200).send(playerToken);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+}
+
+module.exports = {
+  getPlayers, generateAnonymousPlayer, signup, signin
+};
