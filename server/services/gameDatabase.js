@@ -4,7 +4,8 @@ const pool = require('./createDatabasePool');
 const { uploadToS3 } = require('./createS3Client');
 
 async function getGameBySerialId(id) {
-  const [game] = (await pool.query(`
+  try {
+    const [game] = (await pool.query(`
     SELECT 
       *
     FROM 
@@ -12,7 +13,11 @@ async function getGameBySerialId(id) {
     WHERE 
       id = ?
   `, [id]))[0];
-  return game;
+    return game;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 async function getRenderInfoByGameId(gameId) {
@@ -58,7 +63,8 @@ async function getRenderInfoByGameId(gameId) {
     };
   }
 
-  const [gameRenderInfo] = (await pool.query(`
+  try {
+    const [gameRenderInfo] = (await pool.query(`
     SELECT 
       g.game_id AS game_id, 
       g.title AS title, 
@@ -120,19 +126,28 @@ async function getRenderInfoByGameId(gameId) {
       g.game_id = ?;
   `, [gameId, gameId]))[0];
 
-  const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
+    const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
 
-  return orderedGameRenderInfo;
+    return orderedGameRenderInfo;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 async function getAllGames() {
-  const [games] = await pool.query(`
+  try {
+    const [games] = await pool.query(`
     SELECT 
       *
     FROM 
       games
   `);
-  return games;
+    return games;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 async function addPuzzlesOfGame(newGame) {
