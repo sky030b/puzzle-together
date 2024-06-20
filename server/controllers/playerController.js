@@ -51,14 +51,14 @@ function getPlayerToken(player) {
 async function signup(req, res) {
   try {
     const {
-      email, password, nickname, representColor, isRoomPublic
+      email, password, nickname, represent_color: representColor, is_room_public: isRoomPublic
     } = req.body;
 
     const playerId = nanoid(10);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const playerInfo = {
-      playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'on'
+      playerId, email, hashedPassword, nickname, representColor, isRoomPublic
     };
 
     const newPlayer = await addNewPlayer(playerInfo);

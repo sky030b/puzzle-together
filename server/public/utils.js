@@ -28,8 +28,8 @@ export function getCookie(key) {
   return undefined;
 }
 
-export function setCookie(key, value) {
-  const expiresDate = new Date(Date.now() + 4 * 60 * 60 * 1000);
+export function setCookie(key, value, expireSec = 4 * 60 * 60) {
+  const expiresDate = new Date(Date.now() + expireSec * 1000);
   const expiresUTCString = expiresDate.toUTCString();
   document.cookie = `${key}=${value}; Expires=${expiresUTCString}`;
 }
