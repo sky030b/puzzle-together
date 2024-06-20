@@ -116,7 +116,6 @@ container.addEventListener('mouseup', (e) => {
 container.addEventListener('mouseleave', (e) => {
   e.target.style.cursor = 'default';
   isDraggingCanvas = false;
-  console.log(222);
 });
 
 async function main() {
