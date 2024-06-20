@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { addDragAndDrop } from './puzzle.js';
 import { getCurrentGameId, setCurrentGameId } from './variable.js';
 

@@ -4,6 +4,7 @@ import { container, canvas, targetContainer } from './dom.js';
 import {
   setScale, getScale, canvasWidth, canvasHeight
 } from './variable.js';
+import { playerInit } from './player.js';
 
 canvas.style.width = `${canvasWidth}px`;
 canvas.style.height = `${canvasHeight}px`;
@@ -121,6 +122,7 @@ container.addEventListener('mouseleave', (e) => {
 async function main() {
   joinRoom();
   await renderGame();
+  await playerInit();
 
   setScale(0.5);
   canvas.style.transform = `scale(${getScale()})`;
