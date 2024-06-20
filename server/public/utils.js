@@ -21,3 +21,15 @@ export async function getImageDimensions(url) {
     img.src = url;
   });
 }
+
+export function getCookie(key) {
+  const str = `; ${document.cookie}`.split(`; ${key}=`);
+  if (str.length === 2) return str.pop().split(';').shift();
+  return undefined;
+}
+
+export function setCookie(key, value) {
+  const expiresDate = new Date(Date.now() + 4 * 60 * 60 * 1000);
+  const expiresUTCString = expiresDate.toUTCString();
+  document.cookie = `${key}=${value}; Expires=${expiresUTCString}`;
+}
