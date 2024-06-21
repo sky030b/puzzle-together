@@ -4,7 +4,7 @@ import { container, canvas, targetContainer } from './dom.js';
 import {
   setScale, getScale, canvasWidth, canvasHeight
 } from './variable.js';
-import { playerInit } from './player.js';
+import initPlayer from './player.js';
 
 canvas.style.width = `${canvasWidth}px`;
 canvas.style.height = `${canvasHeight}px`;
@@ -120,15 +120,24 @@ container.addEventListener('mouseleave', (e) => {
 });
 
 async function main() {
-  joinRoom();
-  await renderGame();
-  await playerInit();
+  try {
+    joinRoom();
+    const gameRenderResult = await renderGame();
+    if (gameRenderResult instanceof Error) throw gameRenderResult;
+    const playerInitResult = await initPlayer();
+    if (playerInitResult instanceof Error) throw playerInitResult;
 
-  setScale(0.5);
-  canvas.style.transform = `scale(${getScale()})`;
-  constrainCanvas();
+    setScale(0.5);
+    canvas.style.transform = `scale(${getScale()})`;
+    constrainCanvas();
 
-  centerView();
+    centerView();
+    return 'Game initialization done.';
+  } catch (error) {
+    return error;
+  }
 }
 
-main();
+const mainResult = main();
+// eslint-disable-next-line no-console
+console.log(mainResult);

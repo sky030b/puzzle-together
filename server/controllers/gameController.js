@@ -3,9 +3,10 @@ const { getRenderInfoByGameId, getAllGames, addNewGame } = require('../services/
 async function getGames(req, res) {
   try {
     const allGames = await getAllGames();
+    if (allGames instanceof Error) throw allGames;
+
     return res.status(200).send(allGames);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }
@@ -14,9 +15,10 @@ async function getRenderInfo(req, res) {
   try {
     const { gameId } = req.params;
     const gameRenderInfo = await getRenderInfoByGameId(gameId);
+    if (gameRenderInfo instanceof Error) throw gameRenderInfo;
+
     return res.status(200).send(gameRenderInfo);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }
@@ -41,9 +43,10 @@ async function createNewGame(req, res) {
     };
 
     const newGame = await addNewGame(file, gameInfo);
+    if (newGame instanceof Error) throw newGame;
+
     return res.status(200).send(newGame);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }

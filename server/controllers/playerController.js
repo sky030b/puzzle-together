@@ -11,7 +11,6 @@ async function getPlayers(req, res) {
     const allPlayers = await getAllPlayers();
     return res.status(200).send(allPlayers);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }
@@ -31,11 +30,11 @@ function getPlayerToken(player) {
     };
 
     const {
-      player_id: playerId, email, nickname, represent_color: representColor
+      player_id: playerId, nickname, represent_color: representColor
     } = player;
 
     const playerInfo = {
-      playerId, email, nickname, representColor
+      playerId, nickname, representColor
     };
 
     const accessToken = jwt.sign(playerInfo, process.env.JWT_PRIVATE_KEY, options);
@@ -43,7 +42,6 @@ function getPlayerToken(player) {
 
     return { data };
   } catch (error) {
-    console.error(error);
     return error;
   }
 }
@@ -58,14 +56,14 @@ async function signup(req, res) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const playerInfo = {
-      playerId, email, hashedPassword, nickname, representColor, isRoomPublic
+      playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'on'
     };
-
     const newPlayer = await addNewPlayer(playerInfo);
+    if (newPlayer instanceof Error) throw newPlayer;
+
     const playerToken = getPlayerToken(newPlayer);
     return res.status(200).send(playerToken);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }
@@ -77,22 +75,25 @@ async function signin(req, res) {
     } = req.body;
 
     const hashedPasswordFromDatabase = await getHashPWDByEmail(email);
+    if (hashedPasswordFromDatabase instanceof Error) throw hashedPasswordFromDatabase;
     if (!hashedPasswordFromDatabase) {
       return res.status(401).send('401 Unauthorized: User does not exist.');
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, hashedPasswordFromDatabase);
     if (!isPasswordCorrect) {
-      console.log('Password is incorrect');
+      // eslint-disable-next-line no-console
+      console.error('Password is incorrect');
       return res.status(403).send('403 Forbidden: Password is incorrect.');
     }
 
     const player = await getPlayerByEmail(email);
+    if (player instanceof Error) throw player;
+
     const playerToken = getPlayerToken(player);
 
     return res.status(200).send(playerToken);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }
@@ -108,13 +109,14 @@ async function generateAnonymousPlayer(req, res) {
 
   try {
     const nickname = await getAnonymousNickname();
+    if (nickname instanceof Error) throw nickname;
+
     const anonymousPlayer = {
       nickname,
       representColor: getRandomColorCode()
     };
     return res.status(200).send(anonymousPlayer);
   } catch (error) {
-    console.error(error);
     return res.status(500).send(error.message);
   }
 }

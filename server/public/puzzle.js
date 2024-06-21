@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { container, canvas } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
@@ -334,17 +335,22 @@ document.getElementById('toggle-opacity-button').addEventListener('click', () =>
 });
 
 export default async function renderGame() {
-  const gameInfo = await getRenderInfo();
-  const { questionImgUrl, title } = gameInfo;
-  const img = await getImageDimensions(questionImgUrl);
+  try {
+    const gameInfo = await getRenderInfo();
+    const { questionImgUrl, title } = gameInfo;
+    const img = await getImageDimensions(questionImgUrl);
 
-  const gameTitle = document.querySelector('.game-title');
-  gameTitle.textContent = title;
-  gameTitle.addEventListener('click', () => window.location.reload());
+    const gameTitle = document.querySelector('.game-title');
+    gameTitle.textContent = title;
+    gameTitle.addEventListener('click', () => window.location.reload());
 
-  document.title += ` ${title}`;
+    document.title += ` ${title}`;
 
-  createPuzzles(img, gameInfo);
-  createTargetBoxes(img, gameInfo);
-  addDragAndDrop();
+    createPuzzles(img, gameInfo);
+    createTargetBoxes(img, gameInfo);
+    addDragAndDrop();
+    return 'renderGame done.';
+  } catch (error) {
+    return error;
+  }
 }

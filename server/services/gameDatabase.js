@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { nanoid } = require('nanoid');
 
 const pool = require('./createDatabasePool');
