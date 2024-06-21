@@ -4,8 +4,8 @@ const state = {
 };
 
 export const maxDimension = 1500;
-export const canvasWidth = 8000;
-export const canvasHeight = 6000;
+export const canvasWidth = 16000;
+export const canvasHeight = 12000;
 
 export function setScale(newScale) {
   state.scale = newScale;

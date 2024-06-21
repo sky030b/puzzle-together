@@ -66,7 +66,7 @@ container.addEventListener('wheel', (e) => {
     scaleTemp -= scaleAmount;
   }
 
-  setScale(Math.min(Math.max(0.3, scaleTemp), 3));
+  setScale(Math.min(Math.max(0.1, scaleTemp), 2));
 
   const rect = canvas.getBoundingClientRect();
   const offsetX = (e.pageX - rect.left) / rect.width;
