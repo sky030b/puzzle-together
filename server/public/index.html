@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>帕索兔蓋德 - 創建遊戲</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 
 <body>
@@ -82,20 +82,27 @@
     const form = document.querySelector(".game-form");
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(form);
-      // for (const pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
-      const res = await axios.post(
-        '/api/1.0/games/',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+
+      try {
+        const formData = new FormData(form);
+        // for (const pair of formData.entries()) {
+        //   console.log(pair[0], pair[1]);
+        // }
+        const res = await axios.post(
+          '/api/1.0/games/',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
           }
-        }
-      );
-      window.location.href = `/playground.html?gameId=${res.data.game_id}`;
+        );
+        if (res instanceof Error) throw res;
+        window.location.href = `/playground.html?gameId=${res.data.game_id}`;
+      } catch (error) {
+        console.error(error);
+        alert(error.response.data);
+      }
     })
   </script>
 </body>

@@ -138,6 +138,10 @@ async function main() {
   }
 }
 
-const mainResult = main();
-// eslint-disable-next-line no-console
-console.log(mainResult);
+main().then((res) => {
+  // eslint-disable-next-line no-console
+  console.log(res);
+}).catch((err) => {
+  // eslint-disable-next-line no-console
+  console.error(err);
+});

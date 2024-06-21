@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { getCookie, setCookie } from './utils.js';
+import { setPlayerState } from './variable.js';
 
 async function getAnonymousPlayerInfo() {
   try {
@@ -43,8 +44,8 @@ export default async function initPlayer() {
   try {
     const playerInfo = await getPlayerInfo();
     if (playerInfo instanceof Error) throw playerInfo;
-
-    setCookie('playerInfo', JSON.stringify(playerInfo));
+    setPlayerState(playerInfo);
+    // setCookie('playerInfo', JSON.stringify(playerInfo));
     return 'playerInit Done.';
   } catch (error) {
     // 告知請重新登入

@@ -1,41 +1,14 @@
 /* eslint-disable import/no-cycle */
-import { container, canvas } from './dom.js';
+import { container, canvas, targetContainer } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
-  getCurrentGameId
+  getCurrentGameId, getPlayerState
 } from './variable.js';
 
 import { getRandomHexCode, getImageDimensions } from './utils.js';
 import { socket } from './socket.js';
 
 const puzzleTargetMap = {};
-
-async function getRenderInfo() {
-  try {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const gameId = urlParams.get('gameId');
-
-    const url = `/api/1.0/games/${gameId}`;
-    // eslint-disable-next-line no-undef
-    const res = await axios.get(url);
-    const renderInfo = res.data;
-
-    console.log(renderInfo);
-
-    if (!renderInfo) {
-      alert('沒有找到指定的遊戲關卡');
-      window.location.href = '/index.html';
-    }
-
-    return renderInfo;
-  } catch (error) {
-    alert(error.message);
-    alert('請輸入有效的遊戲關卡ID');
-    window.location.href = '/index.html';
-    return error;
-  }
-}
 
 function createPuzzles(img, gameInfo) {
   const {
@@ -195,6 +168,7 @@ export function addDragAndDrop() {
     elementNow.style.position = 'absolute';
     elementNow.style.left = '50%';
     elementNow.style.top = '50%';
+    elementNow.style.zIndex = '1';
     elementNow.style.transform = 'translate(-50%, -50%)';
   }
 
@@ -270,9 +244,11 @@ export function addDragAndDrop() {
       if (isNearTarget(selectedPiece, target) && puzzleTargetMap[targetId] === pieceId) {
         const overlapRatio = calculateOverlap(selectedPiece, target);
         if (overlapRatio >= 0.7) {
+          const { nickname, representColor } = getPlayerState();
           centerInTarget(selectedPiece, target);
           selectedPiece.dataset.isLocked = 'true';
-          selectedPiece.style.zIndex = '1';
+          selectedPiece.dataset.lockedBy = nickname;
+          selectedPiece.dataset.lockedColor = representColor;
           selectedPiece.classList.add('locked');
           selectedPiece.removeEventListener('mousedown', onMouseDown);
 
@@ -281,8 +257,8 @@ export function addDragAndDrop() {
             puzzleId: selectedPiece.id,
             targetId: target.id,
             isLocked: true,
-            lockedBy: 'player123',
-            lockedColor: '#123456',
+            lockedBy: nickname,
+            lockedColor: representColor,
             zIndex: selectedPiece.style.zIndex
           });
         } else {
@@ -307,7 +283,8 @@ document.getElementById('generate-locked-box-button').addEventListener('click', 
       lockedColorBox.className = 'locked-color-box';
       lockedColorBox.dataset.lockedBy = piece.dataset.lockedBy;
       lockedColorBox.dataset.lockedColor = piece.dataset.lockedColor;
-      lockedColorBox.style.backgroundColor = `#${getRandomHexCode()}`;
+      lockedColorBox.style.backgroundColor = piece.dataset.lockedColor;
+      lockedColorBox.style.border = "1px solid black";
       lockedColorBox.style.width = '100%';
       lockedColorBox.style.height = '100%';
       lockedColorBox.style.zIndex = '2';
@@ -324,6 +301,9 @@ document.getElementById('toggle-opacity-button').addEventListener('click', () =>
     const pieceNow = piece;
     if (lockedColorBox) {
       if (piece.style.opacity === '0') {
+        pieceNow.style.opacity = '0.5';
+        lockedColorBox.style.opacity = '0.5';
+      } else if (piece.style.opacity === '0.5') {
         pieceNow.style.opacity = '1';
         lockedColorBox.style.opacity = '0';
       } else {
@@ -333,6 +313,33 @@ document.getElementById('toggle-opacity-button').addEventListener('click', () =>
     }
   });
 });
+
+async function getRenderInfo() {
+  try {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const gameId = urlParams.get('gameId');
+
+    const url = `/api/1.0/games/${gameId}`;
+    // eslint-disable-next-line no-undef
+    const res = await axios.get(url);
+    const renderInfo = res.data;
+
+    console.log(renderInfo);
+
+    if (!renderInfo) {
+      alert('沒有找到指定的遊戲關卡');
+      window.location.href = '/index.html';
+    }
+
+    return renderInfo;
+  } catch (error) {
+    alert(error.message);
+    alert('請輸入有效的遊戲關卡ID');
+    window.location.href = '/index.html';
+    return error;
+  }
+}
 
 export default async function renderGame() {
   try {
