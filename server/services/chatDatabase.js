@@ -18,14 +18,18 @@ async function getMessageById(id) {
   }
 }
 
-async function getChatHistoryByGameId() {
+async function getChatHistoryByGameId(gameId) {
   try {
     const [chatHistory] = await pool.query(`
     SELECT 
       *
     FROM 
       chat_logs
-  `);
+    WHERE
+      game_id = ?
+    ORDER BY
+      create_at ASC;
+  `, gameId);
     return chatHistory;
   } catch (error) {
     console.error(error);
