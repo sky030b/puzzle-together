@@ -13,7 +13,8 @@
 
 <body>
   <div id="container">
-    <nav class="navbar navbar-expand-lg navbar-light opacity fixed-top" style="background-color: rgba(128, 128, 128, 0.3);">
+    <nav class="navbar navbar-expand-lg navbar-light opacity fixed-top"
+      style="background-color: rgba(128, 128, 128, 0.3);">
       <div class="container-fluid">
         <a class="navbar-brand game-title" href="javascript:;"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -34,6 +35,9 @@
             <li class="nav-item">
               <a class="nav-link" id="toggle-opacity-button" href="javascript:;">切換透明度</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" id="download-button" href="javascript:;">下載成果圖</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -49,6 +53,12 @@
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://unpkg.com/modern-screenshot"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.js"
+    integrity="sha512-zPMZ/3MBK+R1rv6KcBFcf7rGwLnKS+xtB2OnWkAxgC6anqxlDhl/wMWtDbiYI4rgi/NrCJdXrmNGB8pIq+slJQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="socket.js"></script>
   <script type="module" src="utils.js"></script>

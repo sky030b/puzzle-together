@@ -4,9 +4,9 @@ import {
   canvasWidth, canvasHeight, getScale, maxDimension,
   getCurrentGameId, getPlayerState
 } from './variable.js';
-
 import { getRandomHexCode, getImageDimensions } from './utils.js';
 import { socket } from './socket.js';
+import Canvas2Image from './canvas2image.js';
 
 const puzzleTargetMap = {};
 
@@ -313,6 +313,71 @@ document.getElementById('toggle-opacity-button').addEventListener('click', () =>
     }
   });
 });
+
+function canvasToImage(canvas) {
+  const filename = 'xxxxx';
+  Canvas2Image.saveAsPNG(
+    canvas,
+    1500, 1500,
+    filename
+  );
+
+}
+
+document.getElementById('download-button').addEventListener('click', (e) => {
+  e.preventDefault();
+  const canvasWrapper = document.getElementById('target-container');
+  html2canvas(canvasWrapper, {
+    // scale: window.devicePixelRatio, // 設定縮放比例
+    useCORS: true, // 避免跨域問題
+    backgroundColor: null,
+    // logging: true, // 設置為 true 以啟用日誌記錄
+    // width: canvasWrapper.offsetWidth, // 使用元素的實際寬度
+    // proxy: 'https://dsz5eydy8se7.cloudfront.net/',
+    // height: canvasWrapper.offsetHeight, // 使用元素的實際高度
+    // windowWidth: document.documentElement.scrollWidth, // 設定畫布寬度
+    // windowHeight: document.documentElement.scrollHeight // 設定畫布高度
+  }).then((canvas) => {
+    // canvasToImage(canvas);
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'canvas.png';
+    link.click();
+  });
+});
+
+// document.getElementById('download-button').addEventListener('click', (e) => {
+//   e.preventDefault();
+//   const canvasWrapper = document.getElementById('target-container');
+//   console.log(canvasWrapper)
+//   // modernScreenshot.domToPng(document.querySelector('body')).then(dataUrl => {
+//   modernScreenshot.domToPng(canvasWrapper).then(dataUrl => {
+//     const link = document.createElement('a')
+//     link.download = 'screenshot.png'
+//     link.href = dataUrl
+//     link.click()
+//   })
+// });
+// document.getElementById('download-button').addEventListener('click', async (e) => {
+//   e.preventDefault();
+//   downloadDivAsImage()
+// });
+
+
+function downloadDivAsImage() {
+  const targetContainer = document.getElementById('target-container');
+  htmlToImage.toPng(document.querySelector('body'))
+    .then(function (dataUrl) {
+      var link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'div-image.png';
+      link.click();
+    })
+    .catch(function (error) {
+      console.error('oops, something went wrong!', error);
+    });
+}
 
 async function getRenderInfo() {
   try {
