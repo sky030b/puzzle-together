@@ -1,14 +1,14 @@
 import { joinRoom } from './socket.js';
 import renderGame from './puzzle.js';
 import {
-  container, canvas, targetContainer, chatArea
+  container, canvas, targetContainer
 } from './dom.js';
 import {
   setScale, getScale, canvasWidth, canvasHeight,
-  getIsInsideChatArea,
-  setIsInsideChatArea
+  getIsInsideChatArea
 } from './variable.js';
 import initPlayer from './player.js';
+import renderChatHistory from './chat.js';
 
 canvas.style.width = `${canvasWidth}px`;
 canvas.style.height = `${canvasHeight}px`;
@@ -124,14 +124,6 @@ container.addEventListener('mouseleave', (e) => {
   isDraggingCanvas = false;
 });
 
-chatArea.addEventListener('mouseenter', () => {
-  setIsInsideChatArea(true);
-});
-
-chatArea.addEventListener('mouseleave', () => {
-  setIsInsideChatArea(false);
-});
-
 async function main() {
   try {
     joinRoom();
@@ -139,15 +131,12 @@ async function main() {
     if (gameRenderResult instanceof Error) throw gameRenderResult;
     const playerInitResult = await initPlayer();
     if (playerInitResult instanceof Error) throw playerInitResult;
+    const chatHistoryRenderResult = await renderChatHistory();
+    if (chatHistoryRenderResult instanceof Error) throw chatHistoryRenderResult;
 
     setScale(0.5);
     canvas.style.transform = `scale(${getScale()})`;
     constrainCanvas();
-
-    setTimeout(() => {
-      const chatContent = document.querySelector('.chat-content-lines');
-      chatContent.scrollTop = chatContent.scrollHeight;
-    }, 1000);
 
     centerView();
     return 'Game initialization done.';
