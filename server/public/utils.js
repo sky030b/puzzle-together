@@ -33,3 +33,7 @@ export function setCookie(key, value, expireSec = 4 * 60 * 60) {
   const expiresUTCString = expiresDate.toUTCString();
   document.cookie = `${key}=${value}; Expires=${expiresUTCString}`;
 }
+
+export function getFormattedTime(timestamp = Date.now()) {
+  return `${new Date(timestamp).getHours().toString().padStart(2, '0')}:${new Date(timestamp).getMinutes().toString().padStart(2, '0')}`;
+}

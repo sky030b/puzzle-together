@@ -280,6 +280,7 @@ document.getElementById('generate-locked-box-button').addEventListener('click', 
     if (piece && !targetBox.querySelector('.locked-color-box')) {
       const lockedColorBox = document.createElement('div');
       lockedColorBox.className = 'locked-color-box';
+      lockedColorBox.title = piece.dataset.lockedBy;
       lockedColorBox.dataset.lockedBy = piece.dataset.lockedBy;
       lockedColorBox.dataset.lockedColor = piece.dataset.lockedColor;
       lockedColorBox.style.backgroundColor = piece.dataset.lockedColor;

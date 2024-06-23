@@ -16,6 +16,11 @@ const socket = (io) => {
       lockPuzzleBySomeone(data);
     });
 
+    socketio.on('newMessage', (data) => {
+      socketio.broadcast.emit('newMessage', data);
+      socketio.emit('newMessage', data);
+    });
+
     socketio.on('disconnect', () => {
       console.log('Client disconnected');
     });

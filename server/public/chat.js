@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 import { chatArea, chatContent, chatForm } from './dom.js';
+import { socket } from './socket.js';
+import { getFormattedTime } from './utils.js';
 import { getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
 
 chatArea.addEventListener('mouseenter', () => {
@@ -25,7 +27,7 @@ export default async function renderChatHistory() {
         <div class="d-flex gap-2 mb-2">
           <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${messageInfo.nickname}">${messageInfo.nickname[0]}</div>
           <div class="rounded bg-light text-break p-2">${messageInfo.message}</div>
-          <small class="align-self-end text-light">${new Date(messageInfo.create_at).getHours()}:${new Date(messageInfo.create_at).getMinutes()}</small>
+          <small class="align-self-end text-light">${getFormattedTime(messageInfo.create_at)}</small>
         </div>
       `).join('');
     chatContent.innerHTML = str;
@@ -44,10 +46,19 @@ async function sendNewMessage(messageInfo) {
 
 chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  if (!chatForm[0].value.trim()) return;
+
   const messageInfo = {
     playerId: getPlayerState().playerId,
     message: chatForm[0].value.trim()
   };
+
+  socket.emit('newMessage', {
+    ...messageInfo,
+    nickname: getPlayerState().nickname,
+    gameId: getCurrentGameId()
+  });
 
   await sendNewMessage(messageInfo);
   chatForm.reset();

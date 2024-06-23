@@ -1,5 +1,7 @@
-// eslint-disable-next-line import/no-cycle
+/* eslint-disable import/no-cycle */
+import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
+import { getFormattedTime } from './utils.js';
 import { getCurrentGameId, setCurrentGameId } from './variable.js';
 
 // eslint-disable-next-line no-undef
@@ -50,4 +52,17 @@ socket.on('lockPiece', (data) => {
       piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
     }
   }
+});
+
+socket.on('newMessage', (data) => {
+  const { nickname, message } = data;
+  const str = `
+    <div class="d-flex gap-2 mb-2">
+      <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${nickname}">${nickname[0]}</div>
+      <div class="rounded bg-light text-break p-2">${message}</div>
+      <small class="align-self-end text-light">${getFormattedTime()}</small>
+    </div>
+  `;
+  chatContent.innerHTML += str;
+  chatContent.scrollTop = chatContent.scrollHeight;
 });
