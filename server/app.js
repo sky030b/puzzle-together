@@ -29,8 +29,10 @@ const PORT = process.env.PORT || 3000;
 
 const playerRoutes = require('./routers/playerRoutes');
 const gameRoutes = require('./routers/gameRoutes');
+const chatRoutes = require('./routers/chatRoutes.js');
 
 app.use(`/api/${API_VERSION}/players`, playerRoutes);
 app.use(`/api/${API_VERSION}/games`, gameRoutes);
+app.use(`/api/${API_VERSION}/chats`, chatRoutes);
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

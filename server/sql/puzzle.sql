@@ -73,11 +73,25 @@ END;
 
 DELIMITER ;
 
+
 CREATE TABLE anonymous_players (
     id INT AUTO_INCREMENT PRIMARY KEY,
     animal VARCHAR(255) NOT NULL
 );
 
+
+CREATE TABLE chat_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    game_id VARCHAR(255) NOT NULL,
+    player_id VARCHAR(255) NOT NULL,
+    message TEXT,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE chat_logs;
 DROP TABLE anonymous_players;
 DROP TABLE puzzles;
 DROP TABLE player_game;
@@ -132,14 +146,4 @@ CREATE TABLE movements (
     FOREIGN KEY (puzzle_id) REFERENCES puzzles(puzzle_id) ON DELETE CASCADE,
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
     -- FOREIGN KEY (moved_by) REFERENCES players(player_id) ON DELETE CASCADE 應該會是暱稱而不是id，為登入使用者不會有id
-);
-
-CREATE TABLE chat_logs (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    game_id VARCHAR(255) NOT NULL,
-    player_id VARCHAR(255) NOT NULL,
-    message TEXT,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
