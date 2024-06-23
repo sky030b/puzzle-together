@@ -6,6 +6,7 @@ body, html {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  font-family: 'Noto Sans Mono CJK', monospace;
 }
 
 #container {
@@ -26,8 +27,10 @@ body, html {
   position: absolute;
   cursor: grab;
   overflow: hidden;
-  outline: 1px solid rgba(0, 0, 0, 0); /* Hide outline */
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0); /* Hide box shadow */
+  outline: 1px solid rgba(0, 0, 0, 0);
+  /* Hide outline */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0);
+  /* Hide box shadow */
 }
 
 .locked-color-box {
@@ -53,4 +56,20 @@ body, html {
 
 #puzzle-container {
   position: absolute;
+}
+
+#chat-area {
+  width: 20vw;
+  height: 40vh;
+  background-color: blue;
+  opacity: 0.2;
+}
+
+#chat-area:hover {
+  opacity: 0.8;
+}
+
+.chat-content-lines>* {
+  width: auto;
+  max-width: 90%;
 }

@@ -1,8 +1,12 @@
 import { joinRoom } from './socket.js';
 import renderGame from './puzzle.js';
-import { container, canvas, targetContainer } from './dom.js';
 import {
-  setScale, getScale, canvasWidth, canvasHeight
+  container, canvas, targetContainer, chatArea
+} from './dom.js';
+import {
+  setScale, getScale, canvasWidth, canvasHeight,
+  getIsInsideChatArea,
+  setIsInsideChatArea
 } from './variable.js';
 import initPlayer from './player.js';
 
@@ -55,6 +59,7 @@ export function constrainCanvas() {
 }
 
 container.addEventListener('wheel', (e) => {
+  if (getIsInsideChatArea()) return;
   // e.preventDefault();
   const scaleAmount = 0.1;
   const previousScale = getScale();
@@ -119,6 +124,14 @@ container.addEventListener('mouseleave', (e) => {
   isDraggingCanvas = false;
 });
 
+chatArea.addEventListener('mouseenter', () => {
+  setIsInsideChatArea(true);
+});
+
+chatArea.addEventListener('mouseleave', () => {
+  setIsInsideChatArea(false);
+});
+
 async function main() {
   try {
     joinRoom();
@@ -130,6 +143,11 @@ async function main() {
     setScale(0.5);
     canvas.style.transform = `scale(${getScale()})`;
     constrainCanvas();
+
+    setTimeout(() => {
+      const chatContent = document.querySelector('.chat-content-lines');
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }, 1000);
 
     centerView();
     return 'Game initialization done.';
