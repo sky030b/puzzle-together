@@ -17,6 +17,12 @@ export function joinRoom() {
   }
 }
 
+socket.on('timerUpdate', (data) => {
+  // if (data.gameId === getCurrentGameId()) {
+  console.log(data);
+  // }
+});
+
 socket.on('movePiece', (data) => {
   if (data.gameId === getCurrentGameId()) {
     const piece = document.getElementById(data.puzzleId);
