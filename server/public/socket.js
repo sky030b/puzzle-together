@@ -55,14 +55,17 @@ socket.on('lockPiece', (data) => {
 });
 
 socket.on('newMessage', (data) => {
-  const { nickname, message } = data;
-  const str = `
-    <div class="d-flex gap-2 mb-2">
-      <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${nickname}">${nickname[0]}</div>
-      <div class="rounded bg-light text-break p-2">${message}</div>
-      <small class="align-self-end text-light">${getFormattedTime()}</small>
-    </div>
-  `;
-  chatContent.innerHTML += str;
-  chatContent.scrollTop = chatContent.scrollHeight;
+  const { gameId, nickname, message } = data;
+
+  if (gameId === getCurrentGameId()) {
+    const str = `
+      <div class="d-flex gap-2 mb-2">
+        <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${nickname}">${nickname[0]}</div>
+        <div class="rounded bg-light text-break p-2">${message}</div>
+        <small class="align-self-end text-light">${getFormattedTime()}</small>
+      </div>
+    `;
+    chatContent.innerHTML += str;
+    chatContent.scrollTop = chatContent.scrollHeight;
+  }
 });

@@ -6,23 +6,28 @@ const socket = (io) => {
   io.on('connection', (socketio) => {
     console.log('New client connected');
 
-    socketio.on('movePiece', (data) => {
-      socketio.broadcast.emit('movePiece', data);
-      updatePuzzleLocation(data);
-    });
+    socketio.on('joinRoom', async (roomId) => {
+      socketio.join(roomId);
 
-    socketio.on('lockPiece', (data) => {
-      socketio.broadcast.emit('lockPiece', data);
-      lockPuzzleBySomeone(data);
-    });
+      socketio.on('movePiece', async (data) => {
+        socketio.to(roomId).emit('movePiece', data);
+        await updatePuzzleLocation(data);
+      });
 
-    socketio.on('newMessage', (data) => {
-      socketio.broadcast.emit('newMessage', data);
-      socketio.emit('newMessage', data);
-    });
+      socketio.on('lockPiece', async (data) => {
+        socketio.to(roomId).emit('lockPiece', data);
+        await lockPuzzleBySomeone(data);
+      });
 
-    socketio.on('disconnect', () => {
-      console.log('Client disconnected');
+      socketio.on('newMessage', (data) => {
+        io.to(roomId).emit('newMessage', data);
+      });
+
+      socketio.on('disconnect', () => {
+        const remainingClients = io.sockets.adapter.rooms.get(roomId)?.size || 0;
+        console.log(remainingClients);
+        console.log('Client disconnected');
+      });
     });
   });
 };
