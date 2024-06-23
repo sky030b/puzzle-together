@@ -22,9 +22,16 @@ async function getChatHistoryByGameId(gameId) {
   try {
     const [chatHistory] = await pool.query(`
     SELECT 
-      *
+      c.player_id AS player_id,
+      p.nickname AS nickname,
+      c.message AS message,
+      c.create_at AS create_at
     FROM 
-      chat_logs
+      chat_logs c
+    LEFT JOIN
+      players p
+    ON
+      p.player_id = c.player_id
     WHERE
       game_id = ?
     ORDER BY
