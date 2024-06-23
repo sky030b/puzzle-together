@@ -26,9 +26,13 @@ socket.on('movePiece', (data) => {
 });
 
 socket.on('lockPiece', (data) => {
-  if (data.gameId === getCurrentGameId()) {
-    const piece = document.getElementById(data.puzzleId);
-    const target = document.getElementById(data.targetId);
+  const {
+    gameId, puzzleId, targetId, lockedBy, lockedColor, zIndex
+  } = data;
+
+  if (gameId === getCurrentGameId()) {
+    const piece = document.getElementById(puzzleId);
+    const target = document.getElementById(targetId);
     if (piece && target) {
       target.appendChild(piece);
       target.style.opacity = 1;
@@ -37,9 +41,11 @@ socket.on('lockPiece', (data) => {
       piece.style.border = 'none';
       piece.style.left = '50%';
       piece.style.top = '50%';
-      piece.style.zIndex = data.zIndex;
+      piece.style.zIndex = zIndex;
       piece.style.transform = 'translate(-50%, -50%)';
       piece.dataset.isLocked = 'true';
+      piece.dataset.lockedBy = lockedBy;
+      piece.dataset.lockedColor = lockedColor;
       piece.classList.add('locked');
       piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
     }

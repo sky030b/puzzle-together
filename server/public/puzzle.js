@@ -41,7 +41,7 @@ function createPuzzles(img, gameInfo) {
 
   puzzles.forEach((puzzleInfo) => {
     const {
-      targetId, puzzleId, topRatio, leftRatio, isLocked, lockedBy, lockedColor, lockedAt, zIndex
+      targetId, puzzleId, topRatio, leftRatio, isLocked, lockedBy, lockedColor, zIndex
     } = puzzleInfo;
 
     puzzleTargetMap[targetId] = puzzleId;
@@ -59,7 +59,6 @@ function createPuzzles(img, gameInfo) {
       piece.dataset.isLocked = 'true';
       piece.dataset.lockedBy = lockedBy;
       piece.dataset.lockedColor = lockedColor;
-      piece.dataset.lockedAt = lockedAt;
     } else {
       piece.style.top = `${(canvasHeight * topRatio) / 100}px`;
       piece.style.left = `${(canvasWidth * leftRatio) / 100}px`;

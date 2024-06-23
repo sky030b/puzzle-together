@@ -26,12 +26,11 @@ async function getRenderInfoByGameId(gameId) {
     const orderedPuzzlesInfo = puzzlesArray.map((puzzleObj) => {
       const {
         puzzle_id: puzzleId, target_id: targetId, top_ratio: topRatio, left_ratio: leftRatio,
-        is_locked: isLocked, locked_by: lockedBy, locked_color: lockedColor, locked_at: lockedAt,
-        z_index: zIndex
+        is_locked: isLocked, locked_by: lockedBy, locked_color: lockedColor, z_index: zIndex
       } = puzzleObj;
 
       return {
-        puzzleId, targetId, topRatio, leftRatio, isLocked, lockedBy, lockedColor, lockedAt, zIndex
+        puzzleId, targetId, topRatio, leftRatio, isLocked, lockedBy, lockedColor, zIndex
       };
     });
     return orderedPuzzlesInfo;
@@ -96,7 +95,6 @@ async function getRenderInfoByGameId(gameId) {
               'is_locked', p.is_locked, 
               'locked_by', p.locked_by, 
               'locked_color', p.locked_color, 
-              'locked_at', p.locked_at, 
               'z_index', p.z_index
             )
           ) AS puzzles
@@ -111,7 +109,6 @@ async function getRenderInfoByGameId(gameId) {
               is_locked, 
               locked_by, 
               locked_color, 
-              locked_at, 
               z_index
             FROM 
               puzzles
