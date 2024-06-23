@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
 /* eslint-disable no-undef */
 import { chatArea, chatContent, chatForm } from './dom.js';
 import { socket } from './socket.js';
@@ -39,15 +41,22 @@ export default async function renderChatHistory() {
 }
 
 async function sendNewMessage(messageInfo) {
-  const url = `/api/1.0/chats/${getCurrentGameId()}`;
-  const res = await axios.post(url, messageInfo);
-  console.log(res);
+  try {
+    const url = `/api/1.0/chats/${getCurrentGameId()}`;
+    const res = await axios.post(url, messageInfo);
+    console.log(res);
+  } catch (error) {
+    alert(error.response.data);
+  }
 }
 
 chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  if (!chatForm[0].value.trim()) return;
+  if (!chatForm[0].value.trim()) {
+    chatForm.reset();
+    return;
+  }
 
   const messageInfo = {
     playerId: getPlayerState().playerId,

@@ -4,3 +4,5 @@ export const targetContainer = document.getElementById('target-container');
 export const chatArea = document.getElementById('chat-area');
 export const chatContent = document.querySelector('.chat-content-lines');
 export const chatForm = document.querySelector('.chat-form');
+export const messageInput = document.querySelector('#message-input');
+export const messageSendBtn = document.querySelector('#message-send-btn');

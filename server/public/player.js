@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
-import { getCookie, setCookie } from './utils.js';
-import { setPlayerState } from './variable.js';
+import { messageInput, messageSendBtn } from './dom.js';
+import { getCookie } from './utils.js';
+import { getPlayerState, setPlayerState } from './variable.js';
 
 async function getAnonymousPlayerInfo() {
   try {
@@ -46,6 +47,11 @@ export default async function initPlayer() {
     if (playerInfo instanceof Error) throw playerInfo;
     setPlayerState(playerInfo);
     // setCookie('playerInfo', JSON.stringify(playerInfo));
+    if (getPlayerState().playerId) {
+      messageInput.placeholder = '說點什麼吧';
+      messageInput.disabled = false;
+      messageSendBtn.disabled = false;
+    }
     return 'playerInit Done.';
   } catch (error) {
     // 告知請重新登入

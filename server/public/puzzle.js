@@ -335,7 +335,7 @@ async function getRenderInfo() {
 
     return renderInfo;
   } catch (error) {
-    alert(error.message);
+    alert(error.response.data);
     alert('請輸入有效的遊戲關卡ID');
     window.location.href = '/index.html';
     return error;
