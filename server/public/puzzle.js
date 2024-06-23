@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable import/no-cycle */
 import { container, canvas, targetContainer } from './dom.js';
 import {
@@ -5,7 +6,7 @@ import {
   getCurrentGameId, getPlayerState
 } from './variable.js';
 
-import { getRandomHexCode, getImageDimensions } from './utils.js';
+import { getImageDimensions } from './utils.js';
 import { socket } from './socket.js';
 
 const puzzleTargetMap = {};
@@ -79,7 +80,6 @@ function createTargetBoxes(img, gameInfo) {
   const pieceWidth = scaledWidth / cols;
   const pieceHeight = scaledHeight / rows;
 
-  const targetContainer = document.getElementById('target-container');
   targetContainer.style.border = '5px solid black';
   targetContainer.innerHTML = '';
   targetContainer.style.gridTemplateColumns = `repeat(${cols}, ${pieceWidth}px)`;
@@ -284,7 +284,7 @@ document.getElementById('generate-locked-box-button').addEventListener('click', 
       lockedColorBox.dataset.lockedBy = piece.dataset.lockedBy;
       lockedColorBox.dataset.lockedColor = piece.dataset.lockedColor;
       lockedColorBox.style.backgroundColor = piece.dataset.lockedColor;
-      lockedColorBox.style.border = "1px solid black";
+      lockedColorBox.style.border = '1px solid black';
       lockedColorBox.style.width = '100%';
       lockedColorBox.style.height = '100%';
       lockedColorBox.style.zIndex = '2';
@@ -325,6 +325,7 @@ async function getRenderInfo() {
     const res = await axios.get(url);
     const renderInfo = res.data;
 
+    // eslint-disable-next-line no-console
     console.log(renderInfo);
 
     if (!renderInfo) {
