@@ -38,6 +38,7 @@ signupForm.addEventListener('submit', async (e) => {
 
     const { accessToken, accessExpired } = res.data.data;
     setCookie('token', accessToken, accessExpired);
+    alert('註冊成功。');
     // window.location.href = `/profile.html?playerId=${playerInfo.playerId}`;
   } catch (error) {
     console.error(error);
