@@ -3,7 +3,7 @@
 import { container, canvas, targetContainer } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
-  getCurrentGameId, getPlayerState
+  getCurrentGameId, getPlayerState, setOpacityByDifficulty
 } from './variable.js';
 
 import { getImageDimensions } from './utils.js';
@@ -68,7 +68,9 @@ function createPuzzles(img, gameInfo) {
 }
 
 function createTargetBoxes(img, gameInfo) {
-  const { rowQty, colQty, puzzles } = gameInfo;
+  const {
+    rowQty, colQty, puzzles, difficulty
+  } = gameInfo;
 
   const imgNow = img;
   const scaledWidth = imgNow.width * imgNow.scale;
@@ -97,7 +99,7 @@ function createTargetBoxes(img, gameInfo) {
     targetBox.style.backgroundImage = `url(${imgNow.src})`;
     targetBox.style.backgroundSize = `${imgNow.width * imgNow.scale}px ${imgNow.height * imgNow.scale}px`;
     targetBox.style.backgroundPosition = `-${((targetId - 1) % cols) * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
-    targetBox.style.opacity = 0.2;
+    targetBox.style.opacity = setOpacityByDifficulty(difficulty);
 
     if (isLocked) {
       const piece = document.getElementById(puzzleId);

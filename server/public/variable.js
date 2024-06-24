@@ -2,6 +2,23 @@ export const maxDimension = 1500;
 export const canvasWidth = 16000;
 export const canvasHeight = 12000;
 
+const EASY_OPACITY = 0.2;
+const MEDIUM_OPACITY = 0.1;
+const HARD_OPACITY = 0;
+
+export function setOpacityByDifficulty(difficulty) {
+  switch (difficulty) {
+    case 'easy':
+      return EASY_OPACITY;
+    case 'medium':
+      return MEDIUM_OPACITY;
+    case 'hard':
+      return HARD_OPACITY;
+    default:
+      return EASY_OPACITY;
+  }
+}
+
 const playgroundState = {
   scale: 1,
   currentGameId: '',
