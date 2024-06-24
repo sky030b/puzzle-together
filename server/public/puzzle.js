@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-alert */
 /* eslint-disable import/no-cycle */
 import { container, canvas, targetContainer } from './dom.js';
@@ -156,26 +158,22 @@ export function addDragAndDrop() {
   }
 
   function centerInTarget(element, target) {
-    const elementNow = element;
-    const targetNow = target;
-    targetNow.innerHTML = '';
-    targetNow.appendChild(element);
-    targetNow.style.width = '100%';
-    targetNow.style.height = '100%';
-    targetNow.style.opacity = 1;
-    // targetNow.style.backgroundImage = 'none';
-    targetNow.style.border = 'none';
-    elementNow.style.border = 'none';
-    elementNow.style.position = 'absolute';
-    elementNow.style.left = '50%';
-    elementNow.style.top = '50%';
-    elementNow.style.zIndex = '1';
-    elementNow.style.transform = 'translate(-50%, -50%)';
+    target.innerHTML = '';
+    target.appendChild(element);
+    target.style.width = '100%';
+    target.style.height = '100%';
+    target.style.opacity = 1;
+    // target.style.backgroundImage = 'none';
+    target.style.border = 'none';
+    element.style.border = 'none';
+    element.style.position = 'absolute';
+    element.style.left = '50%';
+    element.style.top = '50%';
+    element.style.zIndex = '1';
+    element.style.transform = 'translate(-50%, -50%)';
   }
 
-  let onMouseMove;
-  let onMouseUp;
-  const onMouseDown = (e) => {
+  function onMouseDown(e) {
     if (e.target.dataset.isLocked === 'true') return;
     selectedPiece = e.target;
     selectedPiece.style.zIndex = '10';
@@ -185,9 +183,9 @@ export function addDragAndDrop() {
     offsetY = e.clientY - rect.top;
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  };
+  }
 
-  onMouseMove = (e) => {
+  function onMouseMove(e) {
     if (!selectedPiece) return;
 
     const containerRect = container.getBoundingClientRect();
@@ -231,9 +229,9 @@ export function addDragAndDrop() {
       leftRatio: (dx / canvasWidth) * 100,
       topRatio: (dy / canvasHeight) * 100
     });
-  };
+  }
 
-  onMouseUp = () => {
+  function onMouseUp() {
     if (!selectedPiece) return;
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -283,7 +281,7 @@ export function addDragAndDrop() {
       }
     });
     selectedPiece = null;
-  };
+  }
 
   puzzlePieces.forEach((piece) => {
     piece.addEventListener('mousedown', onMouseDown);
@@ -315,16 +313,15 @@ document.getElementById('toggle-opacity-button').addEventListener('click', () =>
   const puzzlePieces = document.querySelectorAll('.puzzle-piece');
   puzzlePieces.forEach((piece) => {
     const lockedColorBox = piece.parentNode.querySelector('.locked-color-box');
-    const pieceNow = piece;
     if (lockedColorBox) {
       if (piece.style.opacity === '0') {
-        pieceNow.style.opacity = '0.5';
+        piece.style.opacity = '0.5';
         lockedColorBox.style.opacity = '0.5';
       } else if (piece.style.opacity === '0.5') {
-        pieceNow.style.opacity = '1';
+        piece.style.opacity = '1';
         lockedColorBox.style.opacity = '0';
       } else {
-        pieceNow.style.opacity = '0';
+        piece.style.opacity = '0';
         lockedColorBox.style.opacity = '1';
       }
     }
