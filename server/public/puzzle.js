@@ -108,7 +108,7 @@ function createTargetBoxes(img, gameInfo) {
       piece.style.opacity = 1;
       targetBox.appendChild(piece);
       targetBox.style.opacity = 1;
-      targetBox.style.backgroundImage = 'none';
+      // targetBox.style.backgroundImage = 'none';
       targetBox.style.border = 'none';
     }
 
@@ -161,7 +161,7 @@ export function addDragAndDrop() {
     targetNow.style.width = '100%';
     targetNow.style.height = '100%';
     targetNow.style.opacity = 1;
-    targetNow.style.backgroundImage = 'none';
+    // targetNow.style.backgroundImage = 'none';
     targetNow.style.border = 'none';
     elementNow.style.border = 'none';
     elementNow.style.position = 'absolute';

@@ -50,7 +50,7 @@ export function setupSocket() {
       if (piece && target) {
         target.appendChild(piece);
         target.style.opacity = 1;
-        target.style.backgroundImage = 'none';
+        // target.style.backgroundImage = 'none';
         target.style.border = 'none';
         piece.style.border = 'none';
         piece.style.left = '50%';
