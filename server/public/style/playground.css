@@ -61,7 +61,6 @@ body, html {
 #chat-area {
   width: 20vw;
   height: 40vh;
-  background-color: blue;
   opacity: 0.2;
 }
 
@@ -73,3 +72,14 @@ body, html {
   width: auto;
   max-width: 90%;
 }
+
+#record-area {
+  width: 10vw;
+  height: 40vh;
+  opacity: 0.2;
+}
+
+#record-area:hover {
+  opacity: 0.8;
+}
+
