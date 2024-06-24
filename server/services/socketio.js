@@ -23,7 +23,7 @@ const socket = (io) => {
       socketio.emit('timerUpdate', timersInfo[gameId]);
 
       socketio.on('movePiece', async (data) => {
-        io.to(gameId).emit('movePiece', data);
+        socketio.to(gameId).emit('movePiece', data);
         await updatePuzzleLocation(data);
       });
 

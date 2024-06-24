@@ -268,6 +268,15 @@ export function addDragAndDrop() {
             + +targetContainer.style.borderWidth.replace('px', '')
             + target.offsetTop}px`;
           selectedPiece.style.zIndex = '5';
+
+          socket.emit('movePiece', {
+            gameId: getCurrentGameId(),
+            puzzleId: selectedPiece.id,
+            left: selectedPiece.style.left,
+            top: selectedPiece.style.top,
+            leftRatio: (+selectedPiece.style.left.replace('px', '') / canvasWidth) * 100,
+            topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100
+          });
         }
       }
     });
