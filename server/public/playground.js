@@ -1,4 +1,4 @@
-import { joinRoom } from './socket.js';
+import { setupSocket } from './socket.js';
 import renderGame from './puzzle.js';
 import {
   container, canvas, targetContainer
@@ -126,7 +126,7 @@ container.addEventListener('mouseleave', (e) => {
 
 async function main() {
   try {
-    joinRoom();
+    setupSocket();
     const gameRenderResult = await renderGame();
     if (gameRenderResult instanceof Error) throw gameRenderResult;
     const playerInitResult = await initPlayer();

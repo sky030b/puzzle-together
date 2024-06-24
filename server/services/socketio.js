@@ -16,7 +16,7 @@ const socket = (io) => {
       let remainingClients = io.sockets.adapter.rooms.get(gameId)?.size || 0;
       if (remainingClients === 1) {
         const { play_duration: playDuration } = await getGameDurationByGameId(gameId);
-        const timerInfo = { playDuration, startTime: new Date() };
+        const timerInfo = { gameId, playDuration, startTime: new Date() };
         timersInfo[gameId] = timerInfo;
       }
 
