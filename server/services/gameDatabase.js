@@ -21,36 +21,6 @@ async function getGameBySerialId(id) {
   }
 }
 
-async function getLastStartTimeByGameId(gameId) {
-  try {
-    const [game] = (await pool.query(`
-      SELECT 
-        last_start_time
-      FROM 
-        games 
-      WHERE 
-        game_id = ?
-    `, [gameId]))[0];
-    return game;
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
-
-async function setLastStartTimeByGameId(gameId) {
-  try {
-    const [game] = await pool.query(`
-      UPDATE games SET last_start_time = CURRENT_TIMESTAMP WHERE game_id = ?;
-    `, [gameId]);
-    console.log(game);
-    return getLastStartTimeByGameId(gameId);
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
-
 async function getGameDurationByGameId(gameId) {
   try {
     const [game] = (await pool.query(`
@@ -331,8 +301,6 @@ async function lockPuzzleBySomeone(lockingInfo) {
 }
 
 module.exports = {
-  getLastStartTimeByGameId,
-  setLastStartTimeByGameId,
   getGameDurationByGameId,
   updateGameDurationByGameId,
   getRenderInfoByGameId,

@@ -20,6 +20,10 @@ export function joinRoom() {
 socket.on('timerUpdate', (data) => {
   // if (data.gameId === getCurrentGameId()) {
   console.log(data);
+  const { playDuration, startTime } = data;
+  setInterval(() => {
+    console.log(playDuration + Math.round((new Date() - new Date(startTime)) / 1000));
+  }, 1000);
   // }
 });
 

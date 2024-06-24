@@ -26,7 +26,7 @@ CREATE TABLE games (
     mode ENUM('cooperation', 'competition', 'relay') NOT NULL DEFAULT 'cooperation',
     is_public TINYINT(1) DEFAULT 0,
     is_open_when_owner_not_in TINYINT(1) DEFAULT 0 NOT NULL,
-    last_start_time TIMESTAMP DEFAULT NULL,
+    -- last_start_time TIMESTAMP DEFAULT NULL,
     play_duration BIGINT DEFAULT 0 NOT NULL,
     is_completed TINYINT(1) DEFAULT 0 NOT NULL,
     completed_at TIMESTAMP DEFAULT NULL,
