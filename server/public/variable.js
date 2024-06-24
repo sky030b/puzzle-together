@@ -5,7 +5,8 @@ export const canvasHeight = 12000;
 const playgroundState = {
   scale: 1,
   currentGameId: '',
-  isInsideChatArea: false
+  isInsideChatArea: false,
+  isInsideRecordArea: false
 };
 
 export function setScale(newScale) {
@@ -30,6 +31,14 @@ export function setIsInsideChatArea(trueOrFalse) {
 
 export function getIsInsideChatArea() {
   return playgroundState.isInsideChatArea;
+}
+
+export function setIsInsideRecordArea(trueOrFalse) {
+  playgroundState.isInsideRecordArea = trueOrFalse;
+}
+
+export function getIsInsideRecordArea() {
+  return playgroundState.isInsideRecordArea;
 }
 
 const playerState = {

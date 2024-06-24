@@ -41,7 +41,7 @@ const socket = (io) => {
         if (remainingClients === 0) {
           if (timersInfo[gameId]) {
             const { playDuration, startTime } = timersInfo[gameId];
-            const increasedSec = Math.round((new Date() - new Date(startTime)) / 1000);
+            const increasedSec = Math.floor((new Date() - new Date(startTime)) / 1000);
             const newPlayDuration = playDuration + increasedSec;
             await updateGameDurationByGameId(gameId, newPlayDuration);
             delete timersInfo[gameId];

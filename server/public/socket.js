@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
+import renderPlayDuration from './record.js';
 import { getFormattedTime } from './utils.js';
 import { getCurrentGameId, setCurrentGameId } from './variable.js';
 
@@ -21,7 +22,8 @@ export function setupSocket() {
     if (gameId === getCurrentGameId()) {
       setInterval(() => {
         // eslint-disable-next-line no-console
-        console.log(playDuration + Math.round((new Date() - new Date(startTime)) / 1000));
+        console.log(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
+        renderPlayDuration(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
       }, 1000);
     }
   });

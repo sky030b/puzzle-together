@@ -5,7 +5,7 @@ import {
 } from './dom.js';
 import {
   setScale, getScale, canvasWidth, canvasHeight,
-  getIsInsideChatArea
+  getIsInsideChatArea, getIsInsideRecordArea
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
@@ -59,7 +59,7 @@ export function constrainCanvas() {
 }
 
 container.addEventListener('wheel', (e) => {
-  if (getIsInsideChatArea()) return;
+  if (getIsInsideChatArea() || getIsInsideRecordArea()) return;
   // e.preventDefault();
   const scaleAmount = 0.1;
   const previousScale = getScale();
