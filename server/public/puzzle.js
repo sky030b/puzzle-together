@@ -153,6 +153,17 @@ export function addDragAndDrop() {
     return overlapArea / elementArea;
   }
 
+  // function centerInTarget(element, target) {
+  //   const targetRect = target.getBoundingClientRect();
+  //   const containerRect = targetContainer.getBoundingClientRect();
+
+  //   const leftPosition = containerRect.left + +targetContainer.style.left.replace('px', '');
+  //   const topPosition = containerRect.top + +targetContainer.style.top.replace('px', '');
+
+  //   element.style.left = `${leftPosition}px`;
+  //   element.style.top = `${topPosition}px`;
+  // }
+
   function centerInTarget(element, target) {
     const elementNow = element;
     const targetNow = target;
@@ -167,6 +178,13 @@ export function addDragAndDrop() {
     elementNow.style.position = 'absolute';
     elementNow.style.left = '50%';
     elementNow.style.top = '50%';
+
+    // console.log(targetNow.getBoundingClientRect().top, targetNow.getBoundingClientRect().left);
+    // elementNow.style.left = targetNow.getBoundingClientRect().left + +targetContainer.style.left.replace('px', '') + 'px';
+    // elementNow.style.top = targetNow.getBoundingClientRect().top + +targetContainer.style.top.replace('px', '') + 'px';
+    // console.log(elementNow.style.left, elementNow.style.top);
+    // console.log(+targetContainer.style.left.replace('px', ''), +targetContainer.style.top.replace('px', ''));
+
     elementNow.style.zIndex = '1';
     elementNow.style.transform = 'translate(-50%, -50%)';
   }
@@ -244,22 +262,24 @@ export function addDragAndDrop() {
         const overlapRatio = calculateOverlap(selectedPiece, target);
         if (overlapRatio >= 0.7) {
           const { nickname, representColor } = getPlayerState();
-          centerInTarget(selectedPiece, target);
-          selectedPiece.dataset.isLocked = 'true';
+          // centerInTarget(selectedPiece, target);
+          selectedPiece.style.left = `${(canvasWidth - targetContainer.clientWidth) / 2 + target.offsetLeft}px`;
+          selectedPiece.style.top = `${(canvasHeight - targetContainer.clientHeight) / 2 + target.offsetTop}px`;
+          // selectedPiece.dataset.isLocked = 'true';
           selectedPiece.dataset.lockedBy = nickname;
           selectedPiece.dataset.lockedColor = representColor;
-          selectedPiece.classList.add('locked');
-          selectedPiece.removeEventListener('mousedown', onMouseDown);
+          // selectedPiece.classList.add('locked');
+          // selectedPiece.removeEventListener('mousedown', onMouseDown);
 
-          socket.emit('lockPiece', {
-            gameId: getCurrentGameId(),
-            puzzleId: selectedPiece.id,
-            targetId: target.id,
-            isLocked: true,
-            lockedBy: nickname,
-            lockedColor: representColor,
-            zIndex: selectedPiece.style.zIndex
-          });
+          // socket.emit('lockPiece', {
+          //   gameId: getCurrentGameId(),
+          //   puzzleId: selectedPiece.id,
+          //   targetId: target.id,
+          //   isLocked: true,
+          //   lockedBy: nickname,
+          //   lockedColor: representColor,
+          //   zIndex: selectedPiece.style.zIndex
+          // });
         } else {
           selectedPiece.style.zIndex = '5';
         }
