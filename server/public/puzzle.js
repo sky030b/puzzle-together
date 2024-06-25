@@ -177,6 +177,12 @@ export function addDragAndDrop(gameInfo) {
 
   function onMouseDown(e) {
     if (e.target.dataset.isLocked === 'true' && ['easy', 'medium'].includes(difficulty)) return;
+
+    if (lastNotLockedPiece) {
+      lastNotLockedPiece.style.zIndex = '5';
+      lastNotLockedPiece = null;
+    }
+
     selectedPiece = e.target;
     selectedPiece.style.zIndex = '10';
     selectedPiece.style.cursor = 'grabbing';
@@ -299,6 +305,11 @@ export function addDragAndDrop(gameInfo) {
         }
       }
     });
+
+    if (['5', '10'].includes(selectedPiece.style.zIndex)) {
+      lastNotLockedPiece = selectedPiece;
+      lastNotLockedPiece.style.zIndex = '6';
+    }
     selectedPiece = null;
   }
 
