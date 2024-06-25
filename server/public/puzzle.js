@@ -185,6 +185,7 @@ export function addDragAndDrop(gameInfo) {
     }
 
     selectedPiece = e.target;
+    selectedPiece.dataset.moveBy = getPlayerState().nickname;
     selectedPiece.style.zIndex = '10';
     selectedPiece.style.cursor = 'grabbing';
     const rect = selectedPiece.getBoundingClientRect();
@@ -196,6 +197,7 @@ export function addDragAndDrop(gameInfo) {
 
   function onMouseMove(e) {
     if (!selectedPiece) return;
+    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return;
 
     const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
@@ -311,6 +313,7 @@ export function addDragAndDrop(gameInfo) {
       lastNotLockedPiece = selectedPiece;
       lastNotLockedPiece.style.zIndex = '6';
     }
+    selectedPiece.removeAttribute('data-move-by');
     selectedPiece = null;
   }
 
