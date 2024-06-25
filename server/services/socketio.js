@@ -32,8 +32,8 @@ const socket = (io) => {
         timersInfo[roomId] = timerInfo;
       }
 
-      socketio.emit('timerUpdate', timersInfo[roomId]);
-      io.to(roomId).emit('recordUpdate', { gameId: roomId, playersInfo: roomsInfo[roomId] });
+      socketio.emit('setTimer', timersInfo[roomId]);
+      io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
 
       socketio.on('movePiece', async (data) => {
         socketio.to(roomId).emit('movePiece', data);
@@ -42,17 +42,17 @@ const socket = (io) => {
 
       socketio.on('lockPiece', async (data) => {
         socketio.to(roomId).emit('lockPiece', data);
-        io.to(roomId).emit('recordUpdate', { gameId: roomId, playersInfo: roomsInfo[roomId] });
+        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
         await lockPuzzleBySomeone(data);
       });
 
-      socketio.on('newMessage', (data) => {
-        io.to(roomId).emit('newMessage', data);
+      socketio.on('sendNewMessage', (data) => {
+        io.to(roomId).emit('sendNewMessage', data);
       });
 
       socketio.on('disconnect', async () => {
         roomsInfo[roomId] = roomsInfo[roomId].filter((player) => player.id !== socketio.id);
-        io.to(roomId).emit('recordUpdate', { gameId: roomId, playersInfo: roomsInfo[roomId] });
+        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
 
         if (!roomsInfo[roomId].length && timersInfo[roomId]) {
           const { playDuration, startTime } = timersInfo[roomId];

@@ -18,7 +18,7 @@ export function setupSocket() {
     alert('請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。');
   }
 
-  socket.on('timerUpdate', (data) => {
+  socket.on('setTimer', (data) => {
     const { gameId, playDuration, startTime } = data;
     if (gameId === roomId) {
       setInterval(() => {
@@ -29,7 +29,7 @@ export function setupSocket() {
     }
   });
 
-  socket.on('recordUpdate', (data) => {
+  socket.on('updateRecord', (data) => {
     const { gameId, playersInfo } = data;
     if (gameId === roomId) {
       renderRecord(playersInfo);
@@ -74,7 +74,7 @@ export function setupSocket() {
     }
   });
 
-  socket.on('newMessage', (data) => {
+  socket.on('sendNewMessage', (data) => {
     const { gameId, nickname, message } = data;
 
     if (gameId === roomId) {

@@ -63,7 +63,7 @@ chatForm.addEventListener('submit', async (e) => {
     message: chatForm[0].value.trim()
   };
 
-  socket.emit('newMessage', {
+  socket.emit('sendNewMessage', {
     ...messageInfo,
     nickname: getPlayerState().nickname,
     gameId: getCurrentGameId()
