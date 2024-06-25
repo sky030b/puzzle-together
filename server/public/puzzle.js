@@ -256,7 +256,7 @@ export function addDragAndDrop(gameInfo) {
       if (isNearTarget(selectedPiece, target)) {
         const overlapRatio = calculateOverlap(selectedPiece, target);
         if (overlapRatio >= getOverlapRatioByDifficulty(difficulty)) {
-          if (['medium', 'hard'].includes(difficulty)) {
+          if (!(difficulty === 'easy' && puzzleTargetMap[targetId] !== pieceId)) {
             selectedPiece.style.left = `${+targetContainer.style.left.replace('px', '')
               + +targetContainer.style.borderWidth.replace('px', '')
               + target.offsetLeft}px`;
