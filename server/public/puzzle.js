@@ -333,7 +333,7 @@ document.getElementById('generate-locked-box-button').addEventListener('click', 
       lockedColorBox.style.border = '1px solid black';
       lockedColorBox.style.width = '100%';
       lockedColorBox.style.height = '100%';
-      lockedColorBox.style.zIndex = '2';
+      lockedColorBox.style.zIndex = '6';
       lockedColorBox.style.opacity = 0;
       targetBox.appendChild(lockedColorBox);
     }
@@ -361,9 +361,7 @@ document.getElementById('toggle-opacity-button').addEventListener('click', () =>
 
 async function getRenderInfo() {
   try {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const gameId = urlParams.get('gameId');
+    const gameId = getCurrentGameId();
 
     const url = `/api/1.0/games/${gameId}`;
     // eslint-disable-next-line no-undef
