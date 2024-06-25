@@ -83,3 +83,11 @@ body, html {
   opacity: 0.8;
 }
 
+.record-lines {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.record-lines::-webkit-scrollbar {
+  display: none;  
+}

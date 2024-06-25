@@ -1,17 +1,21 @@
 /* eslint-disable import/no-cycle */
 import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
-import renderPlayDuration from './record.js';
+import { renderPlayDuration, renderRecord } from './record.js';
 import { getFormattedTime } from './utils.js';
-import { getCurrentGameId } from './variable.js';
+import { getCurrentGameId, getPlayerState } from './variable.js';
 
 // eslint-disable-next-line no-undef
 export const socket = io();
 
 export function setupSocket() {
   const roomId = getCurrentGameId();
-  if (roomId) {
-    socket.emit('joinRoom', roomId);
+  const playerState = getPlayerState();
+  if (roomId && playerState) {
+    socket.emit('joinRoom', roomId, playerState);
+  } else {
+    // eslint-disable-next-line no-alert
+    alert('請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。');
   }
 
   socket.on('timerUpdate', (data) => {
@@ -22,6 +26,13 @@ export function setupSocket() {
         console.log(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
         renderPlayDuration(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
       }, 1000);
+    }
+  });
+
+  socket.on('recordUpdate', (data) => {
+    const { gameId, playersInfo } = data;
+    if (gameId === roomId) {
+      renderRecord(playersInfo);
     }
   });
 
