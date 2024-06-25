@@ -34,22 +34,6 @@ export function renderRecord(onlinePlayers) {
 
   const lockedPuzzles = document.querySelectorAll('[data-locked-by]');
 
-  // const lockedByInfoAry = [];
-  // lockedPuzzles.forEach((puzzleDiv) => {
-  //   const recordIndex = lockedByInfoAry.findIndex(
-  //     (record) => record.nickname === puzzleDiv.dataset.lockedBy
-  //   );
-  //   if (recordIndex !== -1) {
-  //     lockedByInfoAry[recordIndex].point += 1;
-  //   } else {
-  //     lockedByInfoAry.push({
-  //       nickname: puzzleDiv.dataset.lockedBy,
-  //       representColor: puzzleDiv.dataset.lockedColor,
-  //       point: 1
-  //     });
-  //   }
-  // });
-
   const lockedByInfoMap = new Map();
 
   lockedPuzzles.forEach((puzzleDiv) => {
