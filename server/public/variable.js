@@ -6,7 +6,7 @@ const EASY_OPACITY = 0.2;
 const MEDIUM_OPACITY = 0.1;
 const HARD_OPACITY = 0;
 
-export function setOpacityByDifficulty(difficulty) {
+export function getOpacityByDifficulty(difficulty) {
   switch (difficulty) {
     case 'easy':
       return EASY_OPACITY;
@@ -16,6 +16,23 @@ export function setOpacityByDifficulty(difficulty) {
       return HARD_OPACITY;
     default:
       return EASY_OPACITY;
+  }
+}
+
+const EASY_OVERLAP_RATIO = 0.7;
+const MEDIUM_OVERLAP_RATIO = 0.8;
+const HARD_OVERLAP_RATIO = 0.9;
+
+export function getOverlapRatioByDifficulty(difficulty) {
+  switch (difficulty) {
+    case 'easy':
+      return EASY_OVERLAP_RATIO;
+    case 'medium':
+      return MEDIUM_OVERLAP_RATIO;
+    case 'hard':
+      return HARD_OVERLAP_RATIO;
+    default:
+      return EASY_OVERLAP_RATIO;
   }
 }
 

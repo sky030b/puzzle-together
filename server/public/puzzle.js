@@ -5,7 +5,8 @@
 import { container, canvas, targetContainer } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
-  getCurrentGameId, getPlayerState, setOpacityByDifficulty
+  getCurrentGameId, getPlayerState,
+  getOpacityByDifficulty, getOverlapRatioByDifficulty
 } from './variable.js';
 
 import { getImageDimensions } from './utils.js';
@@ -100,7 +101,7 @@ function createTargetBoxes(img, gameInfo) {
     targetBox.style.width = `${pieceWidth}px`;
     targetBox.style.height = `${pieceHeight}px`;
     targetBox.style.borderWidth = `${['medium', 'hard'].includes(difficulty) ? '0px' : '1px'}`;
-    targetBox.style.opacity = setOpacityByDifficulty(difficulty);
+    targetBox.style.opacity = getOpacityByDifficulty(difficulty);
 
     if (['easy', 'medium'].includes(difficulty)) {
       targetBox.style.backgroundImage = `url(${img.src})`;
@@ -254,7 +255,7 @@ export function addDragAndDrop(gameInfo) {
       const pieceId = selectedPiece.id;
       if (isNearTarget(selectedPiece, target)) {
         const overlapRatio = calculateOverlap(selectedPiece, target);
-        if (overlapRatio >= 0.7) {
+        if (overlapRatio >= getOverlapRatioByDifficulty(difficulty)) {
           if (['medium', 'hard'].includes(difficulty)) {
             selectedPiece.style.left = `${+targetContainer.style.left.replace('px', '')
               + +targetContainer.style.borderWidth.replace('px', '')
