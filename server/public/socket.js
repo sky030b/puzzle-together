@@ -3,23 +3,20 @@ import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
 import renderPlayDuration from './record.js';
 import { getFormattedTime } from './utils.js';
-import { getCurrentGameId, setCurrentGameId } from './variable.js';
+import { getCurrentGameId } from './variable.js';
 
 // eslint-disable-next-line no-undef
 export const socket = io();
 
 export function setupSocket() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const roomId = urlParams.get('gameId');
+  const roomId = getCurrentGameId();
   if (roomId) {
     socket.emit('joinRoom', roomId);
-    setCurrentGameId(roomId);
   }
 
   socket.on('timerUpdate', (data) => {
     const { gameId, playDuration, startTime } = data;
-    if (gameId === getCurrentGameId()) {
+    if (gameId === roomId) {
       setInterval(() => {
         // eslint-disable-next-line no-console
         console.log(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
@@ -32,7 +29,7 @@ export function setupSocket() {
     const {
       gameId, puzzleId, left, top, zIndex
     } = data;
-    if (gameId === getCurrentGameId()) {
+    if (gameId === roomId) {
       const piece = document.getElementById(puzzleId);
       if (piece) {
         piece.style.left = left;
@@ -47,7 +44,7 @@ export function setupSocket() {
       gameId, puzzleId, targetId, difficulty, lockedBy, lockedColor, zIndex
     } = data;
 
-    if (gameId === getCurrentGameId() && ['easy', 'medium'].includes(difficulty)) {
+    if (gameId === roomId && ['easy', 'medium'].includes(difficulty)) {
       const piece = document.getElementById(puzzleId);
       const target = document.getElementById(targetId);
       if (piece && target) {
@@ -69,7 +66,7 @@ export function setupSocket() {
   socket.on('newMessage', (data) => {
     const { gameId, nickname, message } = data;
 
-    if (gameId === getCurrentGameId()) {
+    if (gameId === roomId) {
       const str = `
         <div class="d-flex gap-2 mb-2">
           <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${nickname}">${nickname[0]}</div>

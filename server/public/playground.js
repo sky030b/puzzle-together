@@ -5,7 +5,7 @@ import {
 } from './dom.js';
 import {
   setScale, getScale, canvasWidth, canvasHeight,
-  getIsInsideChatArea, getIsInsideRecordArea
+  getIsInsideChatArea, getIsInsideRecordArea, setCurrentGameId
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
@@ -126,13 +126,20 @@ container.addEventListener('mouseleave', (e) => {
 
 async function main() {
   try {
-    setupSocket();
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const gameId = urlParams.get('gameId');
+    if (gameId) {
+      setCurrentGameId(gameId);
+    }
+
     const gameRenderResult = await renderGame();
     if (gameRenderResult instanceof Error) throw gameRenderResult;
     const playerInitResult = await initPlayer();
     if (playerInitResult instanceof Error) throw playerInitResult;
     const chatHistoryRenderResult = await renderChatHistory();
     if (chatHistoryRenderResult instanceof Error) throw chatHistoryRenderResult;
+    setupSocket();
 
     setScale(0.5);
     canvas.style.transform = `scale(${getScale()})`;
