@@ -50,21 +50,23 @@ function createPuzzles(img, gameInfo) {
 
     const piece = document.createElement('div');
     piece.id = puzzleId;
-    piece.className = `puzzle-piece ${isLocked ? 'locked' : ''}`;
+    piece.className = `puzzle-piece${isLocked && ['easy', 'medium'].includes(difficulty) ? ' locked' : ''}`;
     piece.style.width = `${pieceWidth}px`;
     piece.style.height = `${pieceHeight}px`;
     piece.style.backgroundImage = `url(${imgNow.src})`;
     piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
     piece.style.backgroundPosition = `-${((targetId - 1) % cols) * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
     piece.style.zIndex = zIndex;
-    if (isLocked) {
+    piece.style.top = `${(canvasHeight * topRatio) / 100}px`;
+    piece.style.left = `${(canvasWidth * leftRatio) / 100}px`;
+    if (difficulty === 'hard') piece.style.borderWidth = '0';
+
+    if (isLocked && ['easy', 'medium'].includes(difficulty)) {
       piece.dataset.isLocked = 'true';
       piece.dataset.lockedBy = lockedBy;
       piece.dataset.lockedColor = lockedColor;
-    } else {
-      piece.style.top = `${(canvasHeight * topRatio) / 100}px`;
-      piece.style.left = `${(canvasWidth * leftRatio) / 100}px`;
     }
+
     puzzleContainer.appendChild(piece);
   });
 }
@@ -74,9 +76,8 @@ function createTargetBoxes(img, gameInfo) {
     rowQty, colQty, puzzles, difficulty
   } = gameInfo;
 
-  const imgNow = img;
-  const scaledWidth = imgNow.width * imgNow.scale;
-  const scaledHeight = imgNow.height * imgNow.scale;
+  const scaledWidth = img.width * img.scale;
+  const scaledHeight = img.height * img.scale;
 
   const rows = parseInt(rowQty, 10);
   const cols = parseInt(colQty, 10);
@@ -98,22 +99,26 @@ function createTargetBoxes(img, gameInfo) {
     targetBox.className = 'target-box';
     targetBox.style.width = `${pieceWidth}px`;
     targetBox.style.height = `${pieceHeight}px`;
-    targetBox.style.backgroundImage = `url(${imgNow.src})`;
-    targetBox.style.backgroundSize = `${imgNow.width * imgNow.scale}px ${imgNow.height * imgNow.scale}px`;
-    targetBox.style.backgroundPosition = `-${((targetId - 1) % cols) * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
+    targetBox.style.borderWidth = `${['medium', 'hard'].includes(difficulty) ? '0px' : '1px'}`;
     targetBox.style.opacity = setOpacityByDifficulty(difficulty);
 
-    if (isLocked) {
-      const piece = document.getElementById(puzzleId);
-      piece.style.border = 'none';
-      piece.style.left = '50%';
-      piece.style.top = '50%';
-      piece.style.transform = 'translate(-50%, -50%)';
-      piece.style.opacity = 1;
-      targetBox.appendChild(piece);
-      targetBox.style.opacity = 1;
-      // targetBox.style.backgroundImage = 'none';
-      targetBox.style.border = 'none';
+    if (['easy', 'medium'].includes(difficulty)) {
+      targetBox.style.backgroundImage = `url(${img.src})`;
+      targetBox.style.backgroundSize = `${img.width * img.scale}px ${img.height * img.scale}px`;
+      targetBox.style.backgroundPosition = `-${((targetId - 1) % cols) * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
+
+      if (isLocked) {
+        const piece = document.getElementById(puzzleId);
+        piece.style.border = 'none';
+        piece.style.left = '50%';
+        piece.style.top = '50%';
+        piece.style.transform = 'translate(-50%, -50%)';
+        piece.style.opacity = 1;
+        targetBox.appendChild(piece);
+        targetBox.style.opacity = 1;
+        // targetBox.style.backgroundImage = 'none';
+        targetBox.style.border = 'none';
+      }
     }
 
     targetContainer.appendChild(targetBox);
@@ -123,12 +128,14 @@ function createTargetBoxes(img, gameInfo) {
   targetContainer.style.top = `${(canvasHeight - targetContainer.clientHeight) / 2}px`;
 }
 
-export function addDragAndDrop() {
+export function addDragAndDrop(gameInfo) {
+  const { difficulty } = gameInfo;
   const puzzlePieces = document.querySelectorAll('.puzzle-piece');
   const targetBoxes = document.querySelectorAll('.target-box');
   let offsetX;
   let offsetY;
   let selectedPiece;
+  let lastNotLockedPiece;
 
   function isNearTarget(element, target) {
     const rect1 = element.getBoundingClientRect();
@@ -158,23 +165,18 @@ export function addDragAndDrop() {
   }
 
   function centerInTarget(element, target) {
-    target.innerHTML = '';
+    // target.innerHTML = '';
     target.appendChild(element);
     target.style.width = '100%';
     target.style.height = '100%';
     target.style.opacity = 1;
-    // target.style.backgroundImage = 'none';
     target.style.border = 'none';
     element.style.border = 'none';
-    element.style.position = 'absolute';
-    element.style.left = '50%';
-    element.style.top = '50%';
     element.style.zIndex = '1';
-    element.style.transform = 'translate(-50%, -50%)';
   }
 
   function onMouseDown(e) {
-    if (e.target.dataset.isLocked === 'true') return;
+    if (e.target.dataset.isLocked === 'true' && ['easy', 'medium'].includes(difficulty)) return;
     selectedPiece = e.target;
     selectedPiece.style.zIndex = '10';
     selectedPiece.style.cursor = 'grabbing';
@@ -227,7 +229,11 @@ export function addDragAndDrop() {
       left: selectedPiece.style.left,
       top: selectedPiece.style.top,
       leftRatio: (dx / canvasWidth) * 100,
-      topRatio: (dy / canvasHeight) * 100
+      topRatio: (dy / canvasHeight) * 100,
+      isLocked: false,
+      lockedBy: null,
+      lockedColor: null,
+      zIndex: '5'
     });
   }
 
@@ -242,32 +248,28 @@ export function addDragAndDrop() {
       const pieceId = selectedPiece.id;
       if (isNearTarget(selectedPiece, target)) {
         const overlapRatio = calculateOverlap(selectedPiece, target);
-        if (overlapRatio >= 0.7 && puzzleTargetMap[targetId] === pieceId) {
-          const { nickname, representColor } = getPlayerState();
-          centerInTarget(selectedPiece, target);
-          selectedPiece.dataset.isLocked = 'true';
-          selectedPiece.dataset.lockedBy = nickname;
-          selectedPiece.dataset.lockedColor = representColor;
-          selectedPiece.classList.add('locked');
-          selectedPiece.removeEventListener('mousedown', onMouseDown);
+        if (overlapRatio >= 0.7) {
+          if (['medium', 'hard'].includes(difficulty)) {
+            selectedPiece.style.left = `${+targetContainer.style.left.replace('px', '')
+              + +targetContainer.style.borderWidth.replace('px', '')
+              + target.offsetLeft}px`;
+            selectedPiece.style.top = `${+targetContainer.style.top.replace('px', '')
+              + +targetContainer.style.borderWidth.replace('px', '')
+              + target.offsetTop}px`;
+          }
 
-          socket.emit('lockPiece', {
-            gameId: getCurrentGameId(),
-            puzzleId: selectedPiece.id,
-            targetId: target.id,
-            isLocked: true,
-            lockedBy: nickname,
-            lockedColor: representColor,
-            zIndex: selectedPiece.style.zIndex
-          });
-        } else if (overlapRatio >= 0.7) {
-          selectedPiece.style.left = `${+targetContainer.style.left.replace('px', '')
-            + +targetContainer.style.borderWidth.replace('px', '')
-            + target.offsetLeft}px`;
-          selectedPiece.style.top = `${+targetContainer.style.top.replace('px', '')
-            + +targetContainer.style.borderWidth.replace('px', '')
-            + target.offsetTop}px`;
-          selectedPiece.style.zIndex = '5';
+          const { nickname, representColor } = getPlayerState();
+          if (puzzleTargetMap[targetId] === pieceId && ['easy', 'medium'].includes(difficulty)) {
+            centerInTarget(selectedPiece, target);
+            selectedPiece.dataset.isLocked = 'true';
+            selectedPiece.dataset.lockedBy = nickname;
+            selectedPiece.dataset.lockedColor = representColor;
+            selectedPiece.classList.add('locked');
+            selectedPiece.removeEventListener('mousedown', onMouseDown);
+            selectedPiece.style.zIndex = '1';
+          } else {
+            selectedPiece.style.zIndex = '5';
+          }
 
           socket.emit('movePiece', {
             gameId: getCurrentGameId(),
@@ -275,8 +277,25 @@ export function addDragAndDrop() {
             left: selectedPiece.style.left,
             top: selectedPiece.style.top,
             leftRatio: (+selectedPiece.style.left.replace('px', '') / canvasWidth) * 100,
-            topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100
+            topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100,
+            isLocked: false,
+            lockedBy: null,
+            lockedColor: null,
+            zIndex: selectedPiece.style.zIndex
           });
+
+          if (puzzleTargetMap[targetId] === pieceId) {
+            socket.emit('lockPiece', {
+              gameId: getCurrentGameId(),
+              puzzleId: selectedPiece.id,
+              targetId: target.id,
+              difficulty,
+              isLocked: true,
+              lockedBy: nickname,
+              lockedColor: representColor,
+              zIndex: selectedPiece.style.zIndex
+            });
+          }
         }
       }
     });
@@ -370,7 +389,7 @@ export default async function renderGame() {
 
     createPuzzles(img, gameInfo);
     createTargetBoxes(img, gameInfo);
-    addDragAndDrop();
+    addDragAndDrop(gameInfo);
     return 'renderGame done.';
   } catch (error) {
     return error;

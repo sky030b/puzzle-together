@@ -269,11 +269,20 @@ async function addNewGame(file, info) {
 async function updatePuzzleLocation(puzzleInfo) {
   try {
     const {
-      topRatio, leftRatio, gameId, puzzleId
+      topRatio, leftRatio, gameId, puzzleId,
+      isLocked, lockedBy, lockedColor, zIndex
     } = puzzleInfo;
-    const updateInfo = [topRatio, leftRatio, gameId, puzzleId];
+    const updateInfo = [
+      topRatio, leftRatio, isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId
+    ];
     const res = await pool.query(`
-      UPDATE puzzles SET top_ratio = ?, left_ratio = ? WHERE game_id = ? AND puzzle_id = ?;
+      UPDATE
+        puzzles 
+      SET 
+        top_ratio = ?, left_ratio = ?, is_locked = ?, 
+        locked_by = ?, locked_color = ?, z_index = ? 
+      WHERE 
+        game_id = ? AND puzzle_id = ?;
     `, updateInfo);
     const { affectedRows } = res;
     return affectedRows;

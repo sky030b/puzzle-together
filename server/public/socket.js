@@ -30,23 +30,24 @@ export function setupSocket() {
 
   socket.on('movePiece', (data) => {
     const {
-      gameId, puzzleId, left, top
+      gameId, puzzleId, left, top, zIndex
     } = data;
     if (gameId === getCurrentGameId()) {
       const piece = document.getElementById(puzzleId);
       if (piece) {
         piece.style.left = left;
         piece.style.top = top;
+        piece.style.zIndex = zIndex;
       }
     }
   });
 
   socket.on('lockPiece', (data) => {
     const {
-      gameId, puzzleId, targetId, lockedBy, lockedColor, zIndex
+      gameId, puzzleId, targetId, difficulty, lockedBy, lockedColor, zIndex
     } = data;
 
-    if (gameId === getCurrentGameId()) {
+    if (gameId === getCurrentGameId() && ['easy', 'medium'].includes(difficulty)) {
       const piece = document.getElementById(puzzleId);
       const target = document.getElementById(targetId);
       if (piece && target) {
@@ -55,10 +56,7 @@ export function setupSocket() {
         // target.style.backgroundImage = 'none';
         target.style.border = 'none';
         piece.style.border = 'none';
-        piece.style.left = '50%';
-        piece.style.top = '50%';
         piece.style.zIndex = zIndex;
-        piece.style.transform = 'translate(-50%, -50%)';
         piece.dataset.isLocked = 'true';
         piece.dataset.lockedBy = lockedBy;
         piece.dataset.lockedColor = lockedColor;
