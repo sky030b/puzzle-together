@@ -33,6 +33,10 @@ const socket = (io) => {
         await updatePuzzleLocation(data);
       });
 
+      socketio.on('changeMoveBy', async (data) => {
+        io.to(roomId).emit('changeMoveBy', data);
+      });
+
       socketio.on('lockPiece', async (data) => {
         socketio.to(roomId).emit('lockPiece', data);
         io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });

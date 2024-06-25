@@ -50,6 +50,18 @@ export function setupSocket() {
     }
   });
 
+  socket.on('changeMoveBy', (data) => {
+    const { gameId, puzzleId, moveBy } = data;
+    if (gameId === roomId) {
+      const piece = document.querySelector(`#${puzzleId}`);
+
+      if (piece) {
+        if (moveBy) piece.dataset.moveBy = moveBy;
+        else piece.removeAttribute('data-move-by');
+      }
+    }
+  });
+
   socket.on('lockPiece', (data) => {
     const {
       gameId, puzzleId, targetId, difficulty, lockedBy, lockedColor, zIndex
