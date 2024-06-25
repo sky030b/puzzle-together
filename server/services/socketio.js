@@ -17,13 +17,6 @@ const socket = (io) => {
       if (!roomsInfo[roomId]) {
         roomsInfo[roomId] = [];
       }
-      // const isPlayerExist = roomsInfo[roomId].find(
-      //   (player) => player.playerId === playerState.playerId
-      //     && player.nickname === playerState.nickname
-      //     && player.representColor === playerState.representColor
-      // );
-      // console.log(isPlayerExist);
-      // if (!isPlayerExist)
       roomsInfo[roomId].push({ ...playerState, id: socketio.id });
 
       if (roomsInfo[roomId].length === 1) {
