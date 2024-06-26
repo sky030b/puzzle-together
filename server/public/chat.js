@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
 /* eslint-disable no-undef */
-import { chatArea, chatContent, chatForm } from './dom.js';
+import {
+  chatArea, chatContent, chatForm, messageInput, messageSendBtn
+} from './dom.js';
 import { socket } from './socket.js';
 import { getFormattedTime } from './utils.js';
 import { getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
@@ -53,19 +55,29 @@ async function sendNewMessage(messageInfo) {
 chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  const { playerId, nickname } = getPlayerState();
+
+  if (!playerId) {
+    alert('請先登入才可使用即時聊天系統！！');
+    chatForm.reset();
+    messageInput.disabled = true;
+    messageSendBtn.disabled = true;
+    return;
+  }
+
   if (!chatForm[0].value.trim()) {
     chatForm.reset();
     return;
   }
 
   const messageInfo = {
-    playerId: getPlayerState().playerId,
+    playerId,
     message: chatForm[0].value.trim()
   };
 
   socket.emit('sendNewMessage', {
     ...messageInfo,
-    nickname: getPlayerState().nickname,
+    nickname,
     gameId: getCurrentGameId()
   });
 
