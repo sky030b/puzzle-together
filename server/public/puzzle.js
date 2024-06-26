@@ -257,6 +257,36 @@ export function addDragAndDrop(gameInfo) {
     document.removeEventListener('mouseup', onMouseUp);
     selectedPiece.style.cursor = 'grab';
 
+    function emitUpdatePiece() {
+      socket.emit('updatePiece', {
+        gameId: getCurrentGameId(),
+        puzzleId: selectedPiece.id,
+        left: selectedPiece.style.left,
+        top: selectedPiece.style.top,
+        leftRatio: (+selectedPiece.style.left.replace('px', '') / canvasWidth) * 100,
+        topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100,
+        isLocked: false,
+        lockedBy: null,
+        lockedColor: null,
+        zIndex: selectedPiece.style.zIndex
+      });
+    }
+
+    function emitLockPiece(target, nickname, representColor) {
+      socket.emit('lockPiece', {
+        gameId: getCurrentGameId(),
+        puzzleId: selectedPiece.id,
+        targetId: target.id,
+        difficulty,
+        isLocked: true,
+        lockedBy: nickname,
+        lockedColor: representColor,
+        zIndex: selectedPiece.style.zIndex
+      });
+    }
+
+    emitUpdatePiece();
+
     targetBoxes.forEach((target) => {
       const targetId = parseInt(target.id.replace('target', ''), 10);
       const pieceId = selectedPiece.id;
@@ -285,30 +315,10 @@ export function addDragAndDrop(gameInfo) {
             selectedPiece.style.zIndex = '5';
           }
 
-          socket.emit('movePiece', {
-            gameId: getCurrentGameId(),
-            puzzleId: selectedPiece.id,
-            left: selectedPiece.style.left,
-            top: selectedPiece.style.top,
-            leftRatio: (+selectedPiece.style.left.replace('px', '') / canvasWidth) * 100,
-            topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100,
-            isLocked: false,
-            lockedBy: null,
-            lockedColor: null,
-            zIndex: selectedPiece.style.zIndex
-          });
+          emitUpdatePiece();
 
           if (puzzleTargetMap[targetId] === pieceId) {
-            socket.emit('lockPiece', {
-              gameId: getCurrentGameId(),
-              puzzleId: selectedPiece.id,
-              targetId: target.id,
-              difficulty,
-              isLocked: true,
-              lockedBy: nickname,
-              lockedColor: representColor,
-              zIndex: selectedPiece.style.zIndex
-            });
+            emitLockPiece(target, nickname, representColor);
           }
         }
       }

@@ -30,6 +30,10 @@ const socket = (io) => {
 
       socketio.on('movePiece', async (data) => {
         socketio.to(roomId).emit('movePiece', data);
+      });
+
+      socketio.on('updatePiece', async (data) => {
+        socketio.to(roomId).emit('updatePiece', data);
         await updatePuzzleLocation(data);
       });
 

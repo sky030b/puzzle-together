@@ -36,7 +36,7 @@ export function setupSocket() {
     }
   });
 
-  socket.on('movePiece', (data) => {
+  const syncPieceLocation = (data) => {
     const {
       gameId, puzzleId, left, top, zIndex
     } = data;
@@ -48,7 +48,11 @@ export function setupSocket() {
         piece.style.zIndex = zIndex;
       }
     }
-  });
+  };
+
+  socket.on('movePiece', syncPieceLocation);
+
+  socket.on('updatePiece', syncPieceLocation);
 
   socket.on('changeMoveBy', (data) => {
     const { gameId, puzzleId, moveBy } = data;
