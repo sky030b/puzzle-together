@@ -1,6 +1,7 @@
 export const maxDimension = 1500;
 export const canvasWidth = 16000;
 export const canvasHeight = 12000;
+export const scaleAmount = 0.01;
 
 const EASY_OPACITY = 0.2;
 const MEDIUM_OPACITY = 0.1;
