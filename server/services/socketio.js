@@ -48,6 +48,7 @@ const socket = (io) => {
       socketio.on('updatePiece', async (data) => {
         socketio.to(roomId).emit('updatePiece', data);
         await updatePuzzleLocation(data);
+        socketio.emit('updateDone');
       });
 
       socketio.on('changeMoveBy', async (data) => {

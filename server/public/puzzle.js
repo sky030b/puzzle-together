@@ -257,6 +257,25 @@ export function addDragAndDrop(gameInfo) {
     document.removeEventListener('mouseup', onMouseUp);
     selectedPiece.style.cursor = 'grab';
 
+    // function emitUpdatePiece() {
+    //   return new Promise((resolve, reject) => {
+    //     socket.emit('updatePiece', {
+    //       gameId: getCurrentGameId(),
+    //       puzzleId: selectedPiece.id,
+    //       left: selectedPiece.style.left,
+    //       top: selectedPiece.style.top,
+    //       leftRatio: (+selectedPiece.style.left.replace('px', '') / canvasWidth) * 100,
+    //       topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100,
+    //       isLocked: false,
+    //       lockedBy: null,
+    //       lockedColor: null,
+    //       zIndex: selectedPiece.style.zIndex
+    //     });
+    //     socket.once('updateDone', resolve);
+    //     socket.once('error', reject);
+    //   });
+    // }
+
     function emitUpdatePiece() {
       socket.emit('updatePiece', {
         gameId: getCurrentGameId(),
@@ -272,16 +291,16 @@ export function addDragAndDrop(gameInfo) {
       });
     }
 
-    function emitLockPiece(target, nickname, representColor) {
+    function emitLockPiece(puzzleId, targetId, nickname, representColor, zIndex) {
       socket.emit('lockPiece', {
         gameId: getCurrentGameId(),
-        puzzleId: selectedPiece.id,
-        targetId: target.id,
+        puzzleId,
+        targetId,
         difficulty,
         isLocked: true,
         lockedBy: nickname,
         lockedColor: representColor,
-        zIndex: selectedPiece.style.zIndex
+        zIndex
       });
     }
 
@@ -314,12 +333,19 @@ export function addDragAndDrop(gameInfo) {
           } else {
             selectedPiece.style.zIndex = '5';
           }
-
+          const { zIndex } = selectedPiece.style;
           emitUpdatePiece();
+          // .then(() => {
+          //   if (puzzleTargetMap[targetId] === pieceId) {
+          //     emitLockPiece(pieceId, target.id, nickname, representColor, zIndex);
+          //   }
+          // });
 
-          if (puzzleTargetMap[targetId] === pieceId) {
-            emitLockPiece(target, nickname, representColor);
-          }
+          socket.once('updateDone', () => {
+            if (puzzleTargetMap[targetId] === pieceId) {
+              emitLockPiece(pieceId, target.id, nickname, representColor, zIndex);
+            }
+          });
         }
       }
     });
