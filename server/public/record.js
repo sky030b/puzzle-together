@@ -21,10 +21,10 @@ export function renderPlayDuration(playDurationSec) {
   recordArea.classList.remove('d-none');
 }
 
-export function renderRecord(onlinePlayers) {
+export function renderPlayersRecord(onlinePlayers) {
   const onlinePlayerMap = new Map();
   onlinePlayers.forEach((player) => {
-    const key = `${player.nickname}-${player.playerId}-${player.representColor}`;
+    const key = `${player.nickname}-${player.playerId}`;
 
     if (!onlinePlayerMap.has(key)) {
       onlinePlayerMap.set(key, player);

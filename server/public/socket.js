@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
-import { renderPlayDuration, renderRecord } from './record.js';
+import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import { getFormattedTime } from './utils.js';
 import { getCurrentGameId, getPlayerState } from './variable.js';
 
@@ -32,7 +32,7 @@ export function setupSocket() {
   socket.on('updateRecord', (data) => {
     const { gameId, playersInfo } = data;
     if (gameId === roomId) {
-      renderRecord(playersInfo);
+      renderPlayersRecord(playersInfo);
     }
   });
 
@@ -97,7 +97,12 @@ export function setupSocket() {
     }
   });
 
-  socket.on('completeGame', () => { alert('done'); });
+  socket.on('completeGame', () => {
+    const resultNavItem = document.querySelector('.result-nav-item');
+    const showResultBtn = document.querySelector('.show-result-btn');
+    resultNavItem.classList.remove('d-none');
+    showResultBtn.click();
+  });
 
   socket.on('sendNewMessage', (data) => {
     const { gameId, nickname, message } = data;
