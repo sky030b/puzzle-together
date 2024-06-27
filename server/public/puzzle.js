@@ -5,7 +5,7 @@
 import { container, canvas, targetContainer } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
-  getCurrentGameId, getPlayerState,
+  getCurrentGameId, getPlayerState, setDifficulty,
   getOpacityByDifficulty, getOverlapRatioByDifficulty
 } from './variable.js';
 
@@ -409,14 +409,15 @@ async function getRenderInfo() {
 export default async function renderGame() {
   try {
     const gameInfo = await getRenderInfo();
-    const { questionImgUrl, title } = gameInfo;
+    const { questionImgUrl, title, difficulty } = gameInfo;
     const img = await getImageDimensions(questionImgUrl);
 
     const gameTitle = document.querySelector('.game-title');
     gameTitle.textContent = title;
     gameTitle.addEventListener('click', () => window.location.reload());
 
-    document.title += ` ${title}`;
+    document.title = `帕索兔蓋德 - ${title}`;
+    setDifficulty(difficulty);
 
     createPuzzles(img, gameInfo);
     createTargetBoxes(img, gameInfo);

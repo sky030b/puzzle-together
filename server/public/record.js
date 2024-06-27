@@ -1,5 +1,5 @@
 import { recordArea } from './dom.js';
-import { getPlayerState, setIsInsideRecordArea } from './variable.js';
+import { getDifficulty, getPlayerState, setIsInsideRecordArea } from './variable.js';
 
 recordArea.addEventListener('mouseenter', () => {
   setIsInsideRecordArea(true);
@@ -22,6 +22,8 @@ export function renderPlayDuration(playDurationSec) {
 }
 
 export function renderPlayersRecord(onlinePlayers) {
+  const difficulty = getDifficulty();
+
   const onlinePlayerMap = new Map();
   onlinePlayers.forEach((player) => {
     const key = `${player.nickname}-${player.playerId}`;
@@ -68,11 +70,20 @@ export function renderPlayersRecord(onlinePlayers) {
         point: pastRecord ? pastRecord.point : 0
       };
     })
-    .sort((a, b) => (
-      a.point === b.point
-        ? a.nickname.localeCompare(b.nickname)
-        : b.point - a.point
-    ));
+    .sort((a, b) => {
+      const { nickname } = getPlayerState();
+
+      if (a.point !== b.point) {
+        return b.point - a.point;
+      }
+      if (a.nickname === nickname) {
+        return -1;
+      }
+      if (b.nickname === nickname) {
+        return 1;
+      }
+      return a.nickname.localeCompare(b.nickname);
+    });
 
   const offlinePlayers = lockedByInfoAry
     .filter((record) => !notRepeatOnlinePlayers.some(
@@ -88,10 +99,10 @@ export function renderPlayersRecord(onlinePlayers) {
 
   const { nickname } = getPlayerState();
   const str = sortedRecords.map((recordInfo) => `
-    <div class='d-flex justify-content-between mb-2'>
-      <div class="player-nickname text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'}">${recordInfo.nickname}</div>
-      <div class="lock-puzzle-num text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'}">${recordInfo.point}</div>
-    </div>
+    <div class='d-flex justify-content-${difficulty === 'hard' ? 'center' : 'between'} mb-2'>
+      <div class="player-nickname ${difficulty === 'hard' ? 'text-center' : ''} text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'}">${recordInfo.nickname}</div>
+      ${difficulty === 'hard' ? '' : `<div class="lock-puzzle-num text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'}">${recordInfo.point}</div>`}
+    </div >
   `).join('');
   const recordLinesDiv = document.querySelector('.record-lines');
   recordLinesDiv.innerHTML = str;
