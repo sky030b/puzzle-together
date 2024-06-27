@@ -3,10 +3,20 @@ import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
 import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import { getFormattedTime } from './utils.js';
-import { getCurrentGameId, getPlayerState } from './variable.js';
+import {
+  getCurrentGameId, getPlayerState, setTimer, clearTimer
+} from './variable.js';
 
 // eslint-disable-next-line no-undef
 export const socket = io();
+
+function showResult() {
+  const resultNavItem = document.querySelector('.result-nav-item');
+  const showResultBtn = document.querySelector('.show-result-btn');
+  resultNavItem.classList.remove('d-none');
+  showResultBtn.click();
+  clearTimer();
+}
 
 export function setupSocket() {
   const roomId = getCurrentGameId();
@@ -19,13 +29,22 @@ export function setupSocket() {
   }
 
   socket.on('setTimer', (data) => {
-    const { gameId, playDuration, startTime } = data;
+    const {
+      gameId, playDuration, isCompleted, startTime
+    } = data;
     if (gameId === roomId) {
-      setInterval(() => {
+      if (isCompleted) {
+        renderPlayDuration(playDuration);
+        showResult();
+        return;
+      }
+
+      const timer = setInterval(() => {
         // eslint-disable-next-line no-console
         console.log(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
         renderPlayDuration(playDuration + Math.floor((new Date() - new Date(startTime)) / 1000));
       }, 1000);
+      setTimer(timer);
     }
   });
 
@@ -97,12 +116,7 @@ export function setupSocket() {
     }
   });
 
-  socket.on('completeGame', () => {
-    const resultNavItem = document.querySelector('.result-nav-item');
-    const showResultBtn = document.querySelector('.show-result-btn');
-    resultNavItem.classList.remove('d-none');
-    showResultBtn.click();
-  });
+  socket.on('completeGame', showResult);
 
   socket.on('sendNewMessage', (data) => {
     const { gameId, nickname, message } = data;

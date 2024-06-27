@@ -1,9 +1,26 @@
 const {
-  updatePuzzleLocation, lockPuzzleBySomeone, getGameDurationByGameId, updateGameDurationByGameId
+  updatePuzzleLocation, lockPuzzleBySomeone, getGameDurationByGameId,
+  updateGameDurationByGameId, getGameCompletionInfo, updateGameIsCompletedStatus
 } = require('./gameDatabase');
 
-const timersInfo = {}; // 用於儲存每個房間的計時器
-const roomsInfo = {}; // 用於儲存每個房間的各個玩家
+const roomsInfo = {};
+
+async function updateDurationToDB(roomId) {
+  const { playDuration, startTime } = roomsInfo[roomId].timerInfo;
+  const increasedSec = Math.floor((new Date() - new Date(startTime)) / 1000);
+  const newPlayDuration = playDuration + increasedSec;
+  await updateGameDurationByGameId(roomId, newPlayDuration);
+}
+
+async function setTimerFromDB(roomId) {
+  const {
+    play_duration: playDuration, is_completed: isCompleted
+  } = await getGameDurationByGameId(roomId);
+  const timerInfo = {
+    gameId: roomId, playDuration, isCompleted, startTime: new Date()
+  };
+  roomsInfo[roomId].timerInfo = timerInfo;
+}
 
 const socket = (io) => {
   // 當有用戶連接時
@@ -15,18 +32,14 @@ const socket = (io) => {
       socketio.join(roomId);
 
       if (!roomsInfo[roomId]) {
-        roomsInfo[roomId] = [];
+        roomsInfo[roomId] = { playersInfo: [], timerInfo: null };
       }
-      roomsInfo[roomId].push({ ...playerState, id: socketio.id });
+      roomsInfo[roomId].playersInfo.push({ ...playerState, id: socketio.id });
 
-      if (roomsInfo[roomId].length === 1) {
-        const { play_duration: playDuration } = await getGameDurationByGameId(roomId);
-        const timerInfo = { gameId: roomId, playDuration, startTime: new Date() };
-        timersInfo[roomId] = timerInfo;
-      }
+      if (roomsInfo[roomId].playersInfo.length === 1) await setTimerFromDB(roomId);
 
-      socketio.emit('setTimer', timersInfo[roomId]);
-      io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
+      socketio.emit('setTimer', roomsInfo[roomId].timerInfo);
+      io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
 
       socketio.on('movePiece', async (data) => {
         socketio.to(roomId).emit('movePiece', data);
@@ -42,11 +55,15 @@ const socket = (io) => {
       });
 
       socketio.on('lockPiece', async (data) => {
-        socketio.to(roomId).emit('lockPiece', data);
-        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
         const { isCompleted } = await lockPuzzleBySomeone(data);
-        console.log(isCompleted);
-        if (isCompleted) io.to(roomId).emit('completeGame');
+        io.to(roomId).emit('lockPiece', data);
+        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
+        if (isCompleted) {
+          io.to(roomId).emit('completeGame');
+          await updateDurationToDB(roomId);
+          await updateGameIsCompletedStatus(roomId);
+          await setTimerFromDB(roomId);
+        }
       });
 
       socketio.on('sendNewMessage', (data) => {
@@ -54,15 +71,15 @@ const socket = (io) => {
       });
 
       socketio.on('disconnect', async () => {
-        roomsInfo[roomId] = roomsInfo[roomId].filter((player) => player.id !== socketio.id);
-        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
+        roomsInfo[roomId].playersInfo = roomsInfo[roomId].playersInfo.filter(
+          (player) => player.id !== socketio.id
+        );
 
-        if (!roomsInfo[roomId].length && timersInfo[roomId]) {
-          const { playDuration, startTime } = timersInfo[roomId];
-          const increasedSec = Math.floor((new Date() - new Date(startTime)) / 1000);
-          const newPlayDuration = playDuration + increasedSec;
-          await updateGameDurationByGameId(roomId, newPlayDuration);
-          delete timersInfo[roomId];
+        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
+
+        const { isCompleted } = await getGameCompletionInfo(roomId);
+        if (!roomsInfo[roomId].playersInfo.length) {
+          if (!isCompleted) await updateDurationToDB(roomId);
           delete roomsInfo[roomId];
         }
         // eslint-disable-next-line no-console
