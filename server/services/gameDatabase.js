@@ -294,7 +294,7 @@ async function updatePuzzleLocation(puzzleInfo) {
 
 async function getGameCompletionInfo(gameId) {
   try {
-    const [gameStatus] = await pool.query(`
+    const [gameStatus] = (await pool.query(`
       SELECT 
         COUNT(CASE WHEN is_locked = 1 THEN 1 END) AS locked_puzzles,
         COUNT(*) AS total_puzzles
@@ -302,7 +302,7 @@ async function getGameCompletionInfo(gameId) {
         puzzles
       WHERE 
         game_id = ?;
-    `, [gameId]);
+    `, [gameId]))[0];
     const { locked_puzzles: lockedPuzzles, total_puzzles: totalPuzzles } = gameStatus;
     const completionInfo = {
       lockedPuzzles,
