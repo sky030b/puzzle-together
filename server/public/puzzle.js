@@ -6,7 +6,9 @@ import { container, canvas, targetContainer } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
   getCurrentGameId, getPlayerState, setDifficulty,
-  getOpacityByDifficulty, getOverlapRatioByDifficulty
+  getOpacityByDifficulty, getOverlapRatioByDifficulty,
+  setPlaygroundStateByKey,
+  getPlaygroundStateByKey
 } from './variable.js';
 
 import { getImageDimensions } from './utils.js';
@@ -406,19 +408,25 @@ async function getRenderInfo() {
   }
 }
 
+function basicSetting(gameInfo) {
+  const { title } = gameInfo;
+  const gameTitle = document.querySelector('.game-title');
+  gameTitle.textContent = title;
+  gameTitle.addEventListener('click', () => window.location.reload());
+
+  document.title = `帕索兔蓋德 - ${title}`;
+  Object.entries(gameInfo).forEach(([key, value]) => {
+    setPlaygroundStateByKey(key, value);
+  });
+}
+
 export default async function renderGame() {
   try {
     const gameInfo = await getRenderInfo();
-    const { questionImgUrl, title, difficulty } = gameInfo;
+    const { questionImgUrl } = gameInfo;
     const img = await getImageDimensions(questionImgUrl);
 
-    const gameTitle = document.querySelector('.game-title');
-    gameTitle.textContent = title;
-    gameTitle.addEventListener('click', () => window.location.reload());
-
-    document.title = `帕索兔蓋德 - ${title}`;
-    setDifficulty(difficulty);
-
+    basicSetting(gameInfo);
     createPuzzles(img, gameInfo);
     createTargetBoxes(img, gameInfo);
     addDragAndDrop(gameInfo);

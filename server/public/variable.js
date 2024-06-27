@@ -43,7 +43,21 @@ const playgroundState = {
   isInsideChatArea: false,
   isInsideRecordArea: false,
   timer: null,
-  difficulty: ''
+
+  gameId: '',
+  title: '',
+  questionImgUrl: '',
+  ownerId: '',
+  rowQty: 4,
+  colQty: 4,
+  difficulty: '',
+  mode: '',
+  puzzles: [],
+  isPublic: false,
+  isOpenWhenOwnerNotIn: false,
+  playDuration: 0,
+  isCompleted: false,
+  completedAt: ''
 };
 
 export function setScale(newScale) {
@@ -92,6 +106,24 @@ export function setDifficulty(difficulty) {
 
 export function getDifficulty() {
   return playgroundState.difficulty;
+}
+
+export function setPlaygroundStateByKey(key, value) {
+  if (Object.prototype.hasOwnProperty.call(playgroundState, key)) {
+    playgroundState[key] = value;
+  } else {
+    // eslint-disable-next-line no-alert
+    alert('沒有指定的屬性，請再確認。');
+  }
+}
+
+export function getPlaygroundStateByKey(key) {
+  if (Object.prototype.hasOwnProperty.call(playgroundState, key)) {
+    return playgroundState[key];
+  }
+  // eslint-disable-next-line no-alert
+  alert('沒有指定的屬性，請再確認。');
+  return '沒有指定的屬性，請再確認。';
 }
 
 const playerState = {
