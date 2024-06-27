@@ -42,7 +42,8 @@ const playgroundState = {
   currentGameId: '',
   isInsideChatArea: false,
   isInsideRecordArea: false,
-  timer: null
+  timer: null,
+  difficulty: ''
 };
 
 export function setScale(newScale) {
@@ -83,6 +84,14 @@ export function setTimer(timer) {
 
 export function clearTimer() {
   if (playgroundState.timer) clearInterval(playgroundState.timer);
+}
+
+export function setDifficulty(difficulty) {
+  playgroundState.difficulty = difficulty;
+}
+
+export function getDifficulty() {
+  return playgroundState.difficulty;
 }
 
 const playerState = {
