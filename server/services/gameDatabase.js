@@ -292,17 +292,42 @@ async function updatePuzzleLocation(puzzleInfo) {
   }
 }
 
+async function getGameCompletionInfo(gameId) {
+  try {
+    const [gameStatus] = await pool.query(`
+      SELECT 
+        COUNT(CASE WHEN is_locked = 1 THEN 1 END) AS locked_puzzles,
+        COUNT(*) AS total_puzzles
+      FROM 
+        puzzles
+      WHERE 
+        game_id = ?;
+    `, [gameId]);
+    const { locked_puzzles: lockedPuzzles, total_puzzles: totalPuzzles } = gameStatus;
+    const completionInfo = {
+      lockedPuzzles,
+      totalPuzzles,
+      isCompleted: lockedPuzzles === totalPuzzles
+    };
+
+    return completionInfo;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function lockPuzzleBySomeone(lockingInfo) {
   try {
     const {
       isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId
     } = lockingInfo;
     const updateInfo = [isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId];
-    const res = await pool.query(`
+    await pool.query(`
       UPDATE puzzles SET is_locked = ?, locked_by = ?, locked_color = ?, z_index = ? WHERE game_id = ? AND puzzle_id = ?;
     `, updateInfo);
-    const { affectedRows } = res;
-    return affectedRows;
+    const completionInfo = await getGameCompletionInfo(gameId);
+    return completionInfo;
   } catch (error) {
     console.error(error);
     return error;
@@ -316,5 +341,6 @@ module.exports = {
   getAllGames,
   addNewGame,
   updatePuzzleLocation,
+  getGameCompletionInfo,
   lockPuzzleBySomeone
 };
