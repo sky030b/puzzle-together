@@ -44,7 +44,9 @@ const socket = (io) => {
       socketio.on('lockPiece', async (data) => {
         socketio.to(roomId).emit('lockPiece', data);
         io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId] });
-        await lockPuzzleBySomeone(data);
+        const { isCompleted } = await lockPuzzleBySomeone(data);
+        console.log(isCompleted);
+        if (isCompleted) io.to(roomId).emit('completeGame');
       });
 
       socketio.on('sendNewMessage', (data) => {

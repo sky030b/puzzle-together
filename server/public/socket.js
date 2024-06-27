@@ -97,6 +97,8 @@ export function setupSocket() {
     }
   });
 
+  socket.on('completeGame', () => { alert('done'); });
+
   socket.on('sendNewMessage', (data) => {
     const { gameId, nickname, message } = data;
 
