@@ -25,7 +25,7 @@ async function getGameDurationByGameId(gameId) {
   try {
     const [game] = (await pool.query(`
     SELECT 
-      play_duration
+      play_duration, is_completed
     FROM 
       games 
     WHERE 
@@ -334,6 +334,19 @@ async function lockPuzzleBySomeone(lockingInfo) {
   }
 }
 
+async function updateGameIsCompletedStatus(gameId) {
+  const res = await pool.query(`
+    UPDATE
+      games 
+    SET 
+      is_completed = 1 
+    WHERE 
+      game_id = ?;
+  `, gameId);
+  const { affectedRows } = res;
+  return affectedRows;
+}
+
 module.exports = {
   getGameDurationByGameId,
   updateGameDurationByGameId,
@@ -342,5 +355,6 @@ module.exports = {
   addNewGame,
   updatePuzzleLocation,
   getGameCompletionInfo,
-  lockPuzzleBySomeone
+  lockPuzzleBySomeone,
+  updateGameIsCompletedStatus
 };
