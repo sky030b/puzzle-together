@@ -41,7 +41,8 @@ const playgroundState = {
   scale: 1,
   currentGameId: '',
   isInsideChatArea: false,
-  isInsideRecordArea: false
+  isInsideRecordArea: false,
+  timer: null
 };
 
 export function setScale(newScale) {
@@ -74,6 +75,14 @@ export function setIsInsideRecordArea(trueOrFalse) {
 
 export function getIsInsideRecordArea() {
   return playgroundState.isInsideRecordArea;
+}
+
+export function setTimer(timer) {
+  playgroundState.timer = timer;
+}
+
+export function clearTimer() {
+  if (playgroundState.timer) clearInterval(playgroundState.timer);
 }
 
 const playerState = {
