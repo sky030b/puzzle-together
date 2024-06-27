@@ -184,10 +184,10 @@ export function addDragAndDrop(gameInfo) {
       lastNotLockedPiece = null;
     }
 
-    const audioFiles = ['mine_in_chinese.mp3', 'mine.mp3'];
-    const randomIndex = Math.floor(Math.random() * audioFiles.length);
-    const player = new Audio(`https://dsz5eydy8se7.cloudfront.net/${audioFiles[randomIndex]}`);
-    player.play();
+    // const audioFiles = ['mine_in_chinese.mp3', 'mine.mp3'];
+    // const randomIndex = Math.floor(Math.random() * audioFiles.length);
+    // const player = new Audio(`https://dsz5eydy8se7.cloudfront.net/${audioFiles[randomIndex]}`);
+    // player.play();
 
     selectedPiece = e.target;
     socket.emit('changeMoveBy', { gameId: getCurrentGameId(), puzzleId: selectedPiece.id, moveBy: getPlayerState().nickname });
