@@ -255,17 +255,21 @@ export function addDragAndDrop(gameInfo) {
     selectedPiece.style.cursor = 'grab';
 
     function emitUpdatePiece() {
-      socket.emit('updatePiece', {
-        gameId: getCurrentGameId(),
-        puzzleId: selectedPiece.id,
-        left: selectedPiece.style.left,
-        top: selectedPiece.style.top,
-        leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
-        topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
-        isLocked: false,
-        lockedBy: null,
-        lockedColor: null,
-        zIndex: selectedPiece.style.zIndex
+      return new Promise((resolve, reject) => {
+        socket.emit('updatePiece', {
+          gameId: getCurrentGameId(),
+          puzzleId: selectedPiece.id,
+          left: selectedPiece.style.left,
+          top: selectedPiece.style.top,
+          leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
+          topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
+          isLocked: false,
+          lockedBy: null,
+          lockedColor: null,
+          zIndex: selectedPiece.style.zIndex
+        });
+        socket.once('updateDone', resolve);
+        socket.once('error', reject);
       });
     }
 
@@ -312,9 +316,8 @@ export function addDragAndDrop(gameInfo) {
             selectedPiece.style.zIndex = '5';
           }
           const { zIndex } = selectedPiece.style;
-          emitUpdatePiece();
 
-          socket.once('updateDone', () => {
+          emitUpdatePiece().then(() => {
             if (puzzleTargetMap[targetId] === pieceId) {
               emitLockPiece(pieceId, target.id, nickname, representColor, zIndex);
             }
