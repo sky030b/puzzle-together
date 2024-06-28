@@ -60,10 +60,11 @@ const socket = (io) => {
         io.to(roomId).emit('lockPiece', data);
         io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
         if (isCompleted) {
-          io.to(roomId).emit('completeGame');
           await updateDurationToDB(roomId);
           await updateGameIsCompletedStatus(roomId);
           await setTimerFromDB(roomId);
+          io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
+          io.to(roomId).emit('completeGame', roomsInfo[roomId].timerInfo);
         }
       });
 

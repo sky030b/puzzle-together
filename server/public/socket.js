@@ -4,7 +4,10 @@ import { addDragAndDrop } from './puzzle.js';
 import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import showResult from './result.js';
 import { getFormattedTime } from './utils.js';
-import { getCurrentGameId, getPlayerState, setTimer } from './variable.js';
+import {
+  clearTimer, setTimer,
+  getCurrentGameId, getPlayerState, setPlaygroundStateByKey
+} from './variable.js';
 
 // eslint-disable-next-line no-undef
 export const socket = io();
@@ -19,14 +22,17 @@ export function setupSocket() {
     alert('請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。');
   }
 
-  socket.on('setTimer', (data) => {
+  socket.on('setTimer', async (data) => {
     const {
       gameId, playDuration, isCompleted, startTime
     } = data;
     if (gameId === roomId) {
+      setPlaygroundStateByKey('playDuration', playDuration);
+
       if (isCompleted) {
         renderPlayDuration(playDuration);
-        showResult();
+        await showResult();
+        clearTimer();
         return;
       }
 

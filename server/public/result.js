@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { getRenderInfo } from './puzzle.js';
 import { getImageDimensions } from './utils.js';
-import { clearTimer, getPlaygroundStateByKey } from './variable.js';
+import { getPlayerState, getPlaygroundStateByKey } from './variable.js';
 
 function createResultPuzzles(img, gameInfo) {
   const {
@@ -40,9 +40,9 @@ function createResultPuzzles(img, gameInfo) {
     resultPiece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
     resultPiece.style.backgroundPosition = `-${((targetId - 1) % cols) * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
     resultPiece.style.zIndex = zIndex;
-    resultPiece.dataset.isLocked = isLocked ? 'true' : 'false';
-    resultPiece.dataset.lockedBy = lockedBy;
-    resultPiece.dataset.lockedColor = lockedColor;
+    resultPiece.dataset.resultIsLocked = isLocked ? 'true' : 'false';
+    resultPiece.dataset.resultLockedBy = lockedBy;
+    resultPiece.dataset.resultLockedColor = lockedColor;
 
     resultPuzzleContainer.appendChild(resultPiece);
   });
@@ -96,10 +96,10 @@ function generateLockedBox() {
     if (resultPiece && !resultTargetBox.querySelector('.locked-color-box')) {
       const lockedColorBox = document.createElement('div');
       lockedColorBox.className = 'locked-color-box';
-      lockedColorBox.title = resultPiece.dataset.lockedBy;
-      lockedColorBox.dataset.lockedBy = resultPiece.dataset.lockedBy;
-      lockedColorBox.dataset.lockedColor = resultPiece.dataset.lockedColor;
-      lockedColorBox.style.backgroundColor = resultPiece.dataset.lockedColor;
+      lockedColorBox.title = resultPiece.dataset.resultLockedBy;
+      lockedColorBox.dataset.resultLockedBy = resultPiece.dataset.resultLockedBy;
+      lockedColorBox.dataset.resultLockedColor = resultPiece.dataset.resultLockedColor;
+      lockedColorBox.style.backgroundColor = resultPiece.dataset.resultLockedColor;
       lockedColorBox.style.border = '1px solid black';
       lockedColorBox.style.width = '100%';
       lockedColorBox.style.height = '100%';
@@ -109,6 +109,7 @@ function generateLockedBox() {
     }
   });
 }
+
 function toggleContributionGraphOpacity() {
   const resultPuzzlePieces = document.querySelectorAll('.result-puzzle-piece');
   resultPuzzlePieces.forEach((resultPiece) => {
@@ -140,47 +141,6 @@ function disPlayResultNavLink() {
   `;
 }
 
-function createResultModal() {
-  const resultModal = document.querySelector('#result-modal');
-  resultModal.innerHTML = `
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"><strong>恭喜通關拼圖遊戲！！</strong></h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body mx-auto">
-              ...
-            </div>
-            <div class="modal-footer justify-content-center">
-            <button type="button" class="download-origin-pic btn btn-primary">下載原圖</button>
-            <button type="button" class="btn btn-primary toggle-opacity-button">切換貢獻圖透明度</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-            </div>
-          </div>
-        </div>
-      </div>
-  `;
-}
-
-async function renderModalBody() {
-  const modalBody = document.querySelector('.modal-body');
-  modalBody.innerHTML = `
-    <div id="result-target-container"></div>
-    <div id="result-puzzle-container"></div>
-  `;
-  const gameInfo = await getRenderInfo();
-  const { questionImgUrl } = gameInfo;
-  const img = await getImageDimensions(questionImgUrl);
-
-  createResultPuzzles(img, gameInfo);
-  createResultTargetBoxes(img, gameInfo);
-  generateLockedBox();
-  const toggleOpacityBtn = document.querySelector('.toggle-opacity-button');
-  toggleOpacityBtn.addEventListener('click', toggleContributionGraphOpacity);
-}
-
 function downloadOriginPic() {
   const imageUrl = getPlaygroundStateByKey('questionImgUrl');
   const link = document.createElement('a');
@@ -192,13 +152,134 @@ function downloadOriginPic() {
   document.body.removeChild(link);
 }
 
-export default function showResult() {
-  disPlayResultNavLink();
-  createResultModal();
-  renderModalBody();
-  const showResultBtn = document.querySelector('.show-result-btn');
-  showResultBtn.click();
+function createResultModal() {
+  const resultModal = document.querySelector('#result-modal');
+  resultModal.innerHTML = `
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"><strong>恭喜通關${getPlaygroundStateByKey('title')}！！</strong></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body mx-auto d-flex justify-content-around align-items-center gap-5">
+              ...
+            </div>
+            <div class="modal-footer justify-content-center">
+            <button type="button" class="download-origin-pic btn btn-primary">下載原圖</button>
+            <button type="button" class="btn btn-primary toggle-opacity-button">切換貢獻圖透明度</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  `;
+
   const downloadOriginPicBtn = document.querySelector('.download-origin-pic');
   downloadOriginPicBtn.addEventListener('click', downloadOriginPic);
-  clearTimer();
+}
+
+function getPlayersRecord() {
+  const lockedPuzzles = document.querySelectorAll('[data-locked-by]');
+
+  const lockedByInfoMap = new Map();
+
+  lockedPuzzles.forEach((puzzleDiv) => {
+    const nickname = puzzleDiv.dataset.lockedBy;
+    const representColor = puzzleDiv.dataset.lockedColor;
+
+    if (lockedByInfoMap.has(nickname)) {
+      lockedByInfoMap.get(nickname).point += 1;
+    } else {
+      lockedByInfoMap.set(nickname, {
+        nickname,
+        representColor,
+        isOnline: false,
+        point: 1
+      });
+    }
+  });
+
+  const lockedByInfoAry = Array.from(lockedByInfoMap.values());
+
+  const playersRecord = lockedByInfoAry
+    .sort((a, b) => (
+      a.point === b.point
+        ? a.nickname.localeCompare(b.nickname)
+        : b.point - a.point
+    ));
+
+  return playersRecord;
+}
+
+function createResultRecord() {
+  const resultRecord = document.querySelector('#result-record');
+  const playDurationSec = getPlaygroundStateByKey('playDuration');
+
+  const { nickname } = getPlayerState();
+  const playersRecord = getPlayersRecord();
+  const playersRecordStr = playersRecord.map((recordInfo) => `
+    <tr ${nickname === recordInfo.nickname ? 'class="table-warning"' : ''}>
+      <td class="px-3">      
+        <div class="player-nickname text-center${nickname === recordInfo.nickname ? ' fw-bold' : ''}">${recordInfo.nickname}</div>
+      </td>
+      <td class="px-3">
+        <div class="lock-puzzle-num text-center${nickname === recordInfo.nickname ? ' fw-bold' : ''}">${recordInfo.point}</div>
+      </td>
+    </tr>
+  `).join('');
+
+  const puzzlesRecordStr = `
+    <table class="table table-secondary table-hover table-responsive mb-3">
+      <thead>
+        <tr>
+          <th scope="col" class="px-5 text-center">玩家暱稱</th>
+          <th scope="col" class="px-5 text-center">拼圖完成數</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${playersRecordStr}
+      </tbody>
+    </table>
+  `;
+
+  const day = Math.floor(playDurationSec / 86400);
+  const hr = Math.floor((playDurationSec % 86400) / 3600);
+  const min = Math.floor((playDurationSec % 3600) / 60);
+  const sec = Math.floor(playDurationSec % 60);
+  const showTime = `${day ? `${day}天` : ''}${hr ? `${hr.toString().padStart(2, '0')}時` : ''}${min ? `${min.toString().padStart(2, '0')}分` : ''}${sec.toString().padStart(2, '0')}秒`;
+  const playDurationStr = `<h4 class="text-center mb-3">通關所用時間：${showTime}</h4>`;
+
+  resultRecord.innerHTML = puzzlesRecordStr + playDurationStr;
+}
+
+async function renderModalBody() {
+  const modalBody = document.querySelector('.modal-body');
+  modalBody.innerHTML = `
+    <div>
+      <div id="result-target-container"></div>
+      <div id="result-puzzle-container"></div>
+    </div>
+    <div>
+      <div id="result-record"></div>
+    </div>
+  `;
+  const gameInfo = await getRenderInfo();
+  const { questionImgUrl } = gameInfo;
+  const img = await getImageDimensions(questionImgUrl);
+
+  createResultPuzzles(img, gameInfo);
+  createResultTargetBoxes(img, gameInfo);
+  generateLockedBox();
+  createResultRecord();
+  const toggleOpacityBtn = document.querySelector('.toggle-opacity-button');
+  toggleOpacityBtn.addEventListener('click', toggleContributionGraphOpacity);
+}
+
+export default async function showResult() {
+  disPlayResultNavLink();
+  createResultModal();
+  await renderModalBody();
+  const showResultBtn = document.querySelector('.show-result-btn');
+  showResultBtn.click();
 }
