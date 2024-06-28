@@ -4,14 +4,15 @@ import {
   container, canvas, targetContainer
 } from './dom.js';
 import {
-  setScale, getScale, canvasWidth, canvasHeight, scaleAmount,
+  setScale, getScale, CANVAS_WIDTH, CANVAS_HEIGHT,
+  SCALE_AMOUNT, INIT_SCALE, MIN_SCALE, MAX_SCALE,
   getIsInsideChatArea, getIsInsideRecordArea, setCurrentGameId
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
 
-canvas.style.width = `${canvasWidth}px`;
-canvas.style.height = `${canvasHeight}px`;
+canvas.style.width = `${CANVAS_WIDTH}px`;
+canvas.style.height = `${CANVAS_HEIGHT}px`;
 
 let isDraggingCanvas = false;
 let startX;
@@ -65,12 +66,12 @@ container.addEventListener('wheel', (e) => {
   let scaleTemp = getScale();
 
   if (e.deltaY < 0) {
-    scaleTemp += scaleAmount;
+    scaleTemp += SCALE_AMOUNT;
   } else {
-    scaleTemp -= scaleAmount;
+    scaleTemp -= SCALE_AMOUNT;
   }
 
-  setScale(Math.min(Math.max(0.1, scaleTemp), 2));
+  setScale(Math.min(Math.max(MIN_SCALE, scaleTemp), MAX_SCALE));
 
   const rect = canvas.getBoundingClientRect();
   const offsetX = (e.pageX - rect.left) / rect.width;
@@ -140,7 +141,7 @@ async function main() {
     if (chatHistoryRenderResult instanceof Error) throw chatHistoryRenderResult;
     setupSocket();
 
-    setScale(0.5);
+    setScale(INIT_SCALE);
     canvas.style.transform = `scale(${getScale()})`;
     constrainCanvas();
 

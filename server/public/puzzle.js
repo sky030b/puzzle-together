@@ -4,7 +4,7 @@
 /* eslint-disable import/no-cycle */
 import { container, canvas, targetContainer } from './dom.js';
 import {
-  canvasWidth, canvasHeight, getScale, maxDimension,
+  CANVAS_WIDTH, CANVAS_HEIGHT, getScale, MAX_DIMENSION,
   getCurrentGameId, getPlayerState,
   getOpacityByDifficulty, getOverlapRatioByDifficulty,
   setPlaygroundStateByKey
@@ -22,9 +22,9 @@ function createPuzzles(img, gameInfo) {
 
   const imgNow = img;
   if (imgNow.width > imgNow.height) {
-    imgNow.scale = maxDimension / imgNow.width;
+    imgNow.scale = MAX_DIMENSION / imgNow.width;
   } else {
-    imgNow.scale = maxDimension / imgNow.height;
+    imgNow.scale = MAX_DIMENSION / imgNow.height;
   }
 
   const scaledWidth = imgNow.width * imgNow.scale;
@@ -55,8 +55,8 @@ function createPuzzles(img, gameInfo) {
     piece.style.backgroundSize = `${scaledWidth}px ${scaledHeight}px`;
     piece.style.backgroundPosition = `-${((targetId - 1) % cols) * pieceWidth}px -${Math.floor((targetId - 1) / cols) * pieceHeight}px`;
     piece.style.zIndex = zIndex;
-    piece.style.top = `${(canvasHeight * topRatio) / 100}px`;
-    piece.style.left = `${(canvasWidth * leftRatio) / 100}px`;
+    piece.style.top = `${(CANVAS_HEIGHT * topRatio) / 100}px`;
+    piece.style.left = `${(CANVAS_WIDTH * leftRatio) / 100}px`;
     if (difficulty === 'hard') piece.style.borderWidth = '0';
 
     if (isLocked && ['easy', 'medium'].includes(difficulty)) {
@@ -122,8 +122,8 @@ function createTargetBoxes(img, gameInfo) {
     targetContainer.appendChild(targetBox);
   });
 
-  targetContainer.style.left = `${(canvasWidth - targetContainer.clientWidth) / 2}px`;
-  targetContainer.style.top = `${(canvasHeight - targetContainer.clientHeight) / 2}px`;
+  targetContainer.style.left = `${(CANVAS_WIDTH - targetContainer.clientWidth) / 2}px`;
+  targetContainer.style.top = `${(CANVAS_HEIGHT - targetContainer.clientHeight) / 2}px`;
 }
 
 export function addDragAndDrop(gameInfo) {
@@ -210,8 +210,8 @@ export function addDragAndDrop(gameInfo) {
     const pieceWidth = selectedPiece.clientWidth;
     const pieceHeight = selectedPiece.clientHeight;
 
-    dx = Math.max(0, Math.min(dx, canvasWidth - pieceWidth));
-    dy = Math.max(0, Math.min(dy, canvasHeight - pieceHeight));
+    dx = Math.max(0, Math.min(dx, CANVAS_WIDTH - pieceWidth));
+    dy = Math.max(0, Math.min(dy, CANVAS_HEIGHT - pieceHeight));
 
     const pieceRect = selectedPiece.getBoundingClientRect();
     const containerLeft = containerRect.left;
@@ -239,8 +239,8 @@ export function addDragAndDrop(gameInfo) {
       puzzleId: selectedPiece.id,
       left: selectedPiece.style.left,
       top: selectedPiece.style.top,
-      leftRatio: (dx / canvasWidth) * 100,
-      topRatio: (dy / canvasHeight) * 100,
+      leftRatio: (dx / CANVAS_WIDTH) * 100,
+      topRatio: (dy / CANVAS_HEIGHT) * 100,
       isLocked: false,
       lockedBy: null,
       lockedColor: null,
@@ -260,8 +260,8 @@ export function addDragAndDrop(gameInfo) {
         puzzleId: selectedPiece.id,
         left: selectedPiece.style.left,
         top: selectedPiece.style.top,
-        leftRatio: (+selectedPiece.style.left.replace('px', '') / canvasWidth) * 100,
-        topRatio: (+selectedPiece.style.top.replace('px', '') / canvasHeight) * 100,
+        leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
+        topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
         isLocked: false,
         lockedBy: null,
         lockedColor: null,

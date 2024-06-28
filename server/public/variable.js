@@ -1,7 +1,11 @@
-export const maxDimension = 1500;
-export const canvasWidth = 16000;
-export const canvasHeight = 12000;
-export const scaleAmount = 0.01;
+export const MAX_DIMENSION = 1500;
+export const CANVAS_WIDTH = 16000;
+export const CANVAS_HEIGHT = 12000;
+
+export const SCALE_AMOUNT = 0.01;
+export const INIT_SCALE = 0.4;
+export const MIN_SCALE = 0.1;
+export const MAX_SCALE = 1.5;
 
 const EASY_OPACITY = 0.2;
 const MEDIUM_OPACITY = 0.1;
