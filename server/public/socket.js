@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
@@ -6,7 +7,8 @@ import showResult from './result.js';
 import { getFormattedTime } from './utils.js';
 import {
   clearTimer, setTimer,
-  getCurrentGameId, getPlayerState, setPlaygroundStateByKey
+  getCurrentGameId, getPlayerState, setPlaygroundStateByKey,
+  getPlaygroundStateByKey
 } from './variable.js';
 
 // eslint-disable-next-line no-undef
@@ -111,6 +113,16 @@ export function setupSocket() {
         piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
       }
     }
+
+    const puzzles = getPlaygroundStateByKey('puzzles');
+    const newPuzzles = puzzles.map((puzzle) => (
+      puzzle.puzzleId !== puzzleId
+        ? puzzle
+        : {
+          ...puzzle, lockedBy, lockedColor, isLocked: 1, zIndex
+        }
+    ));
+    setPlaygroundStateByKey('puzzles', newPuzzles);
   });
 
   socket.on('completeGame', showResult);
