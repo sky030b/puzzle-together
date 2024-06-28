@@ -5,10 +5,9 @@
 import { container, canvas, targetContainer } from './dom.js';
 import {
   canvasWidth, canvasHeight, getScale, maxDimension,
-  getCurrentGameId, getPlayerState, setDifficulty,
+  getCurrentGameId, getPlayerState,
   getOpacityByDifficulty, getOverlapRatioByDifficulty,
-  setPlaygroundStateByKey,
-  getPlaygroundStateByKey
+  setPlaygroundStateByKey
 } from './variable.js';
 
 import { getImageDimensions } from './utils.js';
@@ -18,11 +17,7 @@ const puzzleTargetMap = {};
 
 function createPuzzles(img, gameInfo) {
   const {
-    gameId, title, questionImgUrl, ownerId,
-    rowQty, colQty, difficulty, mode,
-    puzzles,
-    isPublic, isOpenWhenOwnerNotIn,
-    playDuration, isCompleted, completedAt
+    rowQty, colQty, difficulty, puzzles
   } = gameInfo;
 
   const imgNow = img;
