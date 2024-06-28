@@ -337,47 +337,7 @@ export function addDragAndDrop(gameInfo) {
   });
 }
 
-document.getElementById('generate-locked-box-button').addEventListener('click', () => {
-  const targetBoxes = document.querySelectorAll('.target-box');
-  targetBoxes.forEach((targetBox) => {
-    const piece = targetBox.querySelector('.puzzle-piece');
-    if (piece && !targetBox.querySelector('.locked-color-box')) {
-      const lockedColorBox = document.createElement('div');
-      lockedColorBox.className = 'locked-color-box';
-      lockedColorBox.title = piece.dataset.lockedBy;
-      lockedColorBox.dataset.lockedBy = piece.dataset.lockedBy;
-      lockedColorBox.dataset.lockedColor = piece.dataset.lockedColor;
-      lockedColorBox.style.backgroundColor = piece.dataset.lockedColor;
-      lockedColorBox.style.border = '1px solid black';
-      lockedColorBox.style.width = '100%';
-      lockedColorBox.style.height = '100%';
-      lockedColorBox.style.zIndex = '6';
-      lockedColorBox.style.opacity = 0;
-      targetBox.appendChild(lockedColorBox);
-    }
-  });
-});
-
-document.getElementById('toggle-opacity-button').addEventListener('click', () => {
-  const puzzlePieces = document.querySelectorAll('.puzzle-piece');
-  puzzlePieces.forEach((piece) => {
-    const lockedColorBox = piece.parentNode.querySelector('.locked-color-box');
-    if (lockedColorBox) {
-      if (piece.style.opacity === '0') {
-        piece.style.opacity = '0.5';
-        lockedColorBox.style.opacity = '0.5';
-      } else if (piece.style.opacity === '0.5') {
-        piece.style.opacity = '1';
-        lockedColorBox.style.opacity = '0';
-      } else {
-        piece.style.opacity = '0';
-        lockedColorBox.style.opacity = '1';
-      }
-    }
-  });
-});
-
-async function getRenderInfo() {
+export async function getRenderInfo() {
   try {
     const gameId = getCurrentGameId();
 

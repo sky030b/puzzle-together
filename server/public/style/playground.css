@@ -22,7 +22,7 @@ body, html {
   transform-origin: 0 0;
 }
 
-.puzzle-piece {
+.puzzle-piece, .result-puzzle-piece {
   border: 1px solid black;
   position: absolute;
   cursor: grab;
@@ -42,7 +42,7 @@ body, html {
   cursor: default;
 }
 
-.target-box {
+.target-box, .result-target-box {
   border: 1px dashed black;
   position: relative;
 }
@@ -54,7 +54,13 @@ body, html {
   overflow: hidden;
 }
 
-#puzzle-container {
+#result-target-container {
+  display: grid;
+  background-color: white;
+  overflow: hidden;
+}
+
+#puzzle-container, #result-puzzle-container {
   position: absolute;
 }
 

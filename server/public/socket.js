@@ -2,21 +2,12 @@
 import { chatContent } from './dom.js';
 import { addDragAndDrop } from './puzzle.js';
 import { renderPlayDuration, renderPlayersRecord } from './record.js';
+import showResult from './result.js';
 import { getFormattedTime } from './utils.js';
-import {
-  getCurrentGameId, getPlayerState, setTimer, clearTimer
-} from './variable.js';
+import { getCurrentGameId, getPlayerState, setTimer } from './variable.js';
 
 // eslint-disable-next-line no-undef
 export const socket = io();
-
-function showResult() {
-  const resultNavItem = document.querySelector('.result-nav-item');
-  const showResultBtn = document.querySelector('.show-result-btn');
-  resultNavItem.classList.remove('d-none');
-  showResultBtn.click();
-  clearTimer();
-}
 
 export function setupSocket() {
   const roomId = getCurrentGameId();
