@@ -129,7 +129,7 @@ function toggleContributionGraphOpacity() {
   });
 }
 
-function disPlayResultNavLink() {
+function createResultNavLink() {
   const navLinkUl = document.querySelector('#navbarSupportedContent ul');
   navLinkUl.innerHTML += `
     <li ="result-nav-item nav-item">
@@ -286,7 +286,7 @@ async function renderModalBody() {
 }
 
 export default async function showResult() {
-  disPlayResultNavLink();
+  createResultNavLink();
   createResultModal();
   await renderModalBody();
   const showResultBtn = document.querySelector('.show-result-btn');

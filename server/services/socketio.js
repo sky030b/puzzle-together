@@ -64,7 +64,6 @@ const socket = (io) => {
           await updateGameIsCompletedStatus(roomId);
           await setTimerFromDB(roomId);
           io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
-          io.to(roomId).emit('completeGame', roomsInfo[roomId].timerInfo);
         }
       });
 

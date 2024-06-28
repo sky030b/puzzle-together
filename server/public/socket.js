@@ -125,8 +125,6 @@ export function setupSocket() {
     setPlaygroundStateByKey('puzzles', newPuzzles);
   });
 
-  socket.on('completeGame', showResult);
-
   socket.on('sendNewMessage', (data) => {
     const { gameId, nickname, message } = data;
 
