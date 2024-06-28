@@ -6,7 +6,8 @@ import {
 import {
   setScale, getScale, CANVAS_WIDTH, CANVAS_HEIGHT,
   SCALE_AMOUNT, INIT_SCALE, MIN_SCALE, MAX_SCALE,
-  getIsInsideChatArea, getIsInsideRecordArea, setCurrentGameId
+  getIsInsideChatArea, getIsInsideRecordArea, getIsModalOpen,
+  setCurrentGameId
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
@@ -60,7 +61,7 @@ export function constrainCanvas() {
 }
 
 container.addEventListener('wheel', (e) => {
-  if (getIsInsideChatArea() || getIsInsideRecordArea()) return;
+  if (getIsInsideChatArea() || getIsInsideRecordArea() || getIsModalOpen()) return;
   // e.preventDefault();
   const previousScale = getScale();
   let scaleTemp = getScale();

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { getRenderInfo } from './puzzle.js';
 import { getImageDimensions } from './utils.js';
-import { getPlayerState, getPlaygroundStateByKey } from './variable.js';
+import { getPlayerState, getPlaygroundStateByKey, setIsModalOpen } from './variable.js';
 
 function createResultPuzzles(img, gameInfo) {
   const {
@@ -177,6 +177,15 @@ function createResultModal() {
 
   const downloadOriginPicBtn = document.querySelector('.download-origin-pic');
   downloadOriginPicBtn.addEventListener('click', downloadOriginPic);
+
+  const myModalEl = document.getElementById('exampleModal');
+  myModalEl.addEventListener('hidden.bs.modal', () => {
+    setIsModalOpen(false);
+  });
+
+  myModalEl.addEventListener('shown.bs.modal', () => {
+    setIsModalOpen(true);
+  });
 }
 
 function getPlayersRecord() {

@@ -46,6 +46,7 @@ const playgroundState = {
   currentGameId: '',
   isInsideChatArea: false,
   isInsideRecordArea: false,
+  isModalOpen: false,
   timer: null,
 
   gameId: '',
@@ -94,6 +95,14 @@ export function setIsInsideRecordArea(trueOrFalse) {
 
 export function getIsInsideRecordArea() {
   return playgroundState.isInsideRecordArea;
+}
+
+export function setIsModalOpen(trueOrFalse) {
+  playgroundState.isModalOpen = trueOrFalse;
+}
+
+export function getIsModalOpen() {
+  return playgroundState.isModalOpen;
 }
 
 export function setTimer(timer) {
