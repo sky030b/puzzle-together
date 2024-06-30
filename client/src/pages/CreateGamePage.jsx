@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const CreateGamePage = () => {
   const [formValues, setFormValues] = useState({
@@ -14,8 +13,6 @@ const CreateGamePage = () => {
     is_public: false,
     is_open_when_owner_not_in: false,
   });
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -41,7 +38,7 @@ const CreateGamePage = () => {
         },
       });
       if (res instanceof Error) throw res;
-      navigate(`/playground?gameId=${res.data.game_id}`);
+      window.location.href = `/playground.html?gameId=${res.data.game_id}`;
     } catch (error) {
       console.error(error);
       alert(error.response.data);
