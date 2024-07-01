@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const { nanoid } = require('nanoid');
 const {
   getAllPlayers, getAnonymousNickname, addNewPlayer,
-  getPlayerByEmail, getHashPWDByEmail
+  getPlayerByPlayerId, setPlayerProfileByPlayerId,
+  getPlayerByEmail, getHashPWDByEmail,
 } = require('../services/playerDatabase');
 
 async function getPlayers(req, res) {
@@ -20,6 +21,21 @@ function getPlayerInfo(req, res) {
   const { playerId, nickname, representColor } = jwtData;
   const playerInfo = { playerId, nickname, representColor };
   return res.status(200).send(playerInfo);
+}
+
+async function getPlayerProfile(req, res) {
+  const { playerId } = req.params;
+  const playerProfile = await getPlayerByPlayerId(playerId);
+  console.log(playerProfile)
+  return res.status(200).send(playerProfile);
+}
+
+async function updatePlayerProfile(req, res) {
+  const { playerId } = req.params;
+  const { profile } = req.body;
+
+  await setPlayerProfileByPlayerId(playerId, profile);
+  return res.status(200).send('playerProfile');
 }
 
 function getPlayerToken(player) {
@@ -122,5 +138,5 @@ async function generateAnonymousPlayer(req, res) {
 }
 
 module.exports = {
-  getPlayers, getPlayerInfo, signup, signin, generateAnonymousPlayer
+  getPlayers, getPlayerInfo, getPlayerProfile, updatePlayerProfile, signup, signin, generateAnonymousPlayer
 };

@@ -19,6 +19,36 @@ async function getPlayerById(id) {
   }
 }
 
+async function getPlayerByPlayerId(playerId) {
+  try {
+    const [player] = (await pool.query(`
+    SELECT 
+      player_id, email, nickname, represent_color,
+      games_played, games_completed, puzzles_locked, profile
+    FROM 
+      players 
+    WHERE 
+      player_id = ?
+  `, [playerId]))[0];
+    return player;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
+async function setPlayerProfileByPlayerId(playerId, profile) {
+  try {
+    await pool.query(`
+      UPDATE players SET profile = ? WHERE player_id = ?;
+    `, [profile, playerId]);
+    return 'Update profile done.';
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function getPlayerByEmail(email) {
   try {
     const [player] = (await pool.query(`
@@ -112,9 +142,11 @@ async function addNewPlayer(info) {
 
 module.exports = {
   getPlayerById,
+  getPlayerByPlayerId,
+  setPlayerProfileByPlayerId,
   getPlayerByEmail,
   getHashPWDByEmail,
   getAllPlayers,
   getAnonymousNickname,
-  addNewPlayer
+  addNewPlayer,
 };
