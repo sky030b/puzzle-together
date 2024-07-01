@@ -36,6 +36,7 @@ const PlayerProfileHeader = () => {
     try {
       await axios.post(`/api/1.0/players/profile/${playerId}`, { profile: profileText });
       setIsEditing(false);
+      setPlayerData({ ...playerData, profile: profileText });
       alert('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -47,38 +48,39 @@ const PlayerProfileHeader = () => {
   }
 
   return (
-    <div className="player-profile-header">
-      <div className="player-id mb-3">
-        <span className="me-3 align-middle">玩家ID：{playerData.player_id}</span>
-        <button className="btn btn-outline-secondary" onClick={handleCopyPlayerId}>複製</button>
+    <div className="player-profile-header d-flex">
+      <div className="w-50 mx-auto">
+        <div className="nickname mb-3">
+          <span>暱稱：{playerData.nickname}</span>
+        </div>
+        <div className="player-id mb-3">
+          <span className="me-3 align-middle">玩家ID：{playerData.player_id}</span>
+          <button className="btn btn-outline-secondary" onClick={handleCopyPlayerId}>複製</button>
+        </div>
+        <div className="player-id mb-3 d-flex align-items-center">
+          <span className="me-3 align-middle">代表色：</span>
+          <div className="represent-color" style={{ width: '20px', height: '20px', backgroundColor: playerData.represent_color }}></div>
+        </div>
+        <div className="profile mb-3">
+          {isEditing ? (
+            <>
+              <textarea className="form-control" value={profileText} onChange={handleProfileChange}></textarea>
+              <button className="btn btn-outline-primary mt-2" onClick={handleSaveProfile}>儲存</button>
+            </>
+          ) : (
+            <>
+              <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile}</div>
+              <button className="btn btn-outline-secondary mt-2" onClick={() => setIsEditing(true)}>編輯</button>
+            </>
+          )}
+        </div>
       </div>
-      <div className="email mb-3">
-        <span>信箱：{playerData.email}</span>
-        {/* Add functionality to toggle email visibility if needed */}
-      </div>
-      <div className="nickname mb-3">
-        <span>暱稱：{playerData.nickname}</span>
-      </div>
-      <div className="represent-color mb-3" style={{ backgroundColor: playerData.represent_color }}>
-        代表色
-      </div>
-      <div className="stats mb-3">
-        <div>參加過 {playerData.games_played} 場遊戲</div>
-        <div>完成過 {playerData.games_completed} 場遊戲</div>
-        <div>拼對了 {playerData.puzzles_locked} 塊拼圖</div>
-      </div>
-      <div className="profile mb-3">
-        {isEditing ? (
-          <>
-            <textarea className="form-control" value={profileText} onChange={handleProfileChange}></textarea>
-            <button onClick={handleSaveProfile}>儲存</button>
-          </>
-        ) : (
-          <>
-            <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile}</div>
-            <button onClick={() => setIsEditing(true)}>編輯</button>
-          </>
-        )}
+      <div className="w-50 mx-auto">
+        <div className="stats mb-3">
+          <div className="mb-3">參加過 {playerData.games_played} 場遊戲</div>
+          <div className="mb-3">完成過 {playerData.games_completed} 場遊戲</div>
+          <div className="mb-3">拼對了 {playerData.puzzles_locked} 塊拼圖</div>
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [playerInfo, setPlayerInfo] = useState({});
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -12,15 +13,17 @@ const AuthProvider = ({ children }) => {
         const res = await axios.get('/api/1.0/players/playerInfo');
         console.log(res);
         setIsAuthenticated(true);
+        setPlayerInfo(res.data);
       } catch (error) {
         setIsAuthenticated(false);
+        setPlayerInfo({});
       }
     };
     checkAuth();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

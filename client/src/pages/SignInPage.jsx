@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
@@ -7,7 +7,7 @@ import { setCookie } from '../utils';
 const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { playerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,13 +24,16 @@ const SignInPage = () => {
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
       alert('登入成功。');
-      console.log(res.data)
       navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
       alert(error.response.data);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) navigate(`/profile/${playerInfo.playerId}`);
+  }, [playerInfo, isAuthenticated, navigate]);
 
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">

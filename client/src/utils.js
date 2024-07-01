@@ -17,3 +17,9 @@ export function setCookie(key, value, expireSec = 4 * 60 * 60) {
   const expiresUTCString = expiresDate.toUTCString();
   document.cookie = `${key}=${value}; Expires=${expiresUTCString}`;
 }
+
+export function removeCookie(key) {
+  const expiresDate = new Date(0);
+  const expiresUTCString = expiresDate.toUTCString();
+  document.cookie = `${key}=; Expires=${expiresUTCString}; path=/`;
+}

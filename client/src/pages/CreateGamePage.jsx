@@ -1,25 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CreateGamePage = () => {
-  useEffect(() => {
-    const setOwnerId = async () => {
-      try {
-        const res = await axios.get('/api/1.0/players/playerInfo');
-        const playerInfo = res.data;
-        setFormValues((prevValues) => ({
-          ...prevValues,
-          owner_id: playerInfo.playerId,
-        }));
-      } catch (error) {
-        console.error(error);
-        alert(error.response.data);
-      }
-    };
-
-    setOwnerId();
-  }, []);
-
   const [formValues, setFormValues] = useState({
     owner_id: '',
     title: '',
@@ -62,6 +45,28 @@ const CreateGamePage = () => {
       alert(error.response.data);
     }
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const setOwnerId = async () => {
+      try {
+        const res = await axios.get('/api/1.0/players/playerInfo');
+        const playerInfo = res.data;
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          owner_id: playerInfo.playerId,
+        }));
+      } catch (error) {
+        // console.error(error);
+        alert('尚未登入或是登入階段已過期，請重新登入。');
+        navigate('/signin');
+      }
+    };
+
+    setOwnerId();
+  }, [navigate]);
+
 
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">
@@ -121,20 +126,6 @@ const CreateGamePage = () => {
               />
             </div>
             <div className="col-6">
-              <label className="form-label" htmlFor="mode">模式：</label>
-              <select
-                className="form-select"
-                name="mode"
-                id="mode"
-                value={formValues.mode}
-                onChange={handleChange}
-              >
-                <option value="cooperation">合作模式</option>
-                <option value="competition">競賽模式</option>
-                <option value="relay">接力模式</option>
-              </select>
-            </div>
-            <div className="col-6">
               <label className="form-label" htmlFor="difficulty">難度：</label>
               <select
                 className="form-select"
@@ -148,7 +139,7 @@ const CreateGamePage = () => {
                 <option value="hard">困難</option>
               </select>
             </div>
-            <div className="col-auto">
+            <div className="col-auto align-self-end">
               <input
                 type="checkbox"
                 className="form-check-input me-2"
@@ -159,19 +150,6 @@ const CreateGamePage = () => {
               />
               <label className="form-label form-check-label" htmlFor="is_public">
                 開放所有玩家加入
-              </label>
-            </div>
-            <div className="col-auto">
-              <input
-                type="checkbox"
-                className="form-check-input me-2"
-                id="is_open_when_owner_not_in"
-                name="is_open_when_owner_not_in"
-                checked={formValues.is_open_when_owner_not_in}
-                onChange={handleChange}
-              />
-              <label className="form-label form-check-label" htmlFor="is_open_when_owner_not_in">
-                當您不在遊戲內也開放進入
               </label>
             </div>
             <button type="submit" className="btn btn-primary mt-5">開始玩</button>

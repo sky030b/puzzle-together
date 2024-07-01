@@ -11,7 +11,7 @@ const SignUpPage = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [isRoomPublic, setIsRoomPublic] = useState(false);
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { playerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -47,6 +47,11 @@ const SignUpPage = () => {
       alert(error.response.data);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) navigate(`/profile/${playerInfo.playerId}`);
+  }, [playerInfo, isAuthenticated, navigate]);
+
 
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">
