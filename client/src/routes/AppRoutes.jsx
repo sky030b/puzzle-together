@@ -8,6 +8,7 @@ import PlayerProfilePage from '../pages/PlayerProfilePage';
 // import Showcase from '../pages/Showcase';
 // import Playground from '../pages/Playground';
 import CreateGamePage from '../pages/CreateGamePage';
+import NotFoundPage from '../pages/NotFoundPage';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
           <Route path="showcase" element={<Showcase />} />
           <Route path="playground" element={<Playground />} /> */}
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );
