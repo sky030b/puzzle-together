@@ -38,8 +38,8 @@ async function createNewGame(req, res) {
       colQty,
       difficulty,
       mode,
-      isPublic: isPublic === 'on',
-      isOpenWhenOwnerNotIn: isOpenWhenOwnerNotIn === 'on'
+      isPublic: isPublic === 'true',
+      isOpenWhenOwnerNotIn: isOpenWhenOwnerNotIn === 'true'
     };
 
     const newGame = await addNewGame(file, gameInfo);

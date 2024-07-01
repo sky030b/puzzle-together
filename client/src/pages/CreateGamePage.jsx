@@ -1,9 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const CreateGamePage = () => {
+  useEffect(() => {
+    const setOwnerId = async () => {
+      try {
+        const res = await axios.get('/api/1.0/players/playerInfo');
+        const playerInfo = res.data;
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          owner_id: playerInfo.playerId,
+        }));
+      } catch (error) {
+        console.error(error);
+        alert(error.response.data);
+      }
+    };
+
+    setOwnerId();
+  }, []);
+
   const [formValues, setFormValues] = useState({
-    owner_id: 'player123',
+    owner_id: '',
     title: '',
     question_img: null,
     row_qty: 4,

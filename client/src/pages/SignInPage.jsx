@@ -20,12 +20,12 @@ const SignInPage = () => {
 
     try {
       const res = await axios.post('/api/1.0/players/signin', signinInfo);
-      const { accessToken, accessExpired } = res.data.data;
+      const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
       alert('登入成功。');
       console.log(res.data)
-      navigate(`/profile/${res.data.data.playerInfo.playerId}`);
+      navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
       alert(error.response.data);
