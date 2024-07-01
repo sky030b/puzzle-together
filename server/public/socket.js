@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 import { chatContent } from './dom.js';
-import { addDragAndDrop } from './puzzle.js';
 import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import showResult from './result.js';
 import { getFormattedTime } from './utils.js';
@@ -112,7 +111,6 @@ export function setupSocket() {
           piece.dataset.lockedBy = lockedBy;
           piece.dataset.lockedColor = lockedColor;
           piece.classList.add('locked');
-          piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
         }
       }
     }

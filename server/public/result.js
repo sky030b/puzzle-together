@@ -1,9 +1,29 @@
 /* eslint-disable no-param-reassign */
-import { getRenderInfo } from './puzzle.js';
-import { getImageDimensions } from './utils.js';
 import {
   getPlayerState, getPlaygroundState, getPlaygroundStateByKey, setIsModalOpen
 } from './variable.js';
+
+function lockAllPuzzles() {
+  const puzzleDivs = document.querySelectorAll('.puzzle-piece');
+  puzzleDivs.forEach((puzzleDiv) => {
+    puzzleDiv.dataset.isLocked = 'true';
+    puzzleDiv.classList.add('locked');
+  })
+}
+
+function createResultNavLink() {
+  const navLinkUl = document.querySelector('#navbarSupportedContent ul');
+  const existingNavLink = navLinkUl.querySelector('.result-nav-item');
+  if (existingNavLink) return;
+  navLinkUl.innerHTML += `
+    <li class="result-nav-item nav-item">
+      <a class="nav-link show-result-btn" data-bs-toggle="modal" href="javascript:;"
+        data-bs-target="#exampleModal">
+        查看成果圖
+      </a>
+    </li>
+  `;
+}
 
 function createResultPuzzles(img) {
   const {
@@ -129,18 +149,6 @@ function toggleContributionGraphOpacity() {
       }
     }
   });
-}
-
-function createResultNavLink() {
-  const navLinkUl = document.querySelector('#navbarSupportedContent ul');
-  navLinkUl.innerHTML += `
-    <li ="result-nav-item nav-item">
-      <a class="nav-link show-result-btn" data-bs-toggle="modal" href="javascript:;"
-        data-bs-target="#exampleModal">
-        查看成果圖
-      </a>
-    </li>
-  `;
 }
 
 function downloadOriginPic() {
@@ -286,6 +294,7 @@ function renderModalBody() {
 }
 
 export default function showResult() {
+  lockAllPuzzles();
   createResultNavLink();
   createResultModal();
   renderModalBody();

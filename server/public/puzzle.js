@@ -126,7 +126,7 @@ function createTargetBoxes(img, gameInfo) {
   targetContainer.style.top = `${(CANVAS_HEIGHT - targetContainer.clientHeight) / 2}px`;
 }
 
-export function addDragAndDrop(gameInfo) {
+function addDragAndDrop(gameInfo) {
   const { difficulty } = gameInfo;
   const puzzlePieces = document.querySelectorAll('.puzzle-piece');
   const targetBoxes = document.querySelectorAll('.target-box');
@@ -174,7 +174,7 @@ export function addDragAndDrop(gameInfo) {
   }
 
   function onMouseDown(e) {
-    if (e.target.dataset.isLocked === 'true' && ['easy', 'medium'].includes(difficulty)) return;
+    if (e.target.dataset.isLocked === 'true') return;
 
     if (lastNotLockedPiece) {
       lastNotLockedPiece.style.zIndex = '5';
