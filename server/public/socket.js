@@ -91,26 +91,29 @@ export function setupSocket() {
     }
   });
 
-  socket.on('lockPiece', (data) => {
+  socket.on('updateAndLockPiece', (data) => {
     const {
       gameId, puzzleId, targetId, difficulty, lockedBy, lockedColor, zIndex
     } = data;
 
-    if (gameId === roomId && ['easy', 'medium'].includes(difficulty)) {
-      const piece = document.getElementById(puzzleId);
-      const target = document.getElementById(targetId);
-      if (piece && target) {
-        target.appendChild(piece);
-        target.style.opacity = 1;
-        // target.style.backgroundImage = 'none';
-        target.style.border = 'none';
-        piece.style.border = 'none';
-        piece.style.zIndex = zIndex;
-        piece.dataset.isLocked = 'true';
-        piece.dataset.lockedBy = lockedBy;
-        piece.dataset.lockedColor = lockedColor;
-        piece.classList.add('locked');
-        piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
+    if (gameId === roomId) {
+      syncPieceLocation(data);
+      if (['easy', 'medium'].includes(difficulty)) {
+        const piece = document.getElementById(puzzleId);
+        const target = document.getElementById(targetId);
+        if (piece && target) {
+          target.appendChild(piece);
+          target.style.opacity = 1;
+          // target.style.backgroundImage = 'none';
+          target.style.border = 'none';
+          piece.style.border = 'none';
+          piece.style.zIndex = zIndex;
+          piece.dataset.isLocked = 'true';
+          piece.dataset.lockedBy = lockedBy;
+          piece.dataset.lockedColor = lockedColor;
+          piece.classList.add('locked');
+          piece.removeEventListener('mousedown', addDragAndDrop.onMouseDown);
+        }
       }
     }
 

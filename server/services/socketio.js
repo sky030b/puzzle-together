@@ -46,18 +46,18 @@ const socket = (io) => {
       });
 
       socketio.on('updatePiece', async (data) => {
-        socketio.to(roomId).emit('updatePiece', data);
         await updatePuzzleLocation(data);
-        socketio.emit('updateDone');
+        socketio.to(roomId).emit('updatePiece', data);
       });
 
       socketio.on('changeMoveBy', async (data) => {
         io.to(roomId).emit('changeMoveBy', data);
       });
 
-      socketio.on('lockPiece', async (data) => {
+      socketio.on('updateAndLockPiece', async (data) => {
+        await updatePuzzleLocation(data);
         const { isCompleted } = await lockPuzzleBySomeone(data);
-        io.to(roomId).emit('lockPiece', data);
+        io.to(roomId).emit('updateAndLockPiece', data);
         io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
         if (isCompleted) {
           await updateDurationToDB(roomId);
@@ -66,6 +66,18 @@ const socket = (io) => {
           io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
         }
       });
+
+      // socketio.on('lockPiece', async (data) => {
+      //   const { isCompleted } = await lockPuzzleBySomeone(data);
+      //   io.to(roomId).emit('lockPiece', data);
+      //   io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
+      //   if (isCompleted) {
+      //     await updateDurationToDB(roomId);
+      //     await updateGameIsCompletedStatus(roomId);
+      //     await setTimerFromDB(roomId);
+      //     io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
+      //   }
+      // });
 
       socketio.on('sendNewMessage', (data) => {
         io.to(roomId).emit('sendNewMessage', data);
