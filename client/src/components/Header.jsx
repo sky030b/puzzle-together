@@ -4,7 +4,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { removeCookie } from '../utils';
 
 const Header = () => {
-  const { setPlayerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+  const { playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [justSignedOut, setJustSignedOut] = useState(false);
 
@@ -39,6 +39,9 @@ const Header = () => {
               <>
                 <li className="nav-item">
                   <NavLink className="nav-link cursor-pointer" aria-current="page" to="/create-game">創建遊戲</NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link cursor-pointer" aria-current="page" to={`/profile/${playerInfo.playerId}`}>玩家檔案</NavLink>
                 </li>
                 <li className="nav-item">
                   <NavLink className="nav-link signout-btn cursor-pointer" onClick={handleSignOut}>登出</NavLink>
