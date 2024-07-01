@@ -24,7 +24,8 @@ const SignInPage = () => {
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
       alert('登入成功。');
-      navigate(`/profile/${res.data.data.playerId}`);
+      console.log(res.data)
+      navigate(`/profile/${res.data.data.playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
       alert(error.response.data);

@@ -41,7 +41,7 @@ const SignUpPage = () => {
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
       alert('註冊成功。');
-      navigate(`/profile/${res.data.data.playerId}`);
+      navigate(`/profile/${res.data.data.playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
       alert(error.response.data);
