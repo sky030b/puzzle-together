@@ -347,14 +347,14 @@ export async function getRenderInfo() {
 
     if (!renderInfo) {
       alert('沒有找到指定的遊戲關卡');
-      window.location.href = '/index.html';
+      window.location.href = '/';
     }
 
     return renderInfo;
   } catch (error) {
     alert(error.response.data);
     alert('請輸入有效的遊戲關卡ID');
-    window.location.href = '/index.html';
+    window.location.href = '/';
     return error;
   }
 }
