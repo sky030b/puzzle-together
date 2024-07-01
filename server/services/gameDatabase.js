@@ -341,12 +341,17 @@ async function getGameCompletionInfo(gameId) {
 async function lockPuzzleBySomeone(lockingInfo) {
   try {
     const {
-      isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId
+      playerId, isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId
     } = lockingInfo;
     const updateInfo = [isLocked, lockedBy, lockedColor, zIndex, gameId, puzzleId];
     await pool.query(`
       UPDATE puzzles SET is_locked = ?, locked_by = ?, locked_color = ?, z_index = ? WHERE game_id = ? AND puzzle_id = ?;
     `, updateInfo);
+
+    if (playerId) {
+      const invitePLayerResult = await invitePlayerJoinGame(playerId, playerId, gameId);
+      if (invitePLayerResult instanceof Error) throw invitePLayerResult;
+    }
     const completionInfo = await getGameCompletionInfo(gameId);
     return completionInfo;
   } catch (error) {

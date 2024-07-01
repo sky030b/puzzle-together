@@ -279,6 +279,7 @@ function addDragAndDrop(gameInfo) {
         top: selectedPiece.style.top,
         leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
         topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
+        playerId: getPlayerState().playerId,
         isLocked: true,
         lockedBy: nickname,
         lockedColor: representColor,
