@@ -3,6 +3,7 @@ const { nanoid } = require('nanoid');
 
 const pool = require('./createDatabasePool');
 const { uploadToS3 } = require('./createS3Client');
+const { invitePlayerJoinGame } = require('./playerDatabase');
 
 async function getGameBySerialId(id) {
   try {
@@ -258,6 +259,9 @@ async function addNewGame(file, info) {
 
     const newGame = await getGameBySerialId(id);
     await addPuzzlesOfGame(newGame);
+
+    const invitePlayerResult = await invitePlayerJoinGame(ownerId, ownerId, gameId);
+    if (invitePlayerResult instanceof Error) throw invitePlayerResult;
 
     return newGame;
   } catch (error) {

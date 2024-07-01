@@ -37,10 +37,12 @@ CREATE TABLE games (
 );
 
 CREATE TABLE player_game (
-    player_id VARCHAR(255) NOT NULL,
+    inviter_id VARCHAR(255) NOT NULL,
+    invitee_id VARCHAR(255) NOT NULL,
     game_id VARCHAR(255) NOT NULL,
-    PRIMARY KEY (player_id, game_id),
-    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    PRIMARY KEY (invitee_id, game_id),
+    FOREIGN KEY (inviter_id) REFERENCES players(player_id) ON DELETE CASCADE,
+    FOREIGN KEY (invitee_id) REFERENCES players(player_id) ON DELETE CASCADE,
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
 

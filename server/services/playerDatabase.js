@@ -140,6 +140,22 @@ async function addNewPlayer(info) {
   }
 }
 
+async function invitePlayerJoinGame(inviterId, inviteeId, gameId) {
+  try {
+    await pool.query(`
+      INSERT INTO player_game (
+        inviter_id, invitee_id, game_id
+      ) VALUES (
+        ?, ?, ?
+      )
+    `, [inviterId, inviteeId, gameId]);
+    return `Invite player done with ${inviteeId}-${gameId} record.`;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 module.exports = {
   getPlayerById,
   getPlayerByPlayerId,
@@ -149,4 +165,5 @@ module.exports = {
   getAllPlayers,
   getAnonymousNickname,
   addNewPlayer,
+  invitePlayerJoinGame
 };
