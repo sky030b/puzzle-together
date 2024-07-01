@@ -36,4 +36,8 @@ app.use(`/api/${API_VERSION}/players`, playerRoutes);
 app.use(`/api/${API_VERSION}/games`, gameRoutes);
 app.use(`/api/${API_VERSION}/chats`, chatRoutes);
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(path.join(__dirname, 'public/dist'), 'index.html'));
+});
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
