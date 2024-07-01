@@ -55,10 +55,10 @@ const CreateGamePage = () => {
         const playerInfo = res.data;
         setFormValues((prevValues) => ({
           ...prevValues,
-          owner_id: playerInfo.playerId,
+          owner_id: playerInfo.playerId
         }));
       } catch (error) {
-        // console.error(error);
+        console.error(error);
         alert('尚未登入或是登入階段已過期，請重新登入。');
         navigate('/signin');
       }
