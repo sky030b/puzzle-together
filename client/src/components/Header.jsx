@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-      <div className="container-fluid">
+      <div className="container-fluid justify-content-between">
         <NavLink className="navbar-brand" to="/">
           <img src="https://dsz5eydy8se7.cloudfront.net/puzzle-together.svg" alt="" width="30" height="24" className="d-inline-block align-text-top" />
           帕索兔蓋德
@@ -16,7 +16,7 @@ const Header = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             {isAuthenticated ? (
               <>
                 <li className="nav-item">
@@ -34,10 +34,6 @@ const Header = () => {
               </>
             )}
           </ul>
-          <form className="d-flex">
-            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-outline-success" type="submit">Search</button>
-          </form>
         </div>
       </div>
     </nav>
