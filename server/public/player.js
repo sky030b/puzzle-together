@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { messageInput, messageSendBtn } from './dom.js';
+import { invitePlayerInput, messageInput, messageSendBtn, sendInviteBtn } from './dom.js';
 import { getCookie } from './utils.js';
 import { getPlayerState, setPlayerState } from './variable.js';
 
@@ -51,6 +51,11 @@ export default async function initPlayer() {
       messageInput.placeholder = '說點什麼吧';
       messageInput.disabled = false;
       messageSendBtn.disabled = false;
+
+      invitePlayerInput.placeholder = '邀請好友一同遊玩～';
+      invitePlayerInput.disabled = false;
+      sendInviteBtn.textContent = '寄送邀請';
+      sendInviteBtn.disabled = false;
     }
     return 'playerInit Done.';
   } catch (error) {

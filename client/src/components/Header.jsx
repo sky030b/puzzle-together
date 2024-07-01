@@ -20,16 +20,16 @@ const Header = () => {
             {isAuthenticated ? (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" aria-current="page" to="/create-game">創建遊戲</NavLink>
+                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/create-game">創建遊戲</NavLink>
                 </li>
               </>
             ) : (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" aria-current="page" to="/signup">註冊</NavLink>
+                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/signup">註冊</NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" aria-current="page" to="/signin">登入</NavLink>
+                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/signin">登入</NavLink>
                 </li>
               </>
             )}

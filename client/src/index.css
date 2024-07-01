@@ -80,3 +80,7 @@ nav ul li a {
   padding: 20px;
   background-color: #f8f9fa;
 }
+
+.cursor-pointer {
+  cursor: pointer !important;
+}

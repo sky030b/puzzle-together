@@ -7,3 +7,5 @@ export const chatForm = document.querySelector('.chat-form');
 export const messageInput = document.querySelector('#message-input');
 export const messageSendBtn = document.querySelector('#message-send-btn');
 export const recordArea = document.getElementById('record-area');
+export const invitePlayerInput = document.querySelector('#invitePlayerInput');
+export const sendInviteBtn = document.querySelector('#send-invite-btn');

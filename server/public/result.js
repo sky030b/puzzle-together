@@ -11,17 +11,24 @@ function lockAllPuzzles() {
   })
 }
 
+function disableInviteModal() {
+  const navLinkUl = document.querySelector('#navbarSupportedContent ul');
+  const inviteNavItem = navLinkUl.querySelector('.invite-player-nav-item');
+  navLinkUl.removeChild(inviteNavItem);
+}
+
 function createResultNavLink() {
   const navLinkUl = document.querySelector('#navbarSupportedContent ul');
-  const existingNavLink = navLinkUl.querySelector('.result-nav-item');
-  if (existingNavLink) return;
-  navLinkUl.innerHTML += `
+  const existingNavItem = navLinkUl.querySelector('.result-nav-item');
+  if (existingNavItem) return;
+  navLinkUl.innerHTML = `
     <li class="result-nav-item nav-item">
-      <a class="nav-link show-result-btn" data-bs-toggle="modal" href="javascript:;"
+      <a class="nav-link cursor-pointer show-result-btn" data-bs-toggle="modal" href="javascript:;"
         data-bs-target="#exampleModal">
         查看成果圖
       </a>
     </li>
+    ${navLinkUl.innerHTML}
   `;
 }
 
@@ -295,6 +302,7 @@ function renderModalBody() {
 
 export default function showResult() {
   lockAllPuzzles();
+  disableInviteModal();
   createResultNavLink();
   createResultModal();
   renderModalBody();

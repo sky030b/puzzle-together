@@ -95,5 +95,9 @@ body, html {
 }
 
 .record-lines::-webkit-scrollbar {
-  display: none;  
+  display: none;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
 }

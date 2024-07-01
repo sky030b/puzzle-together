@@ -24,11 +24,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link invite-player" href="javascript:;">邀請玩家</a>
+            <li class="nav-item invite-player-nav-item">
+              <a class="nav-link cursor-pointer invite-player-btn" href="javascript:;" data-bs-toggle="modal"
+                data-bs-target="#invitePlayerModal">邀請玩家</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/">回首頁</a>
+              <a class="nav-link cursor-pointer" aria-current="page" href="/">回首頁</a>
             </li>
         </div>
       </div>
@@ -64,6 +65,35 @@
 
     <!-- Modal -->
     <div id="result-modal" class="result-modal"></div>
+
+    <div class="modal fade" id="invitePlayerModal" tabindex="-1" aria-labelledby="invitePlayerModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="invitePlayerModalTitle">邀請玩家</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="invite-form" class="invite-form w-100">
+              <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                  <label for="invitePlayerInput" class="col-form-label">請輸入欲邀請玩家之ID：</label>
+                </div>
+                <div class="col-auto">
+                  <input type="text" id="invitePlayerInput" class="form-control"
+                    aria-describedby="Please enter the player ID of the person you want to invite."
+                    placeholder="登入後即可邀請好友加入" disabled>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="cursor-pointer btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" id="send-invite-btn" class="send-invite-btn btn btn-primary" disabled>請先登入</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
@@ -76,6 +106,7 @@
   <script type="module" src="puzzle.js"></script>
   <script type="module" src="chat.js"></script>
   <script type="module" src="record.js"></script>
+  <script type="module" src="invite.js"></script>
   <script type="module" src="playground.js"></script>
 </body>
 
