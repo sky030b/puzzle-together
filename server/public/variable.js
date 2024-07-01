@@ -48,6 +48,7 @@ const playgroundState = {
   isInsideRecordArea: false,
   isModalOpen: false,
   timer: null,
+  img: null,
 
   gameId: '',
   title: '',
@@ -128,6 +129,10 @@ export function setPlaygroundStateByKey(key, value) {
     // eslint-disable-next-line no-alert
     alert('沒有指定的屬性，請再確認。');
   }
+}
+
+export function getPlaygroundState() {
+  return { ...playgroundState };
 }
 
 export function getPlaygroundStateByKey(key) {

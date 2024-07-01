@@ -359,13 +359,14 @@ export async function getRenderInfo() {
   }
 }
 
-function basicSetting(gameInfo) {
+function basicSetting(img, gameInfo) {
   const { title } = gameInfo;
   const gameTitle = document.querySelector('.game-title');
   gameTitle.textContent = title;
   gameTitle.addEventListener('click', () => window.location.reload());
 
   document.title = `帕索兔蓋德 - ${title}`;
+  setPlaygroundStateByKey('img', img);
   Object.entries(gameInfo).forEach(([key, value]) => {
     setPlaygroundStateByKey(key, value);
   });
@@ -377,7 +378,7 @@ export default async function renderGame() {
     const { questionImgUrl } = gameInfo;
     const img = await getImageDimensions(questionImgUrl);
 
-    basicSetting(gameInfo);
+    basicSetting(img, gameInfo);
     createPuzzles(img, gameInfo);
     createTargetBoxes(img, gameInfo);
     addDragAndDrop(gameInfo);

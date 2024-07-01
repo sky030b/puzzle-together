@@ -24,7 +24,7 @@ export function setupSocket() {
     alert('請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。');
   }
 
-  socket.on('setTimer', async (data) => {
+  socket.on('setTimer', (data) => {
     const {
       gameId, playDuration, isCompleted, startTime
     } = data;
@@ -33,7 +33,7 @@ export function setupSocket() {
 
       if (isCompleted) {
         renderPlayDuration(playDuration);
-        await showResult();
+        showResult();
         clearTimer();
         return;
       }

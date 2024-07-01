@@ -1,12 +1,14 @@
 /* eslint-disable no-param-reassign */
 import { getRenderInfo } from './puzzle.js';
 import { getImageDimensions } from './utils.js';
-import { getPlayerState, getPlaygroundStateByKey, setIsModalOpen } from './variable.js';
+import {
+  getPlayerState, getPlaygroundState, getPlaygroundStateByKey, setIsModalOpen
+} from './variable.js';
 
-function createResultPuzzles(img, gameInfo) {
+function createResultPuzzles(img) {
   const {
     rowQty, colQty, puzzles
-  } = gameInfo;
+  } = getPlaygroundState();
   const RESULT_MAX_DIMENSION = 400;
   const imgNow = img;
   if (imgNow.width > imgNow.height) {
@@ -48,8 +50,8 @@ function createResultPuzzles(img, gameInfo) {
   });
 }
 
-function createResultTargetBoxes(img, gameInfo) {
-  const { rowQty, colQty, puzzles } = gameInfo;
+function createResultTargetBoxes(img) {
+  const { rowQty, colQty, puzzles } = getPlaygroundState();;
 
   const scaledWidth = img.width * img.scale;
   const scaledHeight = img.height * img.scale;
@@ -189,13 +191,13 @@ function createResultModal() {
 }
 
 function getPlayersRecord() {
-  const lockedPuzzles = document.querySelectorAll('[data-locked-by]');
+  const lockedPuzzles = getPlaygroundStateByKey('puzzles').filter((puzzle) => puzzle.isLocked);
 
   const lockedByInfoMap = new Map();
 
-  lockedPuzzles.forEach((puzzleDiv) => {
-    const nickname = puzzleDiv.dataset.lockedBy;
-    const representColor = puzzleDiv.dataset.lockedColor;
+  lockedPuzzles.forEach((puzzle) => {
+    const nickname = puzzle.lockedBy;
+    const representColor = puzzle.lockedColor;
 
     if (lockedByInfoMap.has(nickname)) {
       lockedByInfoMap.get(nickname).point += 1;
@@ -262,7 +264,7 @@ function createResultRecord() {
   resultRecord.innerHTML = puzzlesRecordStr + playDurationStr;
 }
 
-async function renderModalBody() {
+function renderModalBody() {
   const modalBody = document.querySelector('.modal-body');
   modalBody.innerHTML = `
     <div>
@@ -273,22 +275,20 @@ async function renderModalBody() {
       <div id="result-record"></div>
     </div>
   `;
-  const gameInfo = await getRenderInfo();
-  const { questionImgUrl } = gameInfo;
-  const img = await getImageDimensions(questionImgUrl);
+  const img = getPlaygroundStateByKey('img');
 
-  createResultPuzzles(img, gameInfo);
-  createResultTargetBoxes(img, gameInfo);
+  createResultPuzzles(img);
+  createResultTargetBoxes(img);
   generateLockedBox();
   createResultRecord();
   const toggleOpacityBtn = document.querySelector('.toggle-opacity-button');
   toggleOpacityBtn.addEventListener('click', toggleContributionGraphOpacity);
 }
 
-export default async function showResult() {
+export default function showResult() {
   createResultNavLink();
   createResultModal();
-  await renderModalBody();
+  renderModalBody();
   const showResultBtn = document.querySelector('.show-result-btn');
   showResultBtn.click();
 }
