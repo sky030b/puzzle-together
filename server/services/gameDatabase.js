@@ -5,6 +5,23 @@ const pool = require('./createDatabasePool');
 const { uploadToS3 } = require('./createS3Client');
 const { invitePlayerJoinGame } = require('./playerDatabase');
 
+async function getGamePublicInfo(gameId) {
+  try {
+    const [{ is_public: isPublic }] = (await pool.query(`
+      SELECT 
+        is_public
+      FROM 
+        games 
+      WHERE 
+        game_id = ?
+    `, [gameId]))[0];
+    return isPublic;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function getGameBySerialId(id) {
   try {
     const [game] = (await pool.query(`
@@ -352,6 +369,7 @@ async function updateGameIsCompletedStatus(gameId) {
 }
 
 module.exports = {
+  getGamePublicInfo,
   getGameDurationByGameId,
   updateGameDurationByGameId,
   getRenderInfoByGameId,

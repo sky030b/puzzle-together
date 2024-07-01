@@ -1,11 +1,12 @@
 const express = require('express');
 const { getRenderInfo, createNewGame } = require('../controllers/gameController');
+const checkGameEntryMiddleware = require('../middleware/checkGameEntryMiddleware');
 const uploadImageMiddleware = require('../middleware/uploadImageMiddleware');
 
 const router = express.Router();
 
 // router.get('/', getGames);
-router.get('/:gameId', getRenderInfo);
+router.get('/:gameId', checkGameEntryMiddleware, getRenderInfo);
 
 router.post(
   '/',

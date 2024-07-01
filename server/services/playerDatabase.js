@@ -155,6 +155,18 @@ async function invitePlayerJoinGame(inviterId, inviteeId, gameId) {
     return error;
   }
 }
+async function checkoutInvited(playerId, gameId) {
+  try {
+    const [linkRecord] = await pool.query(`
+      SELECT * FROM player_game WHERE invitee_id = ? AND game_id = ?;
+    `, [playerId, gameId]);
+    console.log(linkRecord);
+    return linkRecord;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
 
 module.exports = {
   getPlayerById,
@@ -165,5 +177,6 @@ module.exports = {
   getAllPlayers,
   getAnonymousNickname,
   addNewPlayer,
-  invitePlayerJoinGame
+  invitePlayerJoinGame,
+  checkoutInvited
 };
