@@ -22,13 +22,26 @@ async function getPlayerById(id) {
 async function getPlayerByPlayerId(playerId) {
   try {
     const [player] = (await pool.query(`
-    SELECT 
-      player_id, email, nickname, represent_color,
-      games_played, games_completed, puzzles_locked, profile
-    FROM 
-      players 
-    WHERE 
-      player_id = ?
+      SELECT 
+        p.player_id, 
+        p.email, 
+        p.nickname, 
+        p.represent_color,
+        (SELECT COUNT(*) 
+          FROM player_game pg 
+          WHERE pg.invitee_id = p.player_id) AS games_played,
+        (SELECT COUNT(*) 
+          FROM player_game pg
+          JOIN games g ON pg.game_id = g.game_id
+          WHERE pg.invitee_id = p.player_id AND g.is_completed = 1) AS games_completed,
+        (SELECT COUNT(*)
+          FROM puzzles pu
+          WHERE pu.locked_by = p.nickname) AS puzzles_locked,
+        p.profile
+      FROM 
+        players p 
+      WHERE 
+        p.player_id = ?;
   `, [playerId]))[0];
     return player;
   } catch (error) {

@@ -7,9 +7,6 @@ CREATE TABLE players (
     represent_color VARCHAR(10) NOT NULL,
     -- current_title INT,   not yet
     is_room_public TINYINT(1) DEFAULT 0 NOT NULL,
-    games_played INT DEFAULT 0 NOT NULL,
-    games_completed INT DEFAULT 0 NOT NULL,
-    puzzles_locked INT DEFAULT 0,
     profile TEXT,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
     -- FOREIGN KEY (current_title) REFERENCES titles(id)   not yet
