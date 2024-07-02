@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-// import './Showcase.css'; // 你可以在這裡定義你的CSS樣式
+import { Link, useParams } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Showcase = () => {
   const { playerId } = useParams();
+  const { playerInfo } = useContext(AuthContext);
 
   const [games, setGames] = useState([]);
 
@@ -20,10 +21,6 @@ const Showcase = () => {
     };
     fetchGames();
   }, [playerId]);
-
-  const handleJoinGame = (gameId) => {
-    window.location.href = `/playground.html?gameId=${gameId}`;
-  };
 
   const getDifficultyBadgeClass = (difficulty) => {
     switch (difficulty) {
@@ -50,39 +47,48 @@ const Showcase = () => {
     return `${day ? `${day}天` : ''}${hr ? `${hr.toString().padStart(2, '0')}時` : ''}${min ? `${min.toString().padStart(2, '0')}分` : ''}${sec.toString().padStart(2, '0')}秒`;
   };
 
+  const isOwner = playerInfo && playerInfo.playerId === playerId;
+
   return (
-    <div className="container mt-4">
-      <div className="row row-cols-1 row-cols-md-3 g-4">
-        {games.map((game) => (
-          <div className="col" key={game.game_id}>
-            <div className="card h-100">
-              <div className="position-relative overflow-hidden" style={{ height: '400px' }}>
-                <img src={game.question_img_url} className="card-img-top img-fluid object-fit-cover" alt="Game Image" />
-                <div className="position-absolute bottom-0 end-0 p-2 bg-light text-dark" style={{ opacity: 0.8 }}>
-                  完成度：{game.completion_rate}%
+    <div className="container w-75 mt-4">
+      {games.length === 0 ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '150px' }}>
+          <h5>{isOwner ? '目前還未遊玩任何遊戲，快來加入/創建一個吧～' : '這位玩家目前還沒有參與任何遊戲，快來邀請他一起同樂～'}</h5>
+        </div>
+      ) : (
+        <div className="row row-cols-1 row-cols-md-3 g-4">
+          {games.map((game) => (
+            <div className="col" key={game.game_id}>
+              <div className="card h-100">
+                <div className="position-relative overflow-hidden image-container d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+                  <img src={game.question_img_url} className="card-img-top img-fluid object-fit-cover h-100 w-auto" alt="Game Image" />
+                  <div className="position-absolute bottom-0 end-0 p-2 bg-light text-dark" style={{ opacity: 0.8 }}>
+                    完成度：{game.completion_rate}%
+                  </div>
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">{game.title}</h5>
+                  <p className="card-text">創建者：{game.owner_nickname}</p>
+                  <div className="d-flex flex-wrap mb-2">
+                    <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>
+                    <span className={`badge rounded-pill ${getDifficultyBadgeClass(game.difficulty)} me-2`}>
+                      {game.difficulty === 'easy' ? '簡單' : game.difficulty === 'medium' ? '中等' : '困難'}
+                    </span>
+                    <span className={`badge rounded-pill ${getPublicStatusBadgeClass(game.is_public)}`}>
+                      {game.is_public ? '公開' : '私人'}
+                    </span>
+                  </div>
+                  <p className="card-text">遊戲時長：{formatPlayDuration(game.play_duration)}</p>
+                </div>
+                <div className="card-footer d-flex justify-content-between">
+                  <button className="btn btn-outline-primary">詳細資訊</button>
+                  <Link to={`/playground.html?gameId=${game.game_id}`} target="_blank" className="btn btn-primary">進入遊戲</Link>
                 </div>
               </div>
-              <div className="card-body">
-                <h5 className="card-title">{game.title}</h5>
-                <p className="card-text">創建者：{game.owner_nickname}</p>
-                <div className="d-flex flex-wrap mb-2">
-                  <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>
-                  <span className={`badge rounded-pill ${getDifficultyBadgeClass(game.difficulty)} me-2`}>
-                    {game.difficulty === 'easy' ? '簡單' : game.difficulty === 'medium' ? '中等' : '困難'}
-                  </span>
-                  <span className={`badge rounded-pill ${getPublicStatusBadgeClass(game.is_public)}`}>
-                    {game.is_public ? '公開' : '私人'}
-                  </span>                </div>
-                <p className="card-text">遊戲時長：{formatPlayDuration(game.play_duration)}</p>
-              </div>
-              <div className="card-footer d-flex justify-content-between">
-                <button className="btn btn-outline-primary">詳細資訊</button>
-                <button className="btn btn-primary" onClick={() => handleJoinGame(game.game_id)}>進入遊戲</button>
-              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
