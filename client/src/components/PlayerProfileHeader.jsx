@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const PlayerProfileHeader = () => {
   const { playerId } = useParams();
+  const { playerInfo } = useContext(AuthContext);
   const [playerData, setPlayerData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [profileText, setProfileText] = useState('');
@@ -11,10 +13,10 @@ const PlayerProfileHeader = () => {
   useEffect(() => {
     const fetchPlayerData = async () => {
       try {
-        const response = await axios.get(`/api/1.0/players/profile/${playerId}`);
-        setPlayerData(response.data);
-        setProfileText(response.data.profile);
-        console.log(response.data)
+        const res = await axios.get(`/api/1.0/players/profile/${playerId}`);
+        setPlayerData(res.data);
+        setProfileText(res.data.profile);
+        console.log(res.data);
       } catch (error) {
         console.error('Error fetching player data:', error);
       }
@@ -47,6 +49,8 @@ const PlayerProfileHeader = () => {
     return <div>Loading...</div>;
   }
 
+  const isOwner = playerInfo && playerInfo.playerId === playerId;
+
   return (
     <div className="player-profile-header d-flex">
       <div className="w-50 mx-auto">
@@ -59,19 +63,23 @@ const PlayerProfileHeader = () => {
         </div>
         <div className="player-id mb-3 d-flex align-items-center">
           <span className="me-3 align-middle">代表色：</span>
-          <div className="represent-color" style={{ width: '20px', height: '20px', backgroundColor: playerData.represent_color }}></div>
+          <div className="represent-color" title={playerData.represent_color} style={{ width: '20px', height: '20px', backgroundColor: playerData.represent_color }}></div>
         </div>
         <div className="profile mb-3">
-          {isEditing ? (
-            <>
-              <textarea className="form-control" value={profileText} onChange={handleProfileChange}></textarea>
-              <button className="btn btn-outline-primary mt-2" onClick={handleSaveProfile}>儲存</button>
-            </>
+          {isOwner ? (
+            isEditing ? (
+              <>
+                <textarea className="form-control" value={profileText} onChange={handleProfileChange}></textarea>
+                <button className="btn btn-outline-primary mt-2" onClick={handleSaveProfile}>儲存</button>
+              </>
+            ) : (
+              <>
+                <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile || '快來加點自我介紹，讓其他人更認識你吧～'}</div>
+                <button className="btn btn-outline-secondary mt-2" onClick={() => setIsEditing(true)}>編輯</button>
+              </>
+            )
           ) : (
-            <>
-              <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile}</div>
-              <button className="btn btn-outline-secondary mt-2" onClick={() => setIsEditing(true)}>編輯</button>
-            </>
+            <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile || '這位玩家什麼都沒有說╮(╯_╰)╭'}</div>
           )}
         </div>
       </div>
