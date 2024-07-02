@@ -10,7 +10,6 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
-  const [isRoomPublic, setIsRoomPublic] = useState(false);
   const {
     playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
   } = useContext(AuthContext);
@@ -33,8 +32,7 @@ const SignUpPage = () => {
       nickname: nickname.trim(),
       represent_color: representColor,
       email: email.trim(),
-      password: password,
-      is_room_public: isRoomPublic,
+      password: password
     };
 
     try {
@@ -125,22 +123,12 @@ const SignUpPage = () => {
               required
             />
           </div>
-          <div className="mb-3 d-flex">
-            <input
-              type="checkbox"
-              className="form-check-input me-2"
-              id="is_room_public"
-              name="is_room_public"
-              checked={isRoomPublic}
-              onChange={(e) => setIsRoomPublic(e.target.checked)}
-            />
-          </div>
           <Link className="go-to-signin text-center d-block mb-3 text-secondary" to="/signin">
             已有帳號？前往登入 -&gt;
           </Link>
 
           <button type="submit" className="signup-btn btn btn-secondary w-100 mb-3">註冊</button>
-          <button type="button" className="fb-signin-btn btn btn-primary w-100">使用 Google 登入</button>
+          {/* <button type="button" className="fb-signin-btn btn btn-primary w-100">使用 Google 登入</button> */}
         </form>
       </div>
     </div>

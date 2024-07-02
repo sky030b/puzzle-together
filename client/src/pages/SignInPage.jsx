@@ -73,7 +73,7 @@ const SignInPage = () => {
             尚無帳號？前往註冊 -&gt;
           </Link>
           <button type="submit" className="signin-btn btn btn-secondary w-100 mb-3">登入</button>
-          <button type="button" className="fb-signin-btn btn btn-primary w-100">使用 Google 登入</button>
+          {/* <button type="button" className="fb-signin-btn btn btn-primary w-100">使用 Google 登入</button> */}
         </form>
       </div>
     </div>

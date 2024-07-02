@@ -80,7 +80,7 @@ const Showcase = () => {
                   <p className="card-text">遊戲時長：{formatPlayDuration(game.play_duration)}</p>
                 </div>
                 <div className="card-footer d-flex justify-content-between">
-                  <button className="btn btn-outline-primary">詳細資訊</button>
+                  {/* <button className="btn btn-outline-primary">詳細資訊</button> */}
                   <Link to={`/playground.html?gameId=${game.game_id}`} target="_blank" className="btn btn-primary">進入遊戲</Link>
                 </div>
               </div>
