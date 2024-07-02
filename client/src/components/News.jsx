@@ -1,7 +1,9 @@
 import { useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import '../style/News.css'; // 假設你有一個 CSS 文件來處理樣式
+import PostCreation from '../components/PostCreation';
+import '../style/News.css';
+
 
 const initialPosts = [
   {
@@ -36,14 +38,8 @@ const News = () => {
     }
   };
 
-  const handleCreatePost = () => {
-    const newPostData = {
-      id: Date.now().toString(),
-      content: newPost,
-      comments: [],
-    };
-    setPosts([newPostData, ...posts]);
-    setNewPost('');
+  const handleCreatePost = (post) => {
+    setPosts([post, ...posts]);
   };
 
   const handleCancel = () => {
@@ -92,19 +88,7 @@ const News = () => {
   return (
     <div className="news">
       {playerInfo && playerInfo.playerId === playerId && (
-        <div className="create-post mb-4">
-          <textarea
-            className="form-control mb-2"
-            value={newPost}
-            onChange={handleNewPostChange}
-            placeholder="What's on your mind?"
-            maxLength="300"
-          />
-          <div className="d-flex justify-content-end">
-            <button className="btn btn-secondary me-2" onClick={handleCancel}>取消</button>
-            <button className="btn btn-primary" onClick={handleCreatePost}>發布</button>
-          </div>
-        </div>
+        <PostCreation playerId={playerId} onCreatePost={handleCreatePost} />
       )}
       <div className="posts">
         {posts.map((post) => (
