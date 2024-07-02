@@ -71,7 +71,7 @@ async function signup(req, res) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const playerInfo = {
-      playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'on'
+      playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'true'
     };
     const newPlayer = await addNewPlayer(playerInfo);
     if (newPlayer instanceof Error) throw newPlayer;

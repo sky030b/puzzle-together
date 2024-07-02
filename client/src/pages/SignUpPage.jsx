@@ -134,9 +134,6 @@ const SignUpPage = () => {
               checked={isRoomPublic}
               onChange={(e) => setIsRoomPublic(e.target.checked)}
             />
-            <label className="form-label form-check-label" htmlFor="is_room_public">
-              是否開放其他玩家查看您的遊戲室
-            </label>
           </div>
           <Link className="go-to-signin text-center d-block mb-3 text-secondary" to="/signin">
             已有帳號？前往登入 -&gt;
