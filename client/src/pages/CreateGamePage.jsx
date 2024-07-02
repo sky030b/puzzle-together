@@ -58,7 +58,7 @@ const CreateGamePage = () => {
           owner_id: playerInfo.playerId
         }));
       } catch (error) {
-        console.error(error);
+        console.error(error.response.data);
         alert('尚未登入或是登入階段已過期，請重新登入。');
         navigate('/signin');
       }
