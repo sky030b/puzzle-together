@@ -5,8 +5,7 @@ async function getPlayerById(id) {
   try {
     const [player] = (await pool.query(`
     SELECT 
-      player_id, email, nickname, represent_color, is_room_public,
-      games_played, games_completed, puzzles_locked, profile
+      player_id, email, nickname, represent_color, is_room_public, profile
     FROM 
       players 
     WHERE 
@@ -66,8 +65,7 @@ async function getPlayerByEmail(email) {
   try {
     const [player] = (await pool.query(`
     SELECT 
-      player_id, email, nickname, represent_color, is_room_public,
-      games_played, games_completed, puzzles_locked, profile
+      player_id, email, nickname, represent_color, is_room_public, profile
     FROM 
       players 
     WHERE 
@@ -102,8 +100,7 @@ async function getAllPlayers() {
   try {
     const [players] = await pool.query(`
     SELECT 
-      player_id, email, nickname, represent_color, is_room_public,
-      games_played, games_completed, puzzles_locked, profile
+      player_id, email, nickname, represent_color, is_room_public, profile
     FROM 
       players
   `);
