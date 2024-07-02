@@ -7,7 +7,9 @@ import { setCookie } from '../utils';
 const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { playerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+  const {
+    playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
+  } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,6 +25,7 @@ const SignInPage = () => {
       const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
+      setPlayerInfo(playerInfo);
       alert('登入成功。');
       navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {

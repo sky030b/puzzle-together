@@ -11,7 +11,9 @@ const SignUpPage = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [isRoomPublic, setIsRoomPublic] = useState(false);
-  const { playerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+  const {
+    playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
+  } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -37,11 +39,12 @@ const SignUpPage = () => {
 
     try {
       const res = await axios.post('/api/1.0/players/signup', signupInfo);
-      const { accessToken, accessExpired } = res.data.data;
+      const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
+      setPlayerInfo(playerInfo);
       alert('註冊成功。');
-      navigate(`/profile/${res.data.data.playerInfo.playerId}`);
+      navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
       alert(error.response.data);
