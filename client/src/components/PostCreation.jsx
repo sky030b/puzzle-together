@@ -25,11 +25,9 @@ const PostCreation = ({ playerId, onCreatePost }) => {
   };
 
   useEffect(() => {
-    if (showModal) {
-      fetchGames();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showModal]);
+    fetchGames();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setFilteredGames(
@@ -45,27 +43,29 @@ const PostCreation = ({ playerId, onCreatePost }) => {
 
   const handleSubmit = async () => {
     if (!selectedGame || postContent.length > 150) {
-      alert('Please select a game and ensure the post content is under 150 characters.');
+      alert('請確認是否有選取一個相關關卡並確認發文內容少於150個字。');
       return;
     }
 
     const newPostData = {
       id: Date.now().toString(),
-      player_id: playerId,
-      game_id: selectedGame.game_id,
+      playerId,
+      gameId: selectedGame.game_id,
       content: postContent,
       comments: [],
     };
 
     try {
       await axios.post('/api/1.0/posts', {
-        player_id: playerId,
-        game_id: selectedGame.game_id,
+        gameId: selectedGame.game_id,
         content: postContent
       });
       alert('Post created successfully!');
       setShowModal(false);
       onCreatePost(newPostData);
+      setPostContent('');
+      setSelectedGame(null);
+      setSearchTerm('');
     } catch (error) {
       console.error('Error creating post:', error);
     }
