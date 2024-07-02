@@ -4,7 +4,7 @@ const { nanoid } = require('nanoid');
 const {
   getAllPlayers, getAnonymousNickname, addNewPlayer,
   getPlayerByPlayerId, setPlayerProfileByPlayerId,
-  getPlayerByEmail, getHashPWDByEmail, invitePlayerJoinGame
+  getPlayerByEmail, getHashPWDByEmail
 } = require('../services/playerDatabase');
 
 async function getPlayers(req, res) {
@@ -135,19 +135,7 @@ async function generateAnonymousPlayer(req, res) {
   }
 }
 
-async function invitePlayer(req, res) {
-  try {
-    const { inviterId, inviteeId, gameId } = req.body;
-    const invitePLayerResult = await invitePlayerJoinGame(inviterId, inviteeId, gameId);
-    if (invitePLayerResult instanceof Error) throw invitePLayerResult;
-
-    return res.status(200).send(invitePLayerResult);
-  } catch (error) {
-    return res.status(500).send(error.message);
-  }
-}
-
 module.exports = {
   getPlayers, getPlayerInfo, getPlayerProfile, updatePlayerProfile,
-  signup, signin, generateAnonymousPlayer, invitePlayer
+  signup, signin, generateAnonymousPlayer
 };

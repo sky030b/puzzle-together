@@ -140,34 +140,6 @@ async function addNewPlayer(info) {
   }
 }
 
-async function invitePlayerJoinGame(inviterId, inviteeId, gameId) {
-  try {
-    await pool.query(`
-      INSERT INTO player_game (inviter_id, invitee_id, game_id)
-      SELECT * FROM (SELECT ? AS inviter_id_value, ? AS invitee_id_value, ? AS game_id_value) AS tmp
-      WHERE NOT EXISTS (
-        SELECT 1 FROM player_game WHERE invitee_id = ? AND game_id = ?
-      ) LIMIT 1;
-    `, [inviterId, inviteeId, gameId, inviteeId, gameId]);
-    return `Invite player done with ${inviteeId}-${gameId} record.`;
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
-
-async function checkoutInvited(playerId, gameId) {
-  try {
-    const [linkRecord] = await pool.query(`
-      SELECT * FROM player_game WHERE invitee_id = ? AND game_id = ?;
-    `, [playerId, gameId]);
-    console.log(linkRecord);
-    return linkRecord;
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
 
 module.exports = {
   getPlayerById,
@@ -177,7 +149,5 @@ module.exports = {
   getHashPWDByEmail,
   getAllPlayers,
   getAnonymousNickname,
-  addNewPlayer,
-  invitePlayerJoinGame,
-  checkoutInvited
+  addNewPlayer
 };

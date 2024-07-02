@@ -1,5 +1,5 @@
 const { getGamePublicInfo } = require("../services/gameDatabase");
-const { checkoutInvited } = require("../services/playerDatabase");
+const { checkoutInvited } = require("../services/playerGameDatabase");
 const authenticateToken = require("./authenticateToken");
 
 const checkGameEntryMiddleware = async (req, res, next) => {

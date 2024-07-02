@@ -3,7 +3,7 @@ const { nanoid } = require('nanoid');
 
 const pool = require('./createDatabasePool');
 const { uploadToS3 } = require('./createS3Client');
-const { invitePlayerJoinGame } = require('./playerDatabase');
+const { invitePlayerJoinGame } = require('./playerGameDatabase');
 
 async function getGamePublicInfo(gameId) {
   try {
