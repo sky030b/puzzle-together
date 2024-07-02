@@ -5,8 +5,8 @@ import SignUpPage from '../pages/SignUpPage';
 import SignInPage from '../pages/SignInPage';
 import PlayerProfilePage from '../pages/PlayerProfilePage';
 import News from '../components/News';
-// import Showcase from '../pages/Showcase';
-// import Playground from '../pages/Playground';
+import Showcase from '../components/Showcase';
+// import Playground from '../components/Playground';
 import CreateGamePage from '../pages/CreateGamePage';
 import NotFoundPage from '../pages/NotFoundPage';
 
@@ -20,8 +20,8 @@ const AppRoutes = () => {
         <Route path="create-game" element={<CreateGamePage />} />
         <Route path="profile/:playerId" element={<PlayerProfilePage />}>
           <Route path="news" element={<News />} />
-          {/* <Route path="showcase" element={<Showcase />} />
-          <Route path="playground" element={<Playground />} /> */}
+          <Route path="showcase" element={<Showcase />} />
+          {/* <Route path="playground" element={<Playground />} /> */}
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
