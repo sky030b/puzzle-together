@@ -6,7 +6,6 @@ const checkGameEntryMiddleware = async (req, res, next) => {
   const { gameId } = req.params;
 
   const isPublic = await getGamePublicInfo(gameId);
-  console.log(isPublic);
   if (isPublic) return next();
 
   authenticateToken(req, res, async (err) => {

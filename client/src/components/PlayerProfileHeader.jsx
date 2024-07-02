@@ -16,7 +16,6 @@ const PlayerProfileHeader = () => {
         const res = await axios.get(`/api/1.0/players/profile/${playerId}`);
         setPlayerData(res.data);
         setProfileText(res.data.profile);
-        console.log(res.data);
       } catch (error) {
         console.error('Error fetching player data:', error);
       }

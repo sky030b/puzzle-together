@@ -26,7 +26,6 @@ function getPlayerInfo(req, res) {
 async function getPlayerProfile(req, res) {
   const { playerId } = req.params;
   const playerProfile = await getPlayerByPlayerId(playerId);
-  console.log(playerProfile)
   return res.status(200).send(playerProfile);
 }
 

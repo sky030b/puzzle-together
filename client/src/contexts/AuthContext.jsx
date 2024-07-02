@@ -11,7 +11,6 @@ const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const res = await axios.get('/api/1.0/players/playerInfo');
-        console.log(res);
         setIsAuthenticated(true);
         setPlayerInfo(res.data);
       } catch (error) {

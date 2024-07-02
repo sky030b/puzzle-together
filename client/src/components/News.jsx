@@ -24,7 +24,6 @@ const initialPosts = [
 const News = () => {
   const { playerId } = useParams();
   const { playerInfo } = useContext(AuthContext);
-  console.log(playerInfo, playerId, 5465)
   const [posts, setPosts] = useState(initialPosts);
   const [newPost, setNewPost] = useState('');
   const [editingPostId, setEditingPostId] = useState(null);

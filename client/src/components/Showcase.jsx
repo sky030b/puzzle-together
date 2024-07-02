@@ -14,7 +14,6 @@ const Showcase = () => {
       try {
         const res = await axios.get(`/api/1.0/players/${playerId}/played-games`);
         setGames(res.data);
-        console.log(res.data);
       } catch (error) {
         console.error('Error fetching games:', error);
       }
