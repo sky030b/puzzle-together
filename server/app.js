@@ -30,11 +30,13 @@ const PORT = process.env.PORT || 3000;
 
 const playerRoutes = require('./routers/playerRoutes');
 const gameRoutes = require('./routers/gameRoutes');
-const chatRoutes = require('./routers/chatRoutes.js');
+const chatRoutes = require('./routers/chatRoutes');
+const postRoutes = require('./routers/postRoutes');
 
 app.use(`/api/${API_VERSION}/players`, playerRoutes);
 app.use(`/api/${API_VERSION}/games`, gameRoutes);
 app.use(`/api/${API_VERSION}/chats`, chatRoutes);
+app.use(`/api/${API_VERSION}/posts`, postRoutes);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(path.join(__dirname, 'public/dist'), 'index.html'));

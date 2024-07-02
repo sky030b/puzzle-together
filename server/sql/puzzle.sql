@@ -107,9 +107,16 @@ CREATE TABLE chat_logs (
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
 
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    player_id VARCHAR(255) NOT NULL,
+    game_id VARCHAR(255) NOT NULL,
+    content TEXT,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
+);
 
 DROP TABLE chat_logs;
-DROP TABLE anonymous_players;
 DROP TABLE puzzles;
 DROP TABLE player_game;
 DROP TABLE games;
@@ -131,15 +138,6 @@ CREATE TABLE user_title (
     PRIMARY KEY (player_id, title_id),
     FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
     FOREIGN KEY (title_id) REFERENCES titles(id) ON DELETE CASCADE
-);
-
-CREATE TABLE posts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    player_id VARCHAR(255) NOT NULL,
-    media VARCHAR(255),
-    content TEXT,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments (
