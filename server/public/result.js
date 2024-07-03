@@ -8,6 +8,7 @@ function lockAllPuzzles() {
   puzzleDivs.forEach((puzzleDiv) => {
     puzzleDiv.dataset.isLocked = 'true';
     puzzleDiv.classList.add('locked');
+    puzzleDiv.style.cursor = 'default';
   })
 }
 

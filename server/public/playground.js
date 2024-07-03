@@ -93,7 +93,7 @@ container.addEventListener('wheel', (e) => {
 
 container.addEventListener('mousedown', (e) => {
   if (e.target === canvas || e.target === container || e.target.parentNode === targetContainer
-    || e.target.parentNode.parentNode === targetContainer) {
+    || e.target.parentNode.parentNode === targetContainer || e.target.dataset.isLocked === 'true') {
     e.target.style.cursor = 'move';
     isDraggingCanvas = true;
     startX = e.pageX;
