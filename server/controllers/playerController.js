@@ -67,6 +67,9 @@ async function signup(req, res) {
       email, password, nickname, represent_color: representColor, is_room_public: isRoomPublic
     } = req.body;
 
+    if (nickname.trim().startsWith('匿名'))
+      return res.status(400).send('404 Bad Request: It is forbidden to set nickname starting with "匿名".');
+
     const playerId = nanoid(10);
     const hashedPassword = await bcrypt.hash(password, 10);
 

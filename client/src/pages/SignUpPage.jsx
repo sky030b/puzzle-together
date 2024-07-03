@@ -10,7 +10,6 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
-  const [isRoomPublic, setIsRoomPublic] = useState(false);
   const {
     playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
   } = useContext(AuthContext);
@@ -29,12 +28,13 @@ const SignUpPage = () => {
       return;
     }
 
+    if (nickname.trim().startsWith('匿名')) return alert('禁止以「匿名」為開頭設定暱稱。');
+
     const signupInfo = {
       nickname: nickname.trim(),
       represent_color: representColor,
       email: email.trim(),
-      password: password,
-      is_room_public: isRoomPublic,
+      password: password
     };
 
     try {
@@ -125,16 +125,7 @@ const SignUpPage = () => {
               required
             />
           </div>
-          <div className="mb-3 d-flex">
-            <input
-              type="checkbox"
-              className="form-check-input me-2"
-              id="is_room_public"
-              name="is_room_public"
-              checked={isRoomPublic}
-              onChange={(e) => setIsRoomPublic(e.target.checked)}
-            />
-          </div>
+          
           <Link className="go-to-signin text-center d-block mb-3 text-secondary" to="/signin">
             已有帳號？前往登入 -&gt;
           </Link>
