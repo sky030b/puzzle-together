@@ -64,37 +64,47 @@ body, html {
   position: absolute;
 }
 
-#chat-area {
-  width: 20vw;
-  height: 40vh;
+#chat-area, #record-area {
+  max-height: 40vh;
   opacity: 0.2;
 }
 
-#chat-area:hover {
+#record-area:hover, #chat-area:hover {
   opacity: 0.8;
 }
 
-.chat-content-lines>* {
-  width: auto;
-  max-width: 90%;
+#chat-area {
+  width: 20vw;
 }
 
 #record-area {
-  /* width: 20vw; */
-  height: 40vh;
-  opacity: 0.2;
+  max-width: 15vw;
 }
 
-#record-area:hover {
-  opacity: 0.8;
+.chat-content-lines, .chat-form {
+  display: none;
+}
+
+#chat-area:hover .chat-content-lines, #chat-area:hover .chat-form {
+  display: block;
 }
 
 .record-lines {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+}
+
+#record-area:hover .record-lines {
+  max-height: 35vh;
+}
+
+.record-lines, .chat-content-lines {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.record-lines::-webkit-scrollbar {
+.record-lines::-webkit-scrollbar, .chat-content-lines::-webkit-scrollbar {
   display: none;
 }
 
