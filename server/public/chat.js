@@ -5,7 +5,7 @@ import {
   chatArea, chatContent, chatForm, messageInput, messageSendBtn
 } from './dom.js';
 import { socket } from './socket.js';
-import { getFormattedTime } from './utils.js';
+import { getFormattedTime, returnChatMessageFormat } from './utils.js';
 import { getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
 
 chatArea.addEventListener('mouseenter', () => {
@@ -27,13 +27,9 @@ async function getChatHistory() {
 export default async function renderChatHistory() {
   try {
     const chatHistoryInfo = await getChatHistory();
-    const str = chatHistoryInfo.map((messageInfo) => `    
-        <div class="d-flex gap-2 mb-2">
-          <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${messageInfo.nickname}">${messageInfo.nickname[0]}</div>
-          <div class="rounded bg-light text-break p-2">${messageInfo.message}</div>
-          <small class="align-self-end text-light">${getFormattedTime(messageInfo.create_at)}</small>
-        </div>
-      `).join('');
+    const str = chatHistoryInfo.map(
+      (messageInfo) => returnChatMessageFormat(messageInfo, getPlayerState().nickname)
+    ).join('');
     chatContent.innerHTML = str;
     chatContent.scrollTop = chatContent.scrollHeight;
     return 'renderChatHistory Done.';

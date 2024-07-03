@@ -3,7 +3,7 @@
 import { chatContent } from './dom.js';
 import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import showResult from './result.js';
-import { getFormattedTime } from './utils.js';
+import { getFormattedTime, returnChatMessageFormat } from './utils.js';
 import {
   clearTimer, setTimer,
   getCurrentGameId, getPlayerState, setPlaygroundStateByKey,
@@ -127,16 +127,10 @@ export function setupSocket() {
   });
 
   socket.on('sendNewMessage', (data) => {
-    const { gameId, nickname, message } = data;
+    const { gameId } = data;
 
     if (gameId === roomId) {
-      const str = `
-        <div class="d-flex gap-2 mb-2">
-          <div class="rounded-circle bg-light p-2 lh-1 align-self-start" title="${nickname}">${nickname[0]}</div>
-          <div class="rounded bg-light text-break p-2">${message}</div>
-          <small class="align-self-end text-light">${getFormattedTime()}</small>
-        </div>
-      `;
+      const str = returnChatMessageFormat(data, getPlayerState().nickname);;
       chatContent.innerHTML += str;
       chatContent.scrollTop = chatContent.scrollHeight;
     }

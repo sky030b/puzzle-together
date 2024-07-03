@@ -37,3 +37,13 @@ export function setCookie(key, value, expireSec = 4 * 60 * 60) {
 export function getFormattedTime(timestamp = Date.now()) {
   return `${new Date(timestamp).getHours().toString().padStart(2, '0')}:${new Date(timestamp).getMinutes().toString().padStart(2, '0')}`;
 }
+
+export function returnChatMessageFormat(messageInfo, screenIsWhos) {
+  return `
+    <div class="d-flex gap-2 mb-2${messageInfo.nickname === screenIsWhos ? ' flex-row-reverse' : ''}">
+      <div class="rounded-circle ${messageInfo.nickname === screenIsWhos ? 'bg-primary text-light' : 'bg-light'} p-2 lh-1 align-self-start" title="${messageInfo.nickname}">${messageInfo.nickname[0]}</div>
+      <div class="rounded ${messageInfo.nickname === screenIsWhos ? 'bg-primary text-light' : 'bg-light'} text-break p-2">${messageInfo.message}</div>
+      <small class="align-self-end text-light">${getFormattedTime(messageInfo.create_at ? messageInfo.create_at : undefined)}</small>
+    </div>
+  `;
+}
