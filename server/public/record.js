@@ -99,9 +99,9 @@ export function renderPlayersRecord(onlinePlayers) {
 
   const { nickname } = getPlayerState();
   const str = sortedRecords.map((recordInfo) => `
-    <div class='d-flex justify-content-${difficulty === 'hard' ? 'center' : 'between'} mb-2'>
-      <div class="player-nickname ${difficulty === 'hard' ? 'text-center' : ''} text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'}">${recordInfo.nickname}</div>
-      ${difficulty === 'hard' ? '' : `<div class="lock-puzzle-num text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'}">${recordInfo.point}</div>`}
+    <div class="d-flex justify-content-${difficulty === 'hard' ? 'center' : 'between'} mb-2">
+      <div class="player-nickname text-truncate ${difficulty === 'hard' ? 'text-center' : ''} text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'} w-75 overflow-hidden">${recordInfo.nickname}</div>
+      ${difficulty === 'hard' ? '' : `<div class="lock-puzzle-num text-truncate text-${nickname === recordInfo.nickname ? 'warning' : 'white'}${recordInfo.isOnline ? '' : '-50'} w-25 text-end">${recordInfo.point}</div>`}
     </div >
   `).join('');
   const recordLinesDiv = document.querySelector('.record-lines');
