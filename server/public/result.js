@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import {
-  getPlayerState, getPlaygroundState, getPlaygroundStateByKey, setIsModalOpen
+  getCurrentGameId, getPlayerState, getPlaygroundState,
+  getPlaygroundStateByKey, setIsModalOpen
 } from './variable.js';
 
 function lockAllPuzzles() {
@@ -23,6 +24,11 @@ function createResultNavLink() {
   const existingNavItem = navLinkUl.querySelector('.result-nav-item');
   if (existingNavItem) return;
   navLinkUl.innerHTML = `
+    <li class="playback-nav-item nav-item">
+      <a class="nav-link cursor-pointer show-playback-btn">
+        查看精彩回放
+      </a>
+    </li>
     <li class="result-nav-item nav-item">
       <a class="nav-link cursor-pointer show-result-btn" data-bs-toggle="modal" href="javascript:;"
         data-bs-target="#exampleModal">
@@ -31,6 +37,13 @@ function createResultNavLink() {
     </li>
     ${navLinkUl.innerHTML}
   `;
+
+  const showPlaybackBtn = document.querySelector('.show-playback-btn');
+  showPlaybackBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const res = await axios.get(`/api/1.0/games/${getCurrentGameId()}/playback`);
+    console.log(res);
+  })
 }
 
 function createResultPuzzles(img) {
