@@ -46,7 +46,7 @@ CREATE TABLE player_game (
 
 CREATE TABLE puzzles (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    puzzle_id VARCHAR(255) NOT NULL,
+    puzzle_id VARCHAR(255) NOT NULL UNIQUE,
     game_id VARCHAR(255) NOT NULL,
     target_id INT NOT NULL,
     top_ratio DECIMAL(10, 3) NOT NULL,
@@ -116,6 +116,21 @@ CREATE TABLE posts (
     FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE movements (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    puzzle_id VARCHAR(255) NOT NULL,
+    game_id VARCHAR(255) NOT NULL,
+    top_ratio DECIMAL(10, 3) NOT NULL,
+    left_ratio DECIMAL(10, 3) NOT NULL,
+    moved_color VARCHAR(7) DEFAULT NULL,
+    moved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (puzzle_id) REFERENCES puzzles(puzzle_id) ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE movements;
 DROP TABLE chat_logs;
 DROP TABLE puzzles;
 DROP TABLE player_game;
@@ -148,17 +163,4 @@ CREATE TABLE comments (
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-);
-
-CREATE TABLE movements (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    puzzle_id VARCHAR(255) NOT NULL,
-    game_id VARCHAR(255) NOT NULL,
-    top_ratio DECIMAL(10, 3) NOT NULL,
-    left_ratio DECIMAL(10, 3) NOT NULL,
-    moved_by VARCHAR(255) NOT NULL,
-    moved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    FOREIGN KEY (puzzle_id) REFERENCES puzzles(puzzle_id) ON DELETE CASCADE,
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
-    -- FOREIGN KEY (moved_by) REFERENCES players(player_id) ON DELETE CASCADE 應該會是暱稱而不是id，為登入使用者不會有id
 );
