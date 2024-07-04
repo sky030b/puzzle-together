@@ -13,7 +13,7 @@ import {
 import { getFormattedNowTime, getImageDimensions } from './utils.js';
 import { socket } from './socket.js';
 
-const puzzleTargetMap = {};
+export const puzzleTargetMap = {};
 
 function createPuzzles(img, gameInfo) {
   const {
@@ -44,7 +44,7 @@ function createPuzzles(img, gameInfo) {
       targetId, puzzleId, topRatio, leftRatio, isLocked, lockedBy, lockedColor, zIndex
     } = puzzleInfo;
 
-    puzzleTargetMap[targetId] = puzzleId;
+    puzzleTargetMap[`target${targetId}`] = puzzleId;
 
     const piece = document.createElement('div');
     piece.id = puzzleId;
@@ -294,7 +294,7 @@ function addDragAndDrop(gameInfo) {
     }
 
     targetBoxes.forEach((target) => {
-      const targetId = parseInt(target.id.replace('target', ''), 10);
+      const targetId = target.id;
       const pieceId = selectedPiece.id;
       const overlapRatio = calculateOverlap(selectedPiece, target);
       if (isNearTarget(selectedPiece, target) && overlapRatio >= getOverlapRatioByDifficulty(difficulty)) {
@@ -321,7 +321,7 @@ function addDragAndDrop(gameInfo) {
         }
 
         puzzleTargetMap[targetId] === pieceId
-          ? emitUpdateAndLockPiece(target.id, nickname, representColor)
+          ? emitUpdateAndLockPiece(targetId, nickname, representColor)
           : emitUpdatePiece();
       } else emitUpdatePiece();
     });
