@@ -10,7 +10,7 @@ import {
   setPlaygroundStateByKey
 } from './variable.js';
 
-import { getImageDimensions } from './utils.js';
+import { getFormattedNowTime, getImageDimensions } from './utils.js';
 import { socket } from './socket.js';
 
 const puzzleTargetMap = {};
@@ -244,7 +244,9 @@ function addDragAndDrop(gameInfo) {
       isLocked: false,
       lockedBy: null,
       lockedColor: null,
-      zIndex: '5'
+      zIndex: '5',
+      movedColor: getPlayerState().representColor,
+      movedAt: getFormattedNowTime()
     });
   }
 
@@ -265,7 +267,9 @@ function addDragAndDrop(gameInfo) {
         isLocked: false,
         lockedBy: null,
         lockedColor: null,
-        zIndex: selectedPiece.style.zIndex
+        zIndex: selectedPiece.style.zIndex,
+        movedColor: getPlayerState().representColor,
+        movedAt: getFormattedNowTime()
       });
     }
 
@@ -283,7 +287,9 @@ function addDragAndDrop(gameInfo) {
         isLocked: true,
         lockedBy: nickname,
         lockedColor: representColor,
-        zIndex: selectedPiece.style.zIndex
+        zIndex: selectedPiece.style.zIndex,
+        movedColor: representColor,
+        movedAt: getFormattedNowTime()
       });
     }
 

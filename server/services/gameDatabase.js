@@ -373,6 +373,33 @@ async function updateGameIsCompletedStatus(gameId) {
   return affectedRows;
 }
 
+async function savePuzzleMovementToDB(data) {
+  try {
+
+    const values = data.map(item => [
+      item.puzzleId,
+      item.gameId,
+      item.topRatio.toFixed(3),
+      item.leftRatio.toFixed(3),
+      item.movedColor,
+      item.movedAt
+    ]);
+
+    const sql = `
+      INSERT INTO movements (
+        puzzle_id, game_id, top_ratio, left_ratio, moved_color, moved_at
+      ) VALUES ?
+    `;
+
+    const res = (await pool.query(sql, [values]))[0];
+    const { affectedRows } = res;
+    return affectedRows;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 module.exports = {
   getGamePublicInfo,
   getGameDurationByGameId,
@@ -383,5 +410,6 @@ module.exports = {
   updatePuzzleLocation,
   getGameCompletionInfo,
   lockPuzzleBySomeone,
-  updateGameIsCompletedStatus
+  updateGameIsCompletedStatus,
+  savePuzzleMovementToDB
 };

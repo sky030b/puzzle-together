@@ -2,6 +2,7 @@ const {
   updatePuzzleLocation, lockPuzzleBySomeone, getGameDurationByGameId,
   updateGameDurationByGameId, getGameCompletionInfo, updateGameIsCompletedStatus
 } = require('./gameDatabase');
+const { savePuzzleMovementToRedis, savePuzzleMovementToDBWithPrefix } = require('./puzzleRedis');
 
 const roomsInfo = {};
 
@@ -42,11 +43,13 @@ const socket = (io) => {
       io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
 
       socketio.on('movePiece', async (data) => {
+        await savePuzzleMovementToRedis(data);
         socketio.to(roomId).emit('movePiece', data);
       });
 
       socketio.on('updatePiece', async (data) => {
         await updatePuzzleLocation(data);
+        await savePuzzleMovementToRedis(data);
         socketio.to(roomId).emit('updatePiece', data);
       });
 
@@ -56,6 +59,7 @@ const socket = (io) => {
 
       socketio.on('updateAndLockPiece', async (data) => {
         await updatePuzzleLocation(data);
+        await savePuzzleMovementToRedis(data);
         const { isCompleted } = await lockPuzzleBySomeone(data);
         io.to(roomId).emit('updateAndLockPiece', data);
         io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
@@ -63,6 +67,7 @@ const socket = (io) => {
           await updateDurationToDB(roomId);
           await updateGameIsCompletedStatus(roomId);
           await setTimerFromDB(roomId);
+          await savePuzzleMovementToDBWithPrefix(`movement-${roomId}`);
           io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
         }
       });
