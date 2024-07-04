@@ -1,15 +1,15 @@
 /* eslint-disable no-param-reassign */
+import { puzzleTargetMap } from './puzzle.js';
 import {
   getCurrentGameId, getPlayerState, getPlaygroundState,
   getPlaygroundStateByKey, setIsModalOpen
 } from './variable.js';
 
 function lockAllPuzzles() {
-  const puzzleDivs = document.querySelectorAll('.puzzle-piece');
-  puzzleDivs.forEach((puzzleDiv) => {
-    puzzleDiv.dataset.isLocked = 'true';
-    puzzleDiv.classList.add('locked');
-    puzzleDiv.style.cursor = 'default';
+  Object.entries(puzzleTargetMap).forEach(([targetId, puzzleId]) => {
+    const targetBox = document.getElementById(targetId);
+    const puzzleDiv = document.getElementById(puzzleId);
+    targetBox.appendChild(puzzleDiv);
   })
 }
 
