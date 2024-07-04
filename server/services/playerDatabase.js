@@ -4,13 +4,13 @@ const pool = require('./createDatabasePool');
 async function getPlayerById(id) {
   try {
     const [player] = (await pool.query(`
-    SELECT 
-      player_id, email, nickname, represent_color, is_room_public, profile
-    FROM 
-      players 
-    WHERE 
-      id = ?
-  `, [id]))[0];
+      SELECT 
+        player_id, email, nickname, represent_color, is_room_public, profile
+      FROM 
+        players 
+      WHERE 
+        id = ?
+    `, [id]))[0];
     return player;
   } catch (error) {
     console.error(error);
@@ -64,13 +64,13 @@ async function setPlayerProfileByPlayerId(playerId, profile) {
 async function getPlayerByEmail(email) {
   try {
     const [player] = (await pool.query(`
-    SELECT 
-      player_id, email, nickname, represent_color, is_room_public, profile
-    FROM 
-      players 
-    WHERE 
-      email = ?
-  `, [email]))[0];
+      SELECT 
+        player_id, email, nickname, represent_color, is_room_public, profile
+      FROM 
+        players 
+      WHERE 
+        email = ?
+    `, [email]))[0];
     return player;
   } catch (error) {
     console.error(error);
@@ -81,13 +81,13 @@ async function getPlayerByEmail(email) {
 async function getHashPWDByEmail(email) {
   try {
     const [player] = (await pool.query(`
-    SELECT 
-      password 
-    From 
-      players 
-    WHERE 
-      email = ?
-  `, [email]))[0];
+      SELECT 
+        password 
+      From 
+        players 
+      WHERE 
+        email = ?
+    `, [email]))[0];
 
     return player ? player.password : null;
   } catch (error) {
@@ -99,11 +99,11 @@ async function getHashPWDByEmail(email) {
 async function getAllPlayers() {
   try {
     const [players] = await pool.query(`
-    SELECT 
-      player_id, email, nickname, represent_color, is_room_public, profile
-    FROM 
-      players
-  `);
+      SELECT 
+        player_id, email, nickname, represent_color, is_room_public, profile
+      FROM 
+        players
+    `);
     return players;
   } catch (error) {
     console.error(error);
@@ -114,8 +114,8 @@ async function getAllPlayers() {
 async function getAnonymousNickname() {
   try {
     const [nickname] = await pool.query(`
-    SELECT animal FROM anonymous_players ORDER BY RAND() LIMIT 1;
-  `);
+      SELECT animal FROM anonymous_players ORDER BY RAND() LIMIT 1;
+    `);
     const { animal } = nickname[0];
     return animal;
   } catch (error) {
@@ -135,12 +135,12 @@ async function addNewPlayer(info) {
     ];
 
     const [{ insertId: id }] = await pool.query(`
-    INSERT INTO players (
-      player_id, email, password, nickname, represent_color, is_room_public
-    ) VALUES (
-      ?, ?, ?, ?, ?, ?
-    )
-  `, playerInfo);
+      INSERT INTO players (
+        player_id, email, password, nickname, represent_color, is_room_public
+      ) VALUES (
+        ?, ?, ?, ?, ?, ?
+      )
+    `, playerInfo);
 
     const newPlayer = await getPlayerById(id);
     return newPlayer;

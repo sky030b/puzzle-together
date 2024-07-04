@@ -25,13 +25,13 @@ async function getGamePublicInfo(gameId) {
 async function getGameBySerialId(id) {
   try {
     const [game] = (await pool.query(`
-    SELECT 
-      *
-    FROM 
-      games 
-    WHERE 
-      id = ?
-  `, [id]))[0];
+      SELECT 
+        *
+      FROM 
+        games 
+      WHERE 
+        id = ?
+    `, [id]))[0];
     return game;
   } catch (error) {
     console.error(error);
@@ -42,13 +42,13 @@ async function getGameBySerialId(id) {
 async function getGameDurationByGameId(gameId) {
   try {
     const [game] = (await pool.query(`
-    SELECT 
-      play_duration, is_completed
-    FROM 
-      games 
-    WHERE 
-      game_id = ?
-  `, [gameId]))[0];
+      SELECT 
+        play_duration, is_completed
+      FROM 
+        games 
+      WHERE 
+        game_id = ?
+    `, [gameId]))[0];
     return game;
   } catch (error) {
     console.error(error);
@@ -60,7 +60,7 @@ async function updateGameDurationByGameId(gameId, playDuration) {
   try {
     const [game] = await pool.query(`
       UPDATE games SET play_duration = ? WHERE game_id = ?;
-  `, [playDuration, gameId]);
+    `, [playDuration, gameId]);
     return game;
   } catch (error) {
     console.error(error);
@@ -112,64 +112,64 @@ async function getRenderInfoByGameId(gameId) {
 
   try {
     const [gameRenderInfo] = (await pool.query(`
-    SELECT 
-      g.game_id AS game_id, 
-      g.title AS title, 
-      g.question_img_url AS question_img_url, 
-      g.owner_id AS owner_id, 
-      g.row_qty AS row_qty, 
-      g.col_qty AS col_qty, 
-      g.difficulty AS difficulty, 
-      g.mode AS mode, 
-      p.puzzles AS puzzles, 
-      g.is_public AS is_public, 
-      g.is_open_when_owner_not_in AS is_open_when_owner_not_in, 
-      g.play_duration AS play_duration, 
-      g.is_completed AS is_completed, 
-      g.completed_at AS completed_at
-    FROM 
-      games g
-    LEFT JOIN 
-      (
-        SELECT 
-          game_id, 
-          JSON_ARRAYAGG(
-            JSON_OBJECT(
-              'puzzle_id', p.puzzle_id, 
-              'target_id', p.target_id, 
-              'top_ratio', p.top_ratio, 
-              'left_ratio', p.left_ratio, 
-              'is_locked', p.is_locked, 
-              'locked_by', p.locked_by, 
-              'locked_color', p.locked_color, 
-              'z_index', p.z_index
-            )
-          ) AS puzzles
-        FROM 
-          (
-            SELECT 
-              game_id, 
-              puzzle_id, 
-              target_id, 
-              top_ratio, 
-              left_ratio, 
-              is_locked, 
-              locked_by, 
-              locked_color, 
-              z_index
-            FROM 
-              puzzles
-            WHERE
-              game_id = ?
-            ORDER BY 
-              target_id ASC
-          ) p
-        GROUP BY 
-          game_id
-      ) p ON p.game_id = g.game_id
-    WHERE 
-      g.game_id = ?;
-  `, [gameId, gameId]))[0];
+      SELECT 
+        g.game_id AS game_id, 
+        g.title AS title, 
+        g.question_img_url AS question_img_url, 
+        g.owner_id AS owner_id, 
+        g.row_qty AS row_qty, 
+        g.col_qty AS col_qty, 
+        g.difficulty AS difficulty, 
+        g.mode AS mode, 
+        p.puzzles AS puzzles, 
+        g.is_public AS is_public, 
+        g.is_open_when_owner_not_in AS is_open_when_owner_not_in, 
+        g.play_duration AS play_duration, 
+        g.is_completed AS is_completed, 
+        g.completed_at AS completed_at
+      FROM 
+        games g
+      LEFT JOIN 
+        (
+          SELECT 
+            game_id, 
+            JSON_ARRAYAGG(
+              JSON_OBJECT(
+                'puzzle_id', p.puzzle_id, 
+                'target_id', p.target_id, 
+                'top_ratio', p.top_ratio, 
+                'left_ratio', p.left_ratio, 
+                'is_locked', p.is_locked, 
+                'locked_by', p.locked_by, 
+                'locked_color', p.locked_color, 
+                'z_index', p.z_index
+              )
+            ) AS puzzles
+          FROM 
+            (
+              SELECT 
+                game_id, 
+                puzzle_id, 
+                target_id, 
+                top_ratio, 
+                left_ratio, 
+                is_locked, 
+                locked_by, 
+                locked_color, 
+                z_index
+              FROM 
+                puzzles
+              WHERE
+                game_id = ?
+              ORDER BY 
+                target_id ASC
+            ) p
+          GROUP BY 
+            game_id
+        ) p ON p.game_id = g.game_id
+      WHERE 
+        g.game_id = ?;
+    `, [gameId, gameId]))[0];
 
     const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
 
@@ -183,11 +183,11 @@ async function getRenderInfoByGameId(gameId) {
 async function getAllGames() {
   try {
     const [games] = await pool.query(`
-    SELECT 
-      *
-    FROM 
-      games
-  `);
+      SELECT 
+        *
+      FROM 
+        games
+    `);
     return games;
   } catch (error) {
     console.error(error);
@@ -361,21 +361,26 @@ async function lockPuzzleBySomeone(lockingInfo) {
 }
 
 async function updateGameIsCompletedStatus(gameId) {
-  const res = await pool.query(`
-    UPDATE
-      games 
-    SET 
-      is_completed = 1 
-    WHERE 
-      game_id = ?;
-  `, gameId);
-  const { affectedRows } = res;
-  return affectedRows;
+  try {
+    const res = await pool.query(`
+      UPDATE
+        games 
+      SET 
+        is_completed = 1 
+      WHERE 
+        game_id = ?;
+    `, gameId);
+    const { affectedRows } = res;
+    return affectedRows;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+
 }
 
 async function savePuzzleMovementToDB(data) {
   try {
-
     const values = data.map(item => [
       item.puzzleId,
       item.gameId,
