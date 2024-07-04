@@ -77,8 +77,27 @@ async function savePuzzleMovementToDB(data) {
   }
 }
 
+async function getPlaybackInfoByGameId(gameId) {
+  try {
+    const [playbackInfo] = await pool.query(`
+      SELECT 
+        *
+      FROM 
+        movements 
+      WHERE 
+        game_id = ?
+      ORDER BY id;
+    `, [gameId]);
+    return playbackInfo;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 module.exports = {
   updatePuzzleLocation,
   lockPuzzleBySomeone,
-  savePuzzleMovementToDB
+  savePuzzleMovementToDB,
+  getPlaybackInfoByGameId
 };

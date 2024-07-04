@@ -299,6 +299,8 @@ async function getGameCompletionInfo(gameId) {
         game_id = ?;
     `, [gameId]))[0];
     const { locked_puzzles: lockedPuzzles, total_puzzles: totalPuzzles } = gameStatus;
+    if (!totalPuzzles) return new Error('找不到指定關卡，請重新輸入遊戲關卡 ID。');
+    
     const completionInfo = {
       lockedPuzzles,
       totalPuzzles,
