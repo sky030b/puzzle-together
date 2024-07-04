@@ -1,5 +1,5 @@
 const redisClient = require("./createRedisClient");
-const { savePuzzleMovementToDB } = require("./gameDatabase");
+const { savePuzzleMovementToDB } = require("./puzzleDatabase");
 
 async function savePuzzleMovementToRedis(movementInfo) {
   try {

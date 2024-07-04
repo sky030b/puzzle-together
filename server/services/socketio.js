@@ -1,7 +1,7 @@
 const {
-  updatePuzzleLocation, lockPuzzleBySomeone, getGameDurationByGameId,
-  updateGameDurationByGameId, getGameCompletionInfo, updateGameIsCompletedStatus
+  getGameDurationByGameId, updateGameDurationByGameId, getGameCompletionInfo, updateGameIsCompletedStatus
 } = require('./gameDatabase');
+const { lockPuzzleBySomeone, updatePuzzleLocation } = require('./puzzleDatabase');
 const { savePuzzleMovementToRedis, savePuzzleMovementToDBWithPrefix } = require('./puzzleRedis');
 
 const roomsInfo = {};
