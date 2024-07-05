@@ -111,3 +111,11 @@ body, html {
 .cursor-pointer {
   cursor: pointer !important;
 }
+
+.playback-block {
+  transition: opacity 1s ease-out;
+}
+
+.disabled-link {
+  cursor: not-allowed !important;
+}

@@ -1,6 +1,9 @@
 /* eslint-disable no-param-reassign */
+import { puzzleContainer } from './dom.js';
+import { centerView, constrainCanvas } from './playground.js';
 import { puzzleTargetMap } from './puzzle.js';
 import {
+  CANVAS_HEIGHT, CANVAS_WIDTH,
   getCurrentGameId, getPlayerState, getPlaygroundState,
   getPlaygroundStateByKey, setIsModalOpen
 } from './variable.js';
@@ -10,6 +13,12 @@ function lockAllPuzzles() {
     const targetBox = document.getElementById(targetId);
     const puzzleDiv = document.getElementById(puzzleId);
     targetBox.appendChild(puzzleDiv);
+    targetBox.style.opacity = 1;
+    puzzleDiv.style.top = 0;
+    puzzleDiv.style.left = 0;
+    puzzleDiv.dataset.isLocked = 'true';
+    puzzleDiv.classList.add('locked');
+    puzzleDiv.style.cursor = 'default';
   })
 }
 
@@ -19,7 +28,83 @@ function disableInviteModal() {
   navLinkUl.removeChild(inviteNavItem);
 }
 
-function createResultNavLink() {
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function playbackGame() {
+  canvas.style.transform = `scale(0.1)`;
+  constrainCanvas();
+  centerView();
+  constrainCanvas();
+  centerView();
+
+  const playbackBlocks = document.querySelectorAll('.playback-block');
+  playbackBlocks.forEach((playbackBlock) => puzzleContainer.removeChild(playbackBlock));
+
+  Object.entries(puzzleTargetMap).forEach(([targetId, puzzleId]) => {
+    const targetBox = document.getElementById(targetId);
+    targetBox.style.backgroundImage = 'none';
+    const puzzleDiv = document.getElementById(puzzleId);
+    puzzleContainer.appendChild(puzzleDiv);
+    puzzleDiv.style.display = 'none';
+  })
+
+  await delay(500);
+
+  const res = await axios.get(`/api/1.0/games/${getCurrentGameId()}/playback`);
+  const playbackInfo = res.data;
+  console.log(playbackInfo);
+
+  let lastBgcDiv = null;
+  let lastPuzzle = null;
+  // for (let i = 0; i < playbackInfo.length; i++) {
+  //   const puzzleInfo = playbackInfo[i];
+  for (const puzzleInfo of playbackInfo) {
+
+    if (lastPuzzle) lastPuzzle.style.zIndex = '8';
+    if (lastBgcDiv) lastBgcDiv.style.zIndex = '7';
+
+    const {
+      puzzle_id: puzzleId, top_ratio: topRatio, left_ratio: leftRatio, moved_color: movedColor
+    } = puzzleInfo;
+    const puzzle = document.getElementById(puzzleId);
+    puzzle.style.display = 'block';
+    const bgcDiv = document.createElement('div');
+    bgcDiv.classList.add('playback-block');
+    puzzleContainer.appendChild(bgcDiv);
+    bgcDiv.style.width = puzzle.style.width;
+    bgcDiv.style.height = puzzle.style.height;
+    bgcDiv.style.backgroundColor = movedColor;
+    bgcDiv.style.borderRadius = '5%';
+
+    bgcDiv.style.position = 'absolute';
+    puzzle.style.position = 'absolute';
+    bgcDiv.style.zIndex = '10';
+    puzzle.style.zIndex = '12';
+    bgcDiv.style.top = `${(CANVAS_HEIGHT * topRatio) / 100}px`;
+    bgcDiv.style.left = `${(CANVAS_WIDTH * leftRatio) / 100}px`;
+    puzzle.style.top = `${(CANVAS_HEIGHT * topRatio) / 100}px`;
+    puzzle.style.left = `${(CANVAS_WIDTH * leftRatio) / 100}px`;
+
+    lastBgcDiv = bgcDiv;
+    lastPuzzle = puzzle;
+    // const delayTime = 30 - (29 * (i / playbackInfo.length));
+    // await delay(delayTime);
+    await delay(16);
+
+    setTimeout(() => {
+      bgcDiv.style.opacity = '0';
+      setTimeout(() => {
+        bgcDiv.remove();
+      }, 500);
+    }, 500);
+  }
+
+  lockAllPuzzles();
+}
+
+async function createResultNavLink() {
   const navLinkUl = document.querySelector('#navbarSupportedContent ul');
   const existingNavItem = navLinkUl.querySelector('.result-nav-item');
   if (existingNavItem) return;
@@ -39,11 +124,15 @@ function createResultNavLink() {
   `;
 
   const showPlaybackBtn = document.querySelector('.show-playback-btn');
-  showPlaybackBtn.addEventListener('click', async (e) => {
+  const playbackHandler = async (e) => {
     e.preventDefault();
-    const res = await axios.get(`/api/1.0/games/${getCurrentGameId()}/playback`);
-    console.log(res);
-  })
+    showPlaybackBtn.classList.add('disabled-link');
+    showPlaybackBtn.removeEventListener('click', playbackHandler);
+    await playbackGame();
+    showPlaybackBtn.classList.remove('disabled-link');
+    showPlaybackBtn.addEventListener('click', playbackHandler);
+  };
+  showPlaybackBtn.addEventListener('click', playbackHandler);
 }
 
 function createResultPuzzles(img) {
@@ -120,9 +209,9 @@ function createResultTargetBoxes(img) {
 
     const piece = document.getElementById(`result-${puzzleId}`);
     piece.style.border = 'none';
-    piece.style.left = '50%';
-    piece.style.top = '50%';
-    piece.style.transform = 'translate(-50%, -50%)';
+    // piece.style.left = '50%';
+    // piece.style.top = '50%';
+    // piece.style.transform = 'translate(-50%, -50%)';
     piece.style.position = 'absolute';
     piece.style.opacity = 1;
     resultTargetBox.appendChild(piece);
@@ -221,7 +310,7 @@ function createResultModal() {
 
 function getPlayersRecord() {
   const lockedPuzzles = getPlaygroundStateByKey('puzzles').filter((puzzle) => puzzle.isLocked);
-
+  console.log(getPlaygroundStateByKey('puzzles'))
   const lockedByInfoMap = new Map();
 
   lockedPuzzles.forEach((puzzle) => {
