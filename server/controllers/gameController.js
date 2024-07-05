@@ -1,4 +1,5 @@
-const { getRenderInfoByGameId, getAllGames, addNewGame, getGameCompletionInfo } = require('../services/gameDatabase');
+const { getRenderInfoByGameId, getAllGames, addNewGame } = require('../services/gameDatabase');
+const { getGameCompletionInfo } = require('../services/gameHelpers');
 const { getPlaybackInfoByGameId } = require('../services/puzzleDatabase');
 
 async function getGames(req, res) {

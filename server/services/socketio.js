@@ -1,6 +1,7 @@
 const {
-  getGameDurationByGameId, updateGameDurationByGameId, getGameCompletionInfo, updateGameIsCompletedStatus
+  getGameDurationByGameId, updateGameDurationByGameId, updateGameIsCompletedStatus
 } = require('./gameDatabase');
+const { getGameCompletionInfo } = require('./gameHelpers');
 const { lockPuzzleBySomeone, updatePuzzleLocation } = require('./puzzleDatabase');
 const { savePuzzleMovementToRedis, savePuzzleMovementToDBWithPrefix } = require('./puzzleRedis');
 

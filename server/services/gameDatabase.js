@@ -4,6 +4,7 @@ const { nanoid } = require('nanoid');
 const pool = require('./createDatabasePool');
 const { uploadToS3 } = require('./createS3Client');
 const { invitePlayerJoinGame } = require('./playerGameDatabase');
+const { savePuzzleMovementToDB } = require('./puzzleDatabase');
 
 async function getGamePublicInfo(gameId) {
   try {
@@ -222,18 +223,26 @@ async function addPuzzlesOfGame(newGame) {
   try {
     const { game_id: gameId, row_qty: rowQty, col_qty: colQty } = newGame;
 
-    const targetPuzzlePairingObject = {};
+    const targetPuzzlePairingObj = {};
     Array(rowQty * colQty).fill().forEach((_, index) => {
-      targetPuzzlePairingObject[index + 1] = nanoid(10);
+      targetPuzzlePairingObj[index + 1] = nanoid(10);
     });
 
-    const puzzlesInfo = Object.keys(targetPuzzlePairingObject).map((targetId) => {
+    const puzzlesInfoObj = Object.keys(targetPuzzlePairingObj).map((targetId) => {
       const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(20, 20);
-      return [
-        gameId, targetPuzzlePairingObject[targetId], targetId,
+      return {
+        gameId, puzzleId: targetPuzzlePairingObj[targetId], targetId,
         topRatio, leftRatio
-      ];
+      };
     });
+
+    const values = puzzlesInfoObj.map(puzzlesInfo => [
+      puzzlesInfo.gameId,
+      puzzlesInfo.puzzleId,
+      puzzlesInfo.targetId,
+      puzzlesInfo.topRatio.toFixed(3),
+      puzzlesInfo.leftRatio.toFixed(3)
+    ]);
 
     const sql = `
       INSERT INTO puzzles (
@@ -242,8 +251,10 @@ async function addPuzzlesOfGame(newGame) {
       ) VALUES ?
     `;
 
-    const res = await pool.query(sql, [puzzlesInfo]);
+    const res = await pool.query(sql, [values]);
     const { affectedRows } = res;
+    // console.log(targetPuzzlePairingObj, puzzlesInfoObj)
+    await savePuzzleMovementToDB(puzzlesInfoObj);
     return affectedRows;
   } catch (error) {
     console.error(error);
@@ -287,33 +298,6 @@ async function addNewGame(file, info) {
   }
 }
 
-async function getGameCompletionInfo(gameId) {
-  try {
-    const [gameStatus] = (await pool.query(`
-      SELECT 
-        COUNT(CASE WHEN is_locked = 1 THEN 1 END) AS locked_puzzles,
-        COUNT(*) AS total_puzzles
-      FROM 
-        puzzles
-      WHERE 
-        game_id = ?;
-    `, [gameId]))[0];
-    const { locked_puzzles: lockedPuzzles, total_puzzles: totalPuzzles } = gameStatus;
-    if (!totalPuzzles) return new Error('找不到指定關卡，請重新輸入遊戲關卡 ID。');
-    
-    const completionInfo = {
-      lockedPuzzles,
-      totalPuzzles,
-      isCompleted: lockedPuzzles === totalPuzzles
-    };
-
-    return completionInfo;
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
-}
-
 async function updateGameIsCompletedStatus(gameId) {
   try {
     const res = await pool.query(`
@@ -340,6 +324,5 @@ module.exports = {
   getRenderInfoByGameId,
   getAllGames,
   addNewGame,
-  getGameCompletionInfo,
   updateGameIsCompletedStatus,
 };

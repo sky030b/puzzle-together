@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const pool = require('./createDatabasePool');
 const { invitePlayerJoinGame } = require('./playerGameDatabase');
-const { getGameCompletionInfo } = require('./gameDatabase');
+const { getGameCompletionInfo } = require('./gameHelpers');
 
 async function updatePuzzleLocation(puzzleInfo) {
   try {
@@ -59,7 +59,7 @@ async function savePuzzleMovementToDB(data) {
       item.topRatio.toFixed(3),
       item.leftRatio.toFixed(3),
       item.movedColor,
-      item.movedAt
+      item.movedAt ? item.movedAt : new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ')
     ]);
 
     const sql = `
