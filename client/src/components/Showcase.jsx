@@ -48,6 +48,12 @@ const Showcase = () => {
 
   const isOwner = playerInfo && playerInfo.playerId === playerId;
 
+  const copyGameUrlToClipboard = (gameId) => {
+    const gameUrl = `${window.location.origin}/playground.html?gameId=${gameId}`;
+    navigator.clipboard.writeText(gameUrl);
+    alert('遊戲網址已複製到剪貼簿');
+  };
+
   return (
     <div className="container w-75 mt-4">
       {games.length === 0 ? (
@@ -80,7 +86,7 @@ const Showcase = () => {
                   <p className="card-text">遊戲時長：{formatPlayDuration(game.play_duration)}</p>
                 </div>
                 <div className="card-footer d-flex justify-content-between">
-                  <button className="btn btn-outline-primary">詳細資訊</button>
+                  <button className="copy-game-url-btn btn btn-outline-primary" onClick={() => copyGameUrlToClipboard(game.game_id)}>複製遊戲網址</button>
                   <Link to={`/playground.html?gameId=${game.game_id}`} target="_blank" className="btn btn-primary">進入遊戲</Link>
                 </div>
               </div>
