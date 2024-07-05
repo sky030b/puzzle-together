@@ -10,6 +10,7 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
   } = useContext(AuthContext);
@@ -21,23 +22,25 @@ const SignUpPage = () => {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (password !== passwordCheck) {
-      alert('兩次輸入的密碼不同，請再試一次。');
-      return;
-    }
-
-    if (nickname.trim().startsWith('匿名')) return alert('禁止以「匿名」為開頭設定暱稱。');
-
-    const signupInfo = {
-      nickname: nickname.trim(),
-      represent_color: representColor,
-      email: email.trim(),
-      password: password
-    };
-
     try {
+      e.preventDefault();
+      if (isSubmitting) return;
+
+      if (password !== passwordCheck) {
+        alert('兩次輸入的密碼不同，請再試一次。');
+        return;
+      }
+
+      if (nickname.trim().startsWith('匿名')) return alert('禁止以「匿名」為開頭設定暱稱。');
+
+      const signupInfo = {
+        nickname: nickname.trim(),
+        represent_color: representColor,
+        email: email.trim(),
+        password: password
+      };
+
+      setIsSubmitting(true);
       const res = await axios.post('/api/1.0/players/signup', signupInfo);
       const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
@@ -48,6 +51,8 @@ const SignUpPage = () => {
     } catch (error) {
       console.error(error);
       alert(error.response.data);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -125,13 +130,15 @@ const SignUpPage = () => {
               required
             />
           </div>
-          
+
           <Link className="go-to-signin text-center d-block mb-3 text-secondary" to="/signin">
             已有帳號？前往登入 -&gt;
           </Link>
 
-          <button type="submit" className="signup-btn btn btn-secondary w-100 mb-3">註冊</button>
-          <button type="button" className="fb-signin-btn btn btn-primary w-100">使用 Google 登入</button>
+          <button type="submit" className="signup-btn btn btn-secondary w-100 mb-3" disabled={isSubmitting}>
+            {isSubmitting ? '正在註冊...' : '註冊'}
+          </button>
+          <button type="button" className="fb-signin-btn btn btn-primary w-100" disabled={isSubmitting}>使用 Google 登入</button>
         </form>
       </div>
     </div>

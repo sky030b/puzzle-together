@@ -7,20 +7,25 @@ import { setCookie } from '../utils';
 const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
   } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const signinInfo = {
-      email: email.trim(),
-      password: password,
-    };
 
     try {
+      e.preventDefault();
+
+      if (isSubmitting) return;
+
+      const signinInfo = {
+        email: email.trim(),
+        password: password,
+      };
+
+      setIsSubmitting(true);
       const res = await axios.post('/api/1.0/players/signin', signinInfo);
       const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
@@ -31,6 +36,8 @@ const SignInPage = () => {
     } catch (error) {
       console.error(error);
       alert(error.response.data);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -72,8 +79,10 @@ const SignInPage = () => {
           <Link className="go-to-signup text-center d-block mb-3 text-secondary" to="/signup">
             尚無帳號？前往註冊 -&gt;
           </Link>
-          <button type="submit" className="signin-btn btn btn-secondary w-100 mb-3">登入</button>
-          <button type="button" className="fb-signin-btn btn btn-primary w-100">使用 Google 登入</button>
+          <button type="submit" className="signin-btn btn btn-secondary w-100 mb-3" disabled={isSubmitting}>
+            {isSubmitting ? '正在登入...' : '登入'}
+          </button>
+          <button type="button" className="fb-signin-btn btn btn-primary w-100" disabled={isSubmitting}>使用 Google 登入</button>
         </form>
       </div>
     </div>
