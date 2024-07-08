@@ -56,9 +56,11 @@ const SignInPage = () => {
               type="email"
               className="form-control"
               id="signinEmailInput"
+              name="email"
               placeholder="請輸入您的信箱"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               required
             />
           </div>
@@ -68,11 +70,12 @@ const SignInPage = () => {
               type="password"
               className="form-control"
               id="signinPasswordInput"
+              name="password"
               placeholder="請輸入您的密碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               minLength="8"
-              autoComplete="new-password"
+              autoComplete="current-password"
               required
             />
           </div>

@@ -96,9 +96,11 @@ const SignUpPage = () => {
               type="email"
               className="form-control"
               id="signupEmailInput"
+              name="email"
               placeholder="請輸入您的信箱"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               required
             />
           </div>
@@ -108,6 +110,7 @@ const SignUpPage = () => {
               type="password"
               className="form-control"
               id="signupPasswordInput"
+              name="password" 
               placeholder="請輸入您的密碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -122,6 +125,7 @@ const SignUpPage = () => {
               type="password"
               className="form-control"
               id="passwordCheckInput"
+              name="passwordCheck"
               placeholder="請再次輸入您的密碼"
               value={passwordCheck}
               onChange={(e) => setPasswordCheck(e.target.value)}
