@@ -52,3 +52,7 @@ export function returnChatMessageFormat(messageInfo, screenIsWhos) {
     </div>
   `;
 }
+
+export function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

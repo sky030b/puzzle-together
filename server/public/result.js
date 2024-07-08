@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { puzzleContainer } from './dom.js';
+import { navLinkUl, puzzleContainer } from './dom.js';
 import { centerView, constrainCanvas } from './playground.js';
 import { puzzleTargetMap } from './puzzle.js';
+import { delay } from './utils.js';
 import {
   CANVAS_HEIGHT, CANVAS_WIDTH,
   getCurrentGameId, getPlayerState, getPlaygroundState,
@@ -22,14 +23,14 @@ function lockAllPuzzles() {
   })
 }
 
-function disableInviteModal() {
-  const navLinkUl = document.querySelector('#navbarSupportedContent ul');
-  const inviteNavItem = navLinkUl.querySelector('.invite-player-nav-item');
-  navLinkUl.removeChild(inviteNavItem);
+function removeHintNavItem() {
+  const HintNavItem = navLinkUl.querySelector('.hint-nav-item');
+  if (HintNavItem) navLinkUl.removeChild(HintNavItem);
 }
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function removeInviteNavItem() {
+  const inviteNavItem = navLinkUl.querySelector('.invite-player-nav-item');
+  if (inviteNavItem) navLinkUl.removeChild(inviteNavItem);
 }
 
 async function playbackGame() {
@@ -104,8 +105,7 @@ async function playbackGame() {
   lockAllPuzzles();
 }
 
-async function createResultNavLink() {
-  const navLinkUl = document.querySelector('#navbarSupportedContent ul');
+async function createResultAndPlaybackNavItem() {
   const existingNavItem = navLinkUl.querySelector('.result-nav-item');
   if (existingNavItem) return;
   navLinkUl.innerHTML = `
@@ -404,8 +404,9 @@ function renderModalBody() {
 
 export default function showResult() {
   lockAllPuzzles();
-  disableInviteModal();
-  createResultNavLink();
+  removeHintNavItem();
+  removeInviteNavItem();
+  createResultAndPlaybackNavItem();
   createResultModal();
   renderModalBody();
   const showResultBtn = document.querySelector('.show-result-btn');

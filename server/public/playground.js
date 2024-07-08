@@ -11,6 +11,7 @@ import {
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
+import { createHintNavItem } from './hint.js';
 
 canvas.style.width = `${CANVAS_WIDTH}px`;
 canvas.style.height = `${CANVAS_HEIGHT}px`;
@@ -147,6 +148,7 @@ async function main() {
     constrainCanvas();
 
     centerView();
+    createHintNavItem();
     return 'Game initialization done.';
   } catch (error) {
     return error;
