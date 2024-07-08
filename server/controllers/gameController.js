@@ -28,14 +28,17 @@ async function getRenderInfo(req, res) {
 async function createNewGame(req, res) {
   try {
     const { file } = req;
+    const { playerId } = res.locals.jwtData;
     const {
       title, owner_id: ownerId, row_qty: rowQty, col_qty: colQty, difficulty, mode,
       is_public: isPublic, is_open_when_owner_not_in: isOpenWhenOwnerNotIn
     } = req.body;
 
+    if (ownerId != playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+
     const gameInfo = {
       title,
-      ownerId,
+      ownerId: playerId,
       rowQty,
       colQty,
       difficulty,
@@ -59,7 +62,7 @@ async function getPlaybackInfo(req, res) {
 
     const completionInfo = await getGameCompletionInfo(gameId);
     if (completionInfo instanceof Error) return res.status(400).send(completionInfo.message);
-    
+
     const { isCompleted } = completionInfo;
     if (!isCompleted) return res.status(400).send('這個關卡尚未結束，無法使用回放功能。');
 
