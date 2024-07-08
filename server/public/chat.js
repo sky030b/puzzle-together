@@ -78,6 +78,7 @@ chatForm.addEventListener('submit', async (e) => {
   }
 
   const messageInfo = {
+    playerId,
     message: chatForm[0].value.trim()
   };
 
