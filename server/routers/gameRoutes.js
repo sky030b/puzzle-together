@@ -1,5 +1,7 @@
 const express = require('express');
-const { getRenderInfo, createNewGame, getPlaybackInfo } = require('../controllers/gameController');
+const {
+  getRenderInfo, createNewGame, getPlaybackInfo, getHintInfo
+} = require('../controllers/gameController');
 const checkGameEntryMiddleware = require('../middleware/checkGameEntryMiddleware');
 const authenticateToken = require('../middleware/authenticateToken');
 const uploadImageMiddleware = require('../middleware/uploadImageMiddleware');
@@ -9,6 +11,7 @@ const router = express.Router();
 // router.get('/', getGames);
 router.get('/:gameId', checkGameEntryMiddleware, getRenderInfo);
 router.get('/:gameId/playback', checkGameEntryMiddleware, getPlaybackInfo);
+router.get('/:gameId/hint', checkGameEntryMiddleware, getHintInfo);
 
 router.post(
   '/',
