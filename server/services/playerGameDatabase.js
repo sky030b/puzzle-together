@@ -31,19 +31,37 @@ async function checkoutInvited(playerId, gameId) {
 
 async function getAllPlayedGamesInfo(playerId) {
   try {
-    const [gameInfo] = await pool.query(`
+    const [gamesInfo] = await pool.query(`
       SELECT g.*,
         p.nickname AS owner_nickname,
-        (SUM(pz.is_locked) / COUNT(pz.puzzle_id)) * 100 AS completion_rate
+        ROUND((SUM(pz.is_locked) / COUNT(pz.puzzle_id)) * 100, 2) AS completion_rate
       FROM games g
       JOIN players p ON g.owner_id = p.player_id
       JOIN puzzles pz ON g.game_id = pz.game_id
       JOIN player_game pg ON g.game_id = pg.game_id
       WHERE pg.invitee_id = ?
-      GROUP BY g.game_id, g.title, p.nickname
+      GROUP BY g.game_id, g.title
       ORDER BY completion_rate DESC;
     `, [playerId]);
-    return gameInfo;
+    return gamesInfo;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
+async function getMyOwnGamesInfo(playerId) {
+  try {
+    const [gamesInfo] = await pool.query(`
+      SELECT g.*,
+        ROUND((SUM(pz.is_locked) / COUNT(pz.puzzle_id)) * 100, 2) AS completion_rate
+      FROM games g
+      JOIN puzzles pz ON g.game_id = pz.game_id
+      WHERE g.owner_id = ?
+      GROUP BY g.game_id, g.title
+      ORDER BY g.create_at DESC;
+    `, [playerId]);
+    return gamesInfo;
   } catch (error) {
     console.error(error);
     return error;
@@ -53,5 +71,6 @@ async function getAllPlayedGamesInfo(playerId) {
 module.exports = {
   invitePlayerJoinGame,
   checkoutInvited,
-  getAllPlayedGamesInfo
+  getAllPlayedGamesInfo,
+  getMyOwnGamesInfo
 };

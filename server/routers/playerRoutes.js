@@ -3,7 +3,7 @@ const {
   signup, signin, getPlayerInfo, generateAnonymousPlayer,
   getPlayerProfile, updatePlayerProfile
 } = require('../controllers/playerController');
-const { invitePlayer, getPlayedGameInfo } = require('../controllers/playerGameController');
+const { invitePlayer, getPlayedGames, getMyOwnGames } = require('../controllers/playerGameController');
 const validateSignupMiddleware = require('../middleware/validateSignupMiddleware');
 const validateSigninMiddleware = require('../middleware/validateSigninMiddleware');
 const authenticateToken = require('../middleware/authenticateToken');
@@ -19,6 +19,7 @@ router.get('/profile/:playerId', getPlayerProfile);
 router.post('/profile/:playerId', authenticateToken, validateProfileLengthMiddleware, updatePlayerProfile);
 router.get('/anonymous', generateAnonymousPlayer);
 router.post('/invite', authenticateToken, invitePlayer);
-router.get('/:playerId/played-games', getPlayedGameInfo);
+router.get('/:playerId/played-games', getPlayedGames);
+router.get('/:playerId/my-own-games', authenticateToken, getMyOwnGames);
 
 module.exports = router;
