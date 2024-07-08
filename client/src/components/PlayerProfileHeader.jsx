@@ -1,14 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
 const PlayerProfileHeader = () => {
   const { playerId } = useParams();
-  const { playerInfo } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [playerData, setPlayerData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [profileText, setProfileText] = useState('');
+  const { playerInfo } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchPlayerData = async () => {
@@ -18,11 +19,13 @@ const PlayerProfileHeader = () => {
         setProfileText(res.data.profile);
       } catch (error) {
         console.error('Error fetching player data:', error);
+        alert(error.response.data);
+        navigate('/not-found');
       }
     };
 
     fetchPlayerData();
-  }, [playerId]);
+  }, [navigate, playerId]);
 
   const handleCopyPlayerId = () => {
     navigator.clipboard.writeText(playerData.player_id);
