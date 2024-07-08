@@ -22,7 +22,6 @@ async function checkoutInvited(playerId, gameId) {
     const [linkRecord] = await pool.query(`
       SELECT * FROM player_game WHERE invitee_id = ? AND game_id = ?;
     `, [playerId, gameId]);
-    console.log(linkRecord);
     return linkRecord;
   } catch (error) {
     console.error(error);
@@ -44,7 +43,6 @@ async function getAllPlayedGamesInfo(playerId) {
       GROUP BY g.game_id, g.title, p.nickname
       ORDER BY completion_rate DESC;
     `, [playerId]);
-    console.log(gameInfo);
     return gameInfo;
   } catch (error) {
     console.error(error);

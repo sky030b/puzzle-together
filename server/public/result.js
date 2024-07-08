@@ -310,7 +310,6 @@ function createResultModal() {
 
 function getPlayersRecord() {
   const lockedPuzzles = getPlaygroundStateByKey('puzzles').filter((puzzle) => puzzle.isLocked);
-  console.log(getPlaygroundStateByKey('puzzles'))
   const lockedByInfoMap = new Map();
 
   lockedPuzzles.forEach((puzzle) => {

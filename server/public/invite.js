@@ -13,7 +13,6 @@ const sendPlayerInvite = async (e) => {
       gameId: getCurrentGameId()
     }
     const res = await axios.post('/api/1.0/players/invite', inviteInfo);
-    console.log(res.data);
     alert('邀請成功：' + inviteForm[0].value);
     inviteForm.reset();
   } catch (error) {
