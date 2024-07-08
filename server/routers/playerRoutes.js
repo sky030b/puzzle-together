@@ -13,9 +13,9 @@ router.post('/signup', signup);
 router.post('/signin', signin);
 router.get('/playerInfo', authenticateToken, getPlayerInfo);
 router.get('/profile/:playerId', getPlayerProfile);
-router.post('/profile/:playerId', updatePlayerProfile);
+router.post('/profile/:playerId', authenticateToken, updatePlayerProfile);
 router.get('/anonymous', generateAnonymousPlayer);
-router.post('/invite', invitePlayer);
+router.post('/invite', authenticateToken, invitePlayer);
 router.get('/:playerId/played-games', getPlayedGameInfo);
 
 module.exports = router;

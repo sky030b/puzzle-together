@@ -2,7 +2,11 @@ const { invitePlayerJoinGame, getAllPlayedGamesInfo } = require('../services/pla
 
 async function invitePlayer(req, res) {
   try {
+    const { playerId } = res.locals.jwtData;
     const { inviterId, inviteeId, gameId } = req.body;
+
+    if (inviterId != playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+
     const invitePLayerResult = await invitePlayerJoinGame(inviterId, inviteeId, gameId);
     if (invitePLayerResult instanceof Error) throw invitePLayerResult;
 

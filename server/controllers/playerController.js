@@ -30,10 +30,13 @@ async function getPlayerProfile(req, res) {
 }
 
 async function updatePlayerProfile(req, res) {
-  const { playerId } = req.params;
+  const { playerId: playerIdInParams } = req.params;
+  const { playerId: playerIdInToken } = res.local.jwtData;
   const { profile } = req.body;
 
-  await setPlayerProfileByPlayerId(playerId, profile);
+  if (playerIdInToken != playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+
+  await setPlayerProfileByPlayerId(playerIdInParams, profile);
   return res.status(200).send('playerProfile');
 }
 
