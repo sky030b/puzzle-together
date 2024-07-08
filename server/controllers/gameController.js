@@ -17,7 +17,12 @@ async function getRenderInfo(req, res) {
   try {
     const { gameId } = req.params;
     const gameRenderInfo = await getRenderInfoByGameId(gameId);
-    if (gameRenderInfo instanceof Error) throw gameRenderInfo;
+    if (gameRenderInfo instanceof Error) {
+      if (gameRenderInfo.message === '找不到指定關卡的資訊。') {
+        return res.status(404).send('404 Not Found: 找不到指定關卡的資訊。');
+      }
+      throw gameRenderInfo;
+    }
 
     return res.status(200).send(gameRenderInfo);
   } catch (error) {

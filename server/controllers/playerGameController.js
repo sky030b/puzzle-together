@@ -12,6 +12,9 @@ async function invitePlayer(req, res) {
 
     return res.status(200).send(invitePLayerResult);
   } catch (error) {
+    if (error.message.includes('a foreign key constraint fails')) {
+      return res.status(400).send('400 Bad Request: 邀請的玩家不存在。');
+    }
     return res.status(500).send(error.message);
   }
 }
@@ -26,7 +29,6 @@ async function getPlayedGameInfo(req, res) {
   } catch (error) {
     return res.status(500).send(error.message);
   }
-
 }
 
 module.exports = {

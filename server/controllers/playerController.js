@@ -24,20 +24,36 @@ function getPlayerInfo(req, res) {
 }
 
 async function getPlayerProfile(req, res) {
-  const { playerId } = req.params;
-  const playerProfile = await getPlayerByPlayerId(playerId);
-  return res.status(200).send(playerProfile);
+  try {
+    const { playerId } = req.params;
+    const playerProfile = await getPlayerByPlayerId(playerId);
+    if (playerProfile instanceof Error) {
+      if (playerProfile.message === '找不到指定玩家的資訊。') {
+        return res.status(404).send('404 Not Found: 找不到指定玩家的資訊。');
+      }
+      throw playerProfile;
+    }
+    return res.status(200).send(playerProfile);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
 }
 
 async function updatePlayerProfile(req, res) {
-  const { playerId: playerIdInParams } = req.params;
-  const { playerId: playerIdInToken } = res.locals.jwtData;
-  const { profile } = req.body;
+  try {
+    const { playerId: playerIdInParams } = req.params;
+    const { playerId: playerIdInToken } = res.locals.jwtData;
+    const { profile } = req.body;
 
-  if (playerIdInToken != playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+    if (playerIdInToken != playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
-  await setPlayerProfileByPlayerId(playerIdInParams, profile);
-  return res.status(200).send('playerProfile');
+    const updatePlayerProfileResult = await setPlayerProfileByPlayerId(playerIdInParams, profile);
+    if (updatePlayerProfileResult instanceof Error) throw updatePlayerProfileResult;
+
+    return res.status(200).send('updatePlayerProfile Done');
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
 }
 
 function getPlayerToken(player) {

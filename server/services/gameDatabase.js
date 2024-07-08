@@ -172,6 +172,8 @@ async function getRenderInfoByGameId(gameId) {
         g.game_id = ?;
     `, [gameId, gameId]))[0];
 
+    if (!gameRenderInfo) return new Error('找不到指定關卡的資訊。');
+
     const orderedGameRenderInfo = getOrderedGameRenderInfo(gameRenderInfo);
 
     return orderedGameRenderInfo;

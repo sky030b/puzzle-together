@@ -42,6 +42,9 @@ async function getPlayerByPlayerId(playerId) {
       WHERE 
         p.player_id = ?;
   `, [playerId]))[0];
+
+  if (!player) return new Error('找不到指定玩家的資訊。');
+
     return player;
   } catch (error) {
     console.error(error);
