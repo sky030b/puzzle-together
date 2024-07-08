@@ -15,7 +15,8 @@ async function getChatHistory(req, res) {
 async function createNewMessage(req, res) {
   try {
     const { gameId } = req.params;
-    const { playerId, message } = req.body;
+    const { playerId } = res.locals.jwtData;
+    const { message } = req.body;
 
     const messageInfo = {
       gameId,
