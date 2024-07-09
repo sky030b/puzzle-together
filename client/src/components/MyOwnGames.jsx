@@ -121,6 +121,20 @@ const MyOwnGames = () => {
     }
   };
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.delete(`/api/1.0/games/${hoveredGameId}`);
+      alert('遊戲關卡已刪除');
+      const deletedGames = games.filter((game) => game.game_id !== hoveredGameId);
+      setGames(deletedGames);
+    } catch (error) {
+      console.error('Error deleting game:', error);
+      alert('刪除遊戲資料時發生錯誤');
+      alert(error.response.data)
+    }
+  };
+
   return (
     <div className="container w-75 mt-4">
       {games.length === 0 ? (
@@ -200,7 +214,7 @@ const MyOwnGames = () => {
                       </div>
                       <button type="submit" className="save-change-btn btn btn-primary w-100">儲存變更</button>
                       <hr />
-                      <button type="button" className="delete-game-btn btn btn-danger w-100">刪除遊戲關卡</button>
+                      <button type="button" className="delete-game-btn btn btn-danger w-100" onClick={handleDelete}>刪除遊戲關卡</button>
                     </form>
                   </div>
                 )}
