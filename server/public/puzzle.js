@@ -199,7 +199,7 @@ function addDragAndDrop(gameInfo) {
 
   function onMouseMove(e) {
     if (!selectedPiece) return;
-    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
+    // if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
 
     const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
