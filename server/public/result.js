@@ -92,7 +92,7 @@ async function playbackGame() {
     lastPuzzle = puzzle;
     // const delayTime = 30 - (29 * (i / playbackInfo.length));
     // await delay(delayTime);
-    await delay(16);
+    await delay(1);
 
     setTimeout(() => {
       bgcDiv.style.opacity = '0';

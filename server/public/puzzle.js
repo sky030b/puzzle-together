@@ -199,7 +199,7 @@ function addDragAndDrop(gameInfo) {
 
   function onMouseMove(e) {
     if (!selectedPiece) return;
-    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return;
+    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
 
     const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
@@ -252,6 +252,8 @@ function addDragAndDrop(gameInfo) {
 
   function onMouseUp() {
     if (!selectedPiece) return;
+    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
+
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
     selectedPiece.style.cursor = 'grab';

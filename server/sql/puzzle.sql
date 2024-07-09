@@ -81,7 +81,7 @@ CREATE TRIGGER before_game_be_completed
 BEFORE UPDATE ON games
 FOR EACH ROW
 BEGIN
-    IF NEW.is_completed != OLD.is_completed THEN
+    IF NEW.is_completed = 1 AND NEW.is_completed != OLD.is_completed THEN
         SET NEW.completed_at = CURRENT_TIMESTAMP;
     END IF;
 END;

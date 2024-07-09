@@ -50,6 +50,7 @@ const socket = (io) => {
 
       socketio.on('updatePiece', async (data) => {
         await updatePuzzleLocation(data);
+        await updateGameIsCompletedStatus(roomId, 0);
         await savePuzzleMovementToRedis(data);
         socketio.to(roomId).emit('updatePiece', data);
       });
@@ -72,18 +73,6 @@ const socket = (io) => {
           io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
         }
       });
-
-      // socketio.on('lockPiece', async (data) => {
-      //   const { isCompleted } = await lockPuzzleBySomeone(data);
-      //   io.to(roomId).emit('lockPiece', data);
-      //   io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
-      //   if (isCompleted) {
-      //     await updateDurationToDB(roomId);
-      //     await updateGameIsCompletedStatus(roomId);
-      //     await setTimerFromDB(roomId);
-      //     io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
-      //   }
-      // });
 
       socketio.on('sendNewMessage', (data) => {
         io.to(roomId).emit('sendNewMessage', data);

@@ -300,16 +300,16 @@ async function addNewGame(file, info) {
   }
 }
 
-async function updateGameIsCompletedStatus(gameId) {
+async function updateGameIsCompletedStatus(gameId, isCompleted = 1) {
   try {
     const res = await pool.query(`
       UPDATE
         games 
       SET 
-        is_completed = 1 
+        is_completed = ? 
       WHERE 
         game_id = ?;
-    `, gameId);
+    `, [isCompleted, gameId]);
     const { affectedRows } = res;
     return affectedRows;
   } catch (error) {
