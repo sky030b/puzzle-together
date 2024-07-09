@@ -97,20 +97,27 @@ const MyOwnGames = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`/api/1.0/games/${hoveredGameId}`, {
+      await axios.post(`/api/1.0/games/${hoveredGameId}`, {
         title: formValues.title,
         difficulty: formValues.difficulty,
-        is_public: formValues.isPublic
+        isPublic: formValues.isPublic
       });
-      // 更新成功後，重新取得遊戲資料
-      const updatedGames = games.map(game => 
-        game.game_id === hoveredGameId ? { ...game, ...res.data } : game
+      alert('遊戲資料已更新');
+      const updatedGames = games.map(game =>
+        game.game_id !== hoveredGameId
+          ? game
+          : {
+            ...game,
+            title: formValues.title,
+            difficulty: formValues.difficulty,
+            is_public: formValues.isPublic
+          }
       );
       setGames(updatedGames);
-      alert('遊戲資料已更新');
     } catch (error) {
       console.error('Error updating game:', error);
       alert('更新遊戲資料時發生錯誤');
+      alert(error.response.data)
     }
   };
 
@@ -155,13 +162,13 @@ const MyOwnGames = () => {
                     <form className="overlay-form" onSubmit={handleSubmit}>
                       <div className="mb-3">
                         <label htmlFor="rename-title" className="form-label">重新命名關卡標題</label>
-                        <input 
-                          type="text" 
-                          className="form-control" 
-                          id="rename-title" 
-                          name="title" 
-                          value={formValues.title} 
-                          onChange={handleInputChange} 
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="rename-title"
+                          name="title"
+                          value={formValues.title}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="mb-3">
@@ -179,13 +186,13 @@ const MyOwnGames = () => {
                         </select>
                       </div>
                       <div className="form-check mb-3">
-                        <input 
-                          className="form-check-input" 
-                          type="checkbox" 
-                          id="is_public" 
-                          name="isPublic" 
-                          checked={formValues.isPublic} 
-                          onChange={handleInputChange} 
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="is_public"
+                          name="isPublic"
+                          checked={formValues.isPublic}
+                          onChange={handleInputChange}
                         />
                         <label className="form-check-label" htmlFor="is_public">
                           開放所有玩家加入

@@ -40,6 +40,40 @@ async function getGameBySerialId(id) {
   }
 }
 
+async function getGameOwnerIdByGameId(gameId) {
+  try {
+    const [game] = (await pool.query(`
+      SELECT 
+        owner_id
+      FROM 
+        games 
+      WHERE 
+        game_id = ?
+    `, [gameId]))[0];
+
+    if (!game) return new Error('找不到指定關卡的資訊。');
+
+    const { owner_id: ownerId } = game;
+    return ownerId;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
+async function updateGameBasicSetting(updateInfo) {
+  try {
+    const { title, difficulty, isPublic, gameId } = updateInfo;
+    await pool.query(`
+      UPDATE games SET title = ?, difficulty = ?, is_public = ? WHERE game_id = ?;
+    `, [title, difficulty, isPublic, gameId]);
+    return 'updateGameDurationByGameId done.';
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function getGameDurationByGameId(gameId) {
   try {
     const [game] = (await pool.query(`
@@ -59,10 +93,10 @@ async function getGameDurationByGameId(gameId) {
 
 async function updateGameDurationByGameId(gameId, playDuration) {
   try {
-    const [game] = await pool.query(`
+    await pool.query(`
       UPDATE games SET play_duration = ? WHERE game_id = ?;
     `, [playDuration, gameId]);
-    return game;
+    return 'updateGameDurationByGameId done.';
   } catch (error) {
     console.error(error);
     return error;
@@ -321,6 +355,8 @@ async function updateGameIsCompletedStatus(gameId, isCompleted = 1) {
 
 module.exports = {
   getGamePublicInfo,
+  getGameOwnerIdByGameId,
+  updateGameBasicSetting,
   getGameDurationByGameId,
   updateGameDurationByGameId,
   getRenderInfoByGameId,

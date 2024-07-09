@@ -1,6 +1,10 @@
 const express = require('express');
 const {
-  getRenderInfo, createNewGame, getPlaybackInfo, getHintInfo
+  getRenderInfo,
+  createNewGame,
+  getPlaybackInfo,
+  getHintInfo,
+  updateGameInfo
 } = require('../controllers/gameController');
 const checkGameEntryMiddleware = require('../middleware/checkGameEntryMiddleware');
 const authenticateToken = require('../middleware/authenticateToken');
@@ -19,5 +23,6 @@ router.post(
   uploadImageMiddleware({ single: true, fieldName: 'question_img' }),
   createNewGame
 );
+router.post('/:gameId', authenticateToken, updateGameInfo);
 
 module.exports = router;
