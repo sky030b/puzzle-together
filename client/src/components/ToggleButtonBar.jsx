@@ -16,7 +16,7 @@ const ToggleButtonBar = () => {
 
   return (
     <div className="btn-group mx-auto w-50 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
-      <input
+      {/* <input
         type="radio"
         className="btn-check"
         name="btnradio"
@@ -25,7 +25,7 @@ const ToggleButtonBar = () => {
         checked={location.pathname.includes(`/profile/${playerId}/news`)}
         onChange={() => handleNavigation(`/profile/${playerId}/news`)}
       />
-      <label className="btn btn-outline-primary" htmlFor="btnradio1">動態牆</label>
+      <label className="btn btn-outline-primary" htmlFor="btnradio1">動態牆</label> */}
 
       <input
         type="radio"
