@@ -50,7 +50,7 @@ const socket = (io) => {
 
       socketio.on('updatePiece', async (data) => {
         await updatePuzzleLocation(data);
-        await updateGameIsCompletedStatus(roomId, 0);
+        // await updateGameIsCompletedStatus(roomId, 0);
         await savePuzzleMovementToRedis(data);
         socketio.to(roomId).emit('updatePiece', data);
       });
