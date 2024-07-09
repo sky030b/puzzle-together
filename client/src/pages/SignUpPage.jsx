@@ -142,7 +142,7 @@ const SignUpPage = () => {
           <button type="submit" className="signup-btn btn btn-secondary w-100 mb-3" disabled={isSubmitting}>
             {isSubmitting ? '正在註冊...' : '註冊'}
           </button>
-          <button type="button" className="fb-signin-btn btn btn-primary w-100" disabled={isSubmitting}>使用 Google 登入</button>
+          {/* <button type="button" className="fb-signin-btn btn btn-primary w-100" disabled={isSubmitting}>使用 Google 登入</button> */}
         </form>
       </div>
     </div>
