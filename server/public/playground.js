@@ -7,7 +7,7 @@ import {
   setScale, getScale, CANVAS_WIDTH, CANVAS_HEIGHT,
   SCALE_AMOUNT, INIT_SCALE, MIN_SCALE, MAX_SCALE,
   getIsInsideChatArea, getIsInsideRecordArea, getIsModalOpen,
-  setCurrentGameId
+  setCurrentGameId, getPlayerState
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
@@ -61,6 +61,12 @@ export function constrainCanvas() {
   canvas.style.top = `${top}px`;
 }
 
+const toMyShowcaseLink = document.querySelector('.to-my-showcase-link');
+toMyShowcaseLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  window.location.href = `/profile/${getPlayerState().playerId}`;
+})
+
 container.addEventListener('wheel', (e) => {
   if (getIsInsideChatArea() || getIsInsideRecordArea() || getIsModalOpen()) return;
   // e.preventDefault();
@@ -94,7 +100,8 @@ container.addEventListener('wheel', (e) => {
 
 container.addEventListener('mousedown', (e) => {
   if (e.target === canvas || e.target === container || e.target.parentNode === targetContainer
-    || e.target.parentNode.parentNode === targetContainer || e.target.dataset.isLocked === 'true') {
+    || e.target.parentNode.parentNode === targetContainer 
+    || e.target.dataset.isLocked === 'true' || e.target.classList.contains('hint-box')) {
     e.target.style.cursor = 'move';
     isDraggingCanvas = true;
     startX = e.pageX;

@@ -7,7 +7,7 @@ const PlayerProfilePage = () => {
   const location = useLocation();
 
   if (location.pathname === `/profile/${playerId}`) {
-    return <Navigate to={`/profile/${playerId}/news`} />;
+    return <Navigate to={`/profile/${playerId}/showcase`} />;
   }
 
   return (
