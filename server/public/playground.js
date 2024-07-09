@@ -61,12 +61,6 @@ export function constrainCanvas() {
   canvas.style.top = `${top}px`;
 }
 
-const toMyShowcaseLink = document.querySelector('.to-my-showcase-link');
-toMyShowcaseLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  window.location.href = `/profile/${getPlayerState().playerId}`;
-})
-
 container.addEventListener('wheel', (e) => {
   if (getIsInsideChatArea() || getIsInsideRecordArea() || getIsModalOpen()) return;
   // e.preventDefault();
