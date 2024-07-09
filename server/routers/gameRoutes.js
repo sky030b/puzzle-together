@@ -4,11 +4,13 @@ const {
   createNewGame,
   getPlaybackInfo,
   getHintInfo,
-  updateGameInfo
+  updateGameInfo,
+  deleteMyGame
 } = require('../controllers/gameController');
 const checkGameEntryMiddleware = require('../middleware/checkGameEntryMiddleware');
 const authenticateToken = require('../middleware/authenticateToken');
 const uploadImageMiddleware = require('../middleware/uploadImageMiddleware');
+const authorizeOwnerMiddleware = require('../middleware/authorizeOwnerMiddleware');
 
 const router = express.Router();
 
@@ -23,6 +25,8 @@ router.post(
   uploadImageMiddleware({ single: true, fieldName: 'question_img' }),
   createNewGame
 );
-router.post('/:gameId', authenticateToken, updateGameInfo);
+router.post('/:gameId', authenticateToken, authorizeOwnerMiddleware, updateGameInfo);
+
+router.delete('/:gameId', authenticateToken, authorizeOwnerMiddleware, deleteMyGame);
 
 module.exports = router;

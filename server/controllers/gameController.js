@@ -2,8 +2,8 @@ const {
   getRenderInfoByGameId,
   getAllGames,
   addNewGame,
-  getGameOwnerIdByGameId,
-  updateGameBasicSetting
+  updateGameBasicSetting,
+  deleteMyOwnGameByGameId
 } = require('../services/gameDatabase');
 const { getGameCompletionInfo } = require('../services/gameHelpers');
 const { getPlaybackInfoByGameId } = require('../services/puzzleDatabase');
@@ -106,19 +106,7 @@ async function getHintInfo(req, res) {
 async function updateGameInfo(req, res) {
   try {
     const { gameId } = req.params;
-    const { playerId } = res.locals.jwtData;
-    const ownerId = await getGameOwnerIdByGameId(gameId);
-    if (ownerId instanceof Error) {
-      if (ownerId.message === '找不到指定關卡的資訊。') {
-        return res.status(404).send('404 Not Found: 找不到指定關卡的資訊。');
-      }
-      throw ownerId;
-    }
-
-    if (ownerId !== playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
-
     const { title, difficulty, isPublic } = req.body;
-
     const updateInfo = { gameId, title, difficulty, isPublic: isPublic === true };
 
     const updateGameInfoResult = await updateGameBasicSetting(updateInfo);
@@ -130,11 +118,25 @@ async function updateGameInfo(req, res) {
   }
 }
 
+async function deleteMyGame(req, res) {
+  try {
+    const { gameId } = req.params;
+
+    const deleteGameResult = await deleteMyOwnGameByGameId(gameId);
+    if (deleteGameResult instanceof Error) throw deleteGameResult;
+
+
+    return res.status(200).send('deleteMyGame Done.');
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }}
+
 module.exports = {
   getGames,
   getRenderInfo,
   createNewGame,
   getPlaybackInfo,
   getHintInfo,
-  updateGameInfo
+  updateGameInfo,
+  deleteMyGame
 };

@@ -57,7 +57,7 @@ async function getMyOwnGamesInfo(playerId) {
         ROUND((SUM(pz.is_locked) / COUNT(pz.puzzle_id)) * 100, 2) AS completion_rate
       FROM games g
       JOIN puzzles pz ON g.game_id = pz.game_id
-      WHERE g.owner_id = ?
+      WHERE g.owner_id = ? AND g.is_deleted = 0
       GROUP BY g.game_id, g.title
       ORDER BY g.create_at DESC;
     `, [playerId]);

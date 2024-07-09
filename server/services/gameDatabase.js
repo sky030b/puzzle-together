@@ -14,7 +14,7 @@ async function getGamePublicInfo(gameId) {
       FROM 
         games 
       WHERE 
-        game_id = ?
+        game_id = ?;
     `, [gameId]))[0];
     return isPublic;
   } catch (error) {
@@ -31,7 +31,7 @@ async function getGameBySerialId(id) {
       FROM 
         games 
       WHERE 
-        id = ?
+        id = ? AND is_deleted = 0;
     `, [id]))[0];
     return game;
   } catch (error) {
@@ -48,7 +48,7 @@ async function getGameOwnerIdByGameId(gameId) {
       FROM 
         games 
       WHERE 
-        game_id = ?
+        game_id = ? AND is_deleted = 0;
     `, [gameId]))[0];
 
     if (!game) return new Error('找不到指定關卡的資訊。');
@@ -74,6 +74,18 @@ async function updateGameBasicSetting(updateInfo) {
   }
 }
 
+async function deleteMyOwnGameByGameId(gameId) {
+  try {
+    await pool.query(`
+      UPDATE games SET is_deleted = 1 WHERE game_id = ?;
+    `, [gameId]);
+    return 'deleteMyOwnGameByGameId done.';
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function getGameDurationByGameId(gameId) {
   try {
     const [game] = (await pool.query(`
@@ -82,7 +94,7 @@ async function getGameDurationByGameId(gameId) {
       FROM 
         games 
       WHERE 
-        game_id = ?
+        game_id = ?;
     `, [gameId]))[0];
     return game;
   } catch (error) {
@@ -224,6 +236,8 @@ async function getAllGames() {
         *
       FROM 
         games
+      WHERE
+        is_deleted = 0;
     `);
     return games;
   } catch (error) {
@@ -350,17 +364,17 @@ async function updateGameIsCompletedStatus(gameId, isCompleted = 1) {
     console.error(error);
     return error;
   }
-
 }
 
 module.exports = {
   getGamePublicInfo,
   getGameOwnerIdByGameId,
   updateGameBasicSetting,
+  deleteMyOwnGameByGameId,
   getGameDurationByGameId,
   updateGameDurationByGameId,
   getRenderInfoByGameId,
   getAllGames,
   addNewGame,
-  updateGameIsCompletedStatus,
+  updateGameIsCompletedStatus
 };

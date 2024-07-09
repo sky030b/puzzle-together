@@ -30,6 +30,7 @@ CREATE TABLE games (
     completed_at TIMESTAMP DEFAULT NULL,
     -- completed_times INT NOT NULL DEFAULT 0,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    is_deleted TINYINT(1) DEFAULT 0 NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES players(player_id) ON DELETE CASCADE
 );
 
