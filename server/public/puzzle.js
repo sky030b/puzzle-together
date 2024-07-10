@@ -187,6 +187,7 @@ function addDragAndDrop(gameInfo) {
     // player.play();
 
     selectedPiece = e.target;
+    selectedPiece.dataset.moveBy = getPlayerState().nickname;
     socket.emit('changeMoveBy', { gameId: getCurrentGameId(), puzzleId: selectedPiece.id, moveBy: getPlayerState().nickname });
     selectedPiece.style.zIndex = '10';
     selectedPiece.style.cursor = 'grabbing';
@@ -199,7 +200,7 @@ function addDragAndDrop(gameInfo) {
 
   function onMouseMove(e) {
     if (!selectedPiece) return;
-    // if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
+    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
 
     const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
@@ -332,6 +333,8 @@ function addDragAndDrop(gameInfo) {
       lastNotLockedPiece = selectedPiece;
       lastNotLockedPiece.style.zIndex = '6';
     }
+
+    selectedPiece.removeAttribute('data-move-by');
     socket.emit('changeMoveBy', { gameId: getCurrentGameId(), puzzleId: selectedPiece.id, moveBy: null });
 
     selectedPiece = null;

@@ -56,7 +56,7 @@ const socket = (io) => {
       });
 
       socketio.on('changeMoveBy', async (data) => {
-        io.to(roomId).emit('changeMoveBy', data);
+        socketio.to(roomId).emit('changeMoveBy', data);
       });
 
       socketio.on('updateAndLockPiece', async (data) => {
