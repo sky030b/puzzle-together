@@ -26,7 +26,7 @@ const MyOwnGames = () => {
         const res = await axios.get(`/api/1.0/players/${playerId}/my-own-games`);
         setGames(res.data);
       } catch (error) {
-        navigate(`/profile/${playerId}/news`);
+        navigate(`/profile/${playerId}/showcase`);
         console.error('Error fetching games:', error);
       }
     };
