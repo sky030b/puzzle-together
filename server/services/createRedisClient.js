@@ -1,16 +1,24 @@
 const Redis = require('ioredis');
 
-// for localhost
-// const redisClient = new Redis({
-//   host: process.env.EC2_REDIS_HOST,
-//   port: process.env.EC2_REDIS_PORT,
-//   password: process.env.EC2_REDIS_PASSWORD
-// });
+const isDevelopment = process.env.NODE_ENV === 'dev';
 
-// for ElasticCache
-const redisClient = new Redis({
-  host: process.env.AWS_ELASTICACHE_HOST,
-  port: process.env.AWS_ELASTICACHE_PORT
-});
+// const redisConfig = {
+//   host: isDevelopment ? process.env.EC2_REDIS_HOST : process.env.AWS_ELASTICACHE_HOST,
+//   port: isDevelopment ? process.env.EC2_REDIS_PORT : process.env.AWS_ELASTICACHE_PORT
+// };
+
+// if (isDevelopment) {
+//   redisConfig.password = process.env.EC2_REDIS_PASSWORD;
+// }
+
+const redisConfig = {
+  host: isDevelopment ? process.env.EC2_REDIS_HOST : process.env.AWS_ELASTICACHE_HOST,
+  port: isDevelopment ? process.env.EC2_REDIS_PORT : process.env.AWS_ELASTICACHE_PORT,
+  password: isDevelopment ? process.env.EC2_REDIS_PASSWORD : undefined
+};
+
+if (!redisConfig.password) delete redisConfig.password;
+
+const redisClient = new Redis(redisConfig);
 
 module.exports = redisClient;

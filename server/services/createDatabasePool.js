@@ -1,19 +1,12 @@
 const mysql = require('mysql2/promise');
 
-// for localhost
-// const pool = mysql.createPool({
-//   host: process.env.MYSQL_HOST,
-//   user: process.env.MYSQL_USER,
-//   password: process.env.MYSQL_PASSWORD,
-//   database: process.env.MYSQL_DATABASE
-// });
+const isDevelopment = process.env.NODE_ENV === 'dev';
 
-// for rds
 const pool = mysql.createPool({
-  host: process.env.RDS_MYSQL_HOST,
-  user: process.env.RDS_MYSQL_USER,
-  password: process.env.RDS_MYSQL_PASSWORD,
-  database: process.env.RDS_MYSQL_DATABASE
+  host: isDevelopment ? process.env.MYSQL_HOST : process.env.RDS_MYSQL_HOST,
+  user: isDevelopment ? process.env.MYSQL_USER : process.env.RDS_MYSQL_USER,
+  password: isDevelopment ? process.env.MYSQL_PASSWORD : process.env.RDS_MYSQL_PASSWORD,
+  database: isDevelopment ? process.env.MYSQL_DATABASE : process.env.RDS_MYSQL_DATABASE
 });
 
 module.exports = pool;
