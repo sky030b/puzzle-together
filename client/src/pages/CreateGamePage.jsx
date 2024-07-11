@@ -126,7 +126,10 @@ const CreateGamePage = () => {
               />
             </div>
             <div className="col-6">
-              <label className="form-label" htmlFor="difficulty">難度：</label>
+              <label className="form-label me-3" htmlFor="difficulty">難度：</label>
+              <button type="button" className="btn btn-secondary rounded-circle px-1 py-0" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                ？
+              </button>
               <select
                 className="form-select"
                 name="difficulty"
@@ -155,6 +158,25 @@ const CreateGamePage = () => {
             <button type="submit" className="btn btn-primary mt-5">開始玩</button>
           </div>
         </form>
+      </div>
+
+      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">難度介紹</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              簡單：<br />有格線、較清楚的底圖提示、拼對時鎖定拼圖、靠近正確目標格放開時吸入<br /><br />
+              中等：<br />無格線、較淺色的底圖提示、拼對時鎖定拼圖、靠近<strong className="text-danger">任意</strong>目標格放開時吸入<br /><br />
+              困難：<br />無格線、完全沒有底圖提示、拼對<strong className="text-danger">不</strong>鎖定拼圖、靠近<strong className="text-danger">任意</strong>目標格放開時吸入、有手動查看提示功能
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
