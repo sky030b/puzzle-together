@@ -1,3 +1,6 @@
+const redisClient = require('./createRedisClient');
+const { createAdapter } = require('@socket.io/redis-adapter');
+
 const {
   getGameDurationByGameId, updateGameDurationByGameId, updateGameIsCompletedStatus
 } = require('./gameDatabase');
@@ -25,6 +28,11 @@ async function setTimerFromDB(roomId) {
 }
 
 const socket = (io) => {
+  const pubClient = redisClient;
+  const subClient = pubClient.duplicate();
+
+  io.adapter(createAdapter(pubClient, subClient));
+
   // 當有用戶連接時
   io.on('connection', (socketio) => {
     // eslint-disable-next-line no-console
