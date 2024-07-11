@@ -25,8 +25,8 @@ export function getOpacityByDifficulty(difficulty) {
 }
 
 const EASY_OVERLAP_RATIO = 0.7;
-const MEDIUM_OVERLAP_RATIO = 0.8;
-const HARD_OVERLAP_RATIO = 0.9;
+const MEDIUM_OVERLAP_RATIO = 0.75;
+const HARD_OVERLAP_RATIO = 0.8;
 
 export function getOverlapRatioByDifficulty(difficulty) {
   switch (difficulty) {
