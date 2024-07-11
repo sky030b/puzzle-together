@@ -39,7 +39,7 @@ export default async function renderChatHistory() {
       chatContent.classList.remove('d-none');
       chatForm.classList.remove('d-none');
     })
-    chatArea.addEventListener('mouseout', (e) => {
+    chatArea.addEventListener('mouseleave', (e) => {
       e.preventDefault();
       chatContent.classList.add('d-none');
       chatForm.classList.add('d-none');
