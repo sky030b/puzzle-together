@@ -6,7 +6,7 @@ import { delay } from './utils.js';
 import {
   CANVAS_HEIGHT, CANVAS_WIDTH,
   getCurrentGameId, getPlayerState, getPlaygroundState,
-  getPlaygroundStateByKey, setIsModalOpen
+  getPlaygroundStateByKey, setIsModalOpen, setScale
 } from './variable.js';
 
 function lockAllPuzzles() {
@@ -34,6 +34,7 @@ function removeInviteNavItem() {
 }
 
 async function playbackGame() {
+  setScale(0.1);
   canvas.style.transform = `scale(0.1)`;
   constrainCanvas();
   centerView();
