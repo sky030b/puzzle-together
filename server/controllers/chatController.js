@@ -1,4 +1,5 @@
 const { getChatHistoryByGameId, addNewMessageToGame } = require('../services/chatDatabase.js');
+const { getGamePublicInfo } = require('../services/gameDatabase.js');
 const { checkoutInvited } = require('../services/playerGameDatabase.js');
 
 async function getChatHistory(req, res) {
@@ -21,9 +22,13 @@ async function createNewMessage(req, res) {
 
     if (playerIdInToken != playerIdInBody) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
-    const linkRecord = await checkoutInvited(playerIdInBody, gameId);
-    if (linkRecord instanceof Error) throw linkRecord;
-    if (!linkRecord.length) return res.status(403).send(`403 Forbidden: 您沒有權限在此遊戲關卡的聊天室發言，請確保您已經收到邀請。或是指定關卡不存在。`);
+    const isPublic = await getGamePublicInfo(gameId);
+
+    if (!isPublic) {
+      const linkRecord = await checkoutInvited(playerIdInBody, gameId);
+      if (linkRecord instanceof Error) throw linkRecord;
+      if (!linkRecord.length) return res.status(403).send(`403 Forbidden: 您沒有權限在此遊戲關卡的聊天室發言，請確保您已經收到邀請。或是指定關卡不存在。`);
+    }
 
     const messageInfo = {
       gameId,
