@@ -15,6 +15,7 @@ const MyOwnGames = () => {
   const imageContainerRef = useRef(null);
 
   const [formValues, setFormValues] = useState({
+    gameId: '',
     title: '',
     difficulty: 'easy',
     isPublic: false
@@ -76,6 +77,7 @@ const MyOwnGames = () => {
   const handleMouseEnter = (game) => {
     setHoveredGameId(game.game_id);
     setFormValues({
+      gameId: game.game_id,
       title: game.title,
       difficulty: game.difficulty,
       isPublic: game.is_public
@@ -124,9 +126,9 @@ const MyOwnGames = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`/api/1.0/games/${hoveredGameId}`);
+      await axios.delete(`/api/1.0/games/${formValues.gameId}`);
       alert('遊戲關卡已刪除');
-      const deletedGames = games.filter((game) => game.game_id !== hoveredGameId);
+      const deletedGames = games.filter((game) => game.game_id !== formValues.gameId);
       setGames(deletedGames);
     } catch (error) {
       console.error('Error deleting game:', error);
@@ -142,86 +144,105 @@ const MyOwnGames = () => {
           <h5>{isOwner ? '目前還未遊玩任何遊戲，快來加入/創建一個吧～' : '這位玩家目前還沒有參與任何遊戲，快來邀請他一起同樂～'}</h5>
         </div>
       ) : (
-        <div className="row row-cols-1 row-cols-md-3 g-4">
-          {games.map((game) => (
-            <div className="col" key={game.game_id}>
-              <div className="card h-100"
-                onMouseEnter={() => handleMouseEnter(game)}
-                onMouseLeave={handleMouseLeave}>
-                <div className="position-relative overflow-hidden image-container d-flex justify-content-center align-items-center" ref={imageContainerRef} style={{ height: '300px' }}>
-                  <img src={game.question_img_url} className="card-img-top img-fluid object-fit-cover h-100 w-auto" alt="Game Image" />
-                  <div className="position-absolute bottom-0 end-0 p-2 bg-light text-dark" style={{ opacity: 0.8 }}>
-                    完成度：{(+game.completion_rate).toFixed(2)}%
+        <>
+          <div className="row row-cols-1 row-cols-md-3 g-4">
+            {games.map((game) => (
+              <div className="col" key={game.game_id}>
+                <div className="card h-100"
+                  onMouseEnter={() => handleMouseEnter(game)}
+                  onMouseLeave={handleMouseLeave}>
+                  <div className="position-relative overflow-hidden image-container d-flex justify-content-center align-items-center" ref={imageContainerRef} style={{ height: '300px' }}>
+                    <img src={game.question_img_url} className="card-img-top img-fluid object-fit-cover h-100 w-auto" alt="Game Image" />
+                    <div className="position-absolute bottom-0 end-0 p-2 bg-light text-dark" style={{ opacity: 0.8 }}>
+                      完成度：{(+game.completion_rate).toFixed(2)}%
+                    </div>
                   </div>
-                </div>
-                <div className="card-body" ref={cardBodyRef}>
-                  <h5 className="card-title">{game.title}</h5>
-                  <div className="d-flex flex-wrap mb-2">
-                    <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>
-                    <span className={`badge rounded-pill ${getDifficultyBadgeClass(game.difficulty)} me-2`}>
-                      {game.difficulty === 'easy' ? '簡單' : game.difficulty === 'medium' ? '中等' : '困難'}
-                    </span>
-                    <span className={`badge rounded-pill ${getPublicStatusBadgeClass(game.is_public)}`}>
-                      {game.is_public ? '公開' : '私人'}
-                    </span>
+                  <div className="card-body" ref={cardBodyRef}>
+                    <h5 className="card-title">{game.title}</h5>
+                    <div className="d-flex flex-wrap mb-2">
+                      <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>
+                      <span className={`badge rounded-pill ${getDifficultyBadgeClass(game.difficulty)} me-2`}>
+                        {game.difficulty === 'easy' ? '簡單' : game.difficulty === 'medium' ? '中等' : '困難'}
+                      </span>
+                      <span className={`badge rounded-pill ${getPublicStatusBadgeClass(game.is_public)}`}>
+                        {game.is_public ? '公開' : '私人'}
+                      </span>
+                    </div>
+                    <p className="card-text">遊戲時長：{formatPlayDuration(game.play_duration)}</p>
                   </div>
-                  <p className="card-text">遊戲時長：{formatPlayDuration(game.play_duration)}</p>
-                </div>
-                <div className="card-footer d-flex justify-content-between">
-                  <button className="copy-game-url-btn btn btn-outline-primary" onClick={() => copyGameUrlToClipboard(game.game_id)}>複製遊戲網址</button>
-                  <Link to={`/playground.html?gameId=${game.game_id}`} target="_blank" className="btn btn-primary">進入遊戲</Link>
-                </div>
-                {hoveredGameId === game.game_id && (
-                  <div className="overlay" style={{ height: `${overlayHeight}px` }}>
-                    <form className="overlay-form" onSubmit={handleSubmit}>
-                      <div className="mb-3">
-                        <label htmlFor="rename-title" className="form-label">重新命名關卡標題</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="rename-title"
-                          name="title"
-                          value={formValues.title}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="form-label" htmlFor="difficulty">調整難度：</label>
-                        <select
-                          className="form-select"
-                          name="difficulty"
-                          id="difficulty"
-                          value={formValues.difficulty}
-                          onChange={handleInputChange}
-                        >
-                          <option value="easy">簡單</option>
-                          <option value="medium">中等</option>
-                          <option value="hard">困難</option>
-                        </select>
-                      </div>
-                      <div className="form-check mb-3">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="is_public"
-                          name="isPublic"
-                          checked={formValues.isPublic}
-                          onChange={handleInputChange}
-                        />
-                        <label className="form-check-label" htmlFor="is_public">
-                          開放所有玩家加入
-                        </label>
-                      </div>
-                      <button type="submit" className="save-change-btn btn btn-primary w-100">儲存變更</button>
-                      <hr />
-                      <button type="button" className="delete-game-btn btn btn-danger w-100" onClick={handleDelete}>刪除遊戲關卡</button>
-                    </form>
+                  <div className="card-footer d-flex justify-content-between">
+                    <button className="copy-game-url-btn btn btn-outline-primary" onClick={() => copyGameUrlToClipboard(game.game_id)}>複製遊戲網址</button>
+                    <Link to={`/playground.html?gameId=${game.game_id}`} target="_blank" className="btn btn-primary">進入遊戲</Link>
                   </div>
-                )}
+                  {hoveredGameId === game.game_id && (
+                    <div className="overlay" style={{ height: `${overlayHeight}px` }}>
+                      <form className="overlay-form" onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                          <label htmlFor="rename-title" className="form-label">重新命名關卡標題</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="rename-title"
+                            name="title"
+                            value={formValues.title}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="mb-3">
+                          <label className="form-label" htmlFor="difficulty">調整難度：</label>
+                          <select
+                            className="form-select"
+                            name="difficulty"
+                            id="difficulty"
+                            value={formValues.difficulty}
+                            onChange={handleInputChange}
+                          >
+                            <option value="easy">簡單</option>
+                            <option value="medium">中等</option>
+                            <option value="hard">困難</option>
+                          </select>
+                        </div>
+                        <div className="form-check mb-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="is_public"
+                            name="isPublic"
+                            checked={formValues.isPublic}
+                            onChange={handleInputChange}
+                          />
+                          <label className="form-check-label" htmlFor="is_public">
+                            開放所有玩家加入
+                          </label>
+                        </div>
+                        <button type="submit" className="save-change-btn btn btn-primary w-100">儲存變更</button>
+                        <hr />
+                        <button type="button" className="delete-game-btn btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteGameConfirm" >刪除遊戲關卡</button>
+                      </form>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="modal fade" id="deleteGameConfirm" tabIndex="-1">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">確認刪除</h5>
+                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                  <p>您確定要刪除 <strong>{formValues.title}</strong> 嗎？此操作將無法撤銷。</p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                  <button type="button" className="btn btn-danger" onClick={handleDelete} data-bs-dismiss="modal">確定刪除</button>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );
