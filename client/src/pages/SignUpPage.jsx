@@ -58,6 +58,8 @@ const SignUpPage = () => {
   };
 
   useEffect(() => {
+    document.title = '帕索兔蓋德 - 玩家註冊';
+
     if (isAuthenticated) navigate(`/profile/${playerInfo.playerId}`);
   }, [playerInfo, isAuthenticated, navigate]);
 

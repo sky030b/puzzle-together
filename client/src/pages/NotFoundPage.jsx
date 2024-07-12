@@ -1,5 +1,11 @@
+import { useEffect } from "react";
+
 // src/pages/NotFoundPage.jsx
 const NotFoundPage = () => {
+  useEffect(() => {
+    document.title = '帕索兔蓋德 - 找不到頁面';
+  }, [])
+
   return (
     <div>
       <h1>404 - Not Found</h1>

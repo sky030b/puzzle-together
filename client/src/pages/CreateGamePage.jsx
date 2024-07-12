@@ -65,9 +65,9 @@ const CreateGamePage = () => {
       }
     };
 
+    document.title = '帕索兔蓋德 - 創建遊戲';
     setOwnerId();
   }, [navigate]);
-
 
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">
