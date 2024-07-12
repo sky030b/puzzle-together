@@ -87,7 +87,7 @@ async function signup(req, res) {
     } = req.body;
 
     if (nickname.trim().startsWith('匿名'))
-      return res.status(400).send('404 Bad Request: It is forbidden to set nickname starting with "匿名".');
+      return res.status(400).send('400 Bad Request: 禁止使用"匿名"開頭的暱稱');
 
     const playerId = nanoid(10);
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -112,14 +112,14 @@ async function signin(req, res) {
     const hashedPasswordFromDatabase = await getHashPWDByEmail(email);
     if (hashedPasswordFromDatabase instanceof Error) throw hashedPasswordFromDatabase;
     if (!hashedPasswordFromDatabase) {
-      return res.status(401).send('401 Unauthorized: User does not exist.');
+      return res.status(400).send('400 Bad Request: 帳號或密碼輸入錯誤');
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, hashedPasswordFromDatabase);
     if (!isPasswordCorrect) {
       // eslint-disable-next-line no-console
       console.error('Password is incorrect');
-      return res.status(403).send('403 Forbidden: Password is incorrect.');
+      return res.status(400).send('400 Bad Request: 帳號或密碼輸入錯誤');
     }
 
     const player = await getPlayerByEmail(email);

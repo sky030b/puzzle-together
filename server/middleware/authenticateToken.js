@@ -8,10 +8,10 @@ const authenticateToken = (req, res, next) => {
     const { authorization } = req.headers;
 
     if (!authorization) {
-      return res.status(401).send('401 Unauthorized: Token is required.');
+      return res.status(401).send('401 Unauthorized: 請先登入');
     }
     if (!authorization.startsWith('Bearer ')) {
-      return res.status(403).send('403 Forbidden: Invalid authorization format.');
+      return res.status(403).send('403 Forbidden: 無效的驗證格式，請重新登入');
     }
 
     token = authorization.replace('Bearer ', '');
