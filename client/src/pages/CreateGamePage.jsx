@@ -109,6 +109,7 @@ const CreateGamePage = () => {
                 name="row_qty"
                 value={formValues.row_qty}
                 min="1"
+                max="40"
                 onChange={handleChange}
                 required
               />
@@ -122,6 +123,7 @@ const CreateGamePage = () => {
                 name="col_qty"
                 value={formValues.col_qty}
                 min="1"
+                max="40"
                 onChange={handleChange}
                 required
               />
