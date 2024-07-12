@@ -45,6 +45,7 @@ const PlayerProfileHeader = () => {
       toast.success('自我介紹已更新。', { autoClose: 1500 });
     } catch (error) {
       console.error('Error updating profile:', error);
+      toast.error(error.response.data, { autoClose: 2000 });
     }
   };
 
@@ -77,17 +78,23 @@ const PlayerProfileHeader = () => {
               </>
             ) : (
               <>
-                <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile || '快來加點自我介紹，讓其他人更認識你吧～'}</div>
+                <div className='d-flex'>
+                  <div style={{ whiteSpace: 'nowrap' }}>自我介紹：</div>
+                  <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{playerData.profile || '快來加點自我介紹，讓其他人更認識你吧～'}</div>
+                </div>
                 <button className="btn btn-outline-secondary mt-2" onClick={() => setIsEditing(true)}>編輯</button>
               </>
             )
           ) : (
-            <div style={{ whiteSpace: 'pre' }}>自我介紹：{playerData.profile || '這位玩家什麼都沒有說╮(╯_╰)╭'}</div>
+            <div className='d-flex'>
+              <div style={{ whiteSpace: 'nowrap' }}>自我介紹：</div>
+              <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{playerData.profile || '這位玩家什麼都沒有說╮(╯_╰)╭'}</div>
+            </div>
           )}
         </div>
       </div>
       <div className="w-50 mx-auto">
-        <div className="stats mb-3">
+        <div className="stats mb-3 d-flex flex-column justify-content-between">
           <div className="mb-3">參加過 {playerData.games_played} 場遊戲</div>
           <div className="mb-3">完成過 {playerData.games_completed} 場遊戲</div>
           <div className="mb-3">拼對了 {playerData.puzzles_locked} 塊拼圖</div>
