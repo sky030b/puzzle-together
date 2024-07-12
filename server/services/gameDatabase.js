@@ -279,7 +279,9 @@ async function addPuzzlesOfGame(newGame) {
     });
 
     const puzzlesInfoObj = Object.keys(targetPuzzlePairingObj).map((targetId) => {
-      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(20, 20);
+      const centerAvoidPercent = 15;
+      const edgeAvoidPercent = 25;
+      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent);
       return {
         gameId, puzzleId: targetPuzzlePairingObj[targetId], targetId,
         topRatio, leftRatio
