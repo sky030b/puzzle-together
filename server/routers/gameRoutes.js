@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+  getPublicGames,
   getRenderInfo,
   createNewGame,
   getPlaybackInfo,
@@ -14,7 +15,7 @@ const authorizeOwnerMiddleware = require('../middleware/authorizeOwnerMiddleware
 
 const router = express.Router();
 
-// router.get('/', getGames);
+router.get('/public', getPublicGames);
 router.get('/:gameId', checkGameEntryMiddleware, getRenderInfo);
 router.get('/:gameId/playback', checkGameEntryMiddleware, getPlaybackInfo);
 router.get('/:gameId/hint', checkGameEntryMiddleware, getHintInfo);

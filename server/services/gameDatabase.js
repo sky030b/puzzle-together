@@ -250,6 +250,23 @@ async function getAllGames() {
   }
 }
 
+async function getAllPublicGames() {
+  try {
+    const [publicGames] = await pool.query(`
+      SELECT 
+        *
+      FROM 
+        games
+      WHERE
+        is_deleted = 0 AND is_public = 1;
+    `);
+    return publicGames;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 async function addPuzzlesOfGame(newGame) {
   function getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent) {
     const min = 0 + edgeAvoidPercent;
@@ -381,6 +398,7 @@ module.exports = {
   updateGameDurationByGameId,
   getRenderInfoByGameId,
   getAllGames,
+  getAllPublicGames,
   addNewGame,
   updateGameIsCompletedStatus
 };

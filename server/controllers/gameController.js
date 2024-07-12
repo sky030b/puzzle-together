@@ -3,7 +3,8 @@ const {
   getAllGames,
   addNewGame,
   updateGameBasicSetting,
-  deleteMyOwnGameByGameId
+  deleteMyOwnGameByGameId,
+  getAllPublicGames
 } = require('../services/gameDatabase');
 const { getGameCompletionInfo } = require('../services/gameHelpers');
 const { getPlaybackInfoByGameId } = require('../services/puzzleDatabase');
@@ -14,6 +15,17 @@ async function getGames(req, res) {
     if (allGames instanceof Error) throw allGames;
 
     return res.status(200).send(allGames);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+}
+
+async function getPublicGames(req, res) {
+  try {
+    const publicGames = await getAllPublicGames();
+    if (publicGames instanceof Error) throw publicGames;
+
+    return res.status(200).send(publicGames);
   } catch (error) {
     return res.status(500).send(error.message);
   }
@@ -133,6 +145,7 @@ async function deleteMyGame(req, res) {
 
 module.exports = {
   getGames,
+  getPublicGames,
   getRenderInfo,
   createNewGame,
   getPlaybackInfo,
