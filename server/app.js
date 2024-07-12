@@ -38,6 +38,10 @@ app.use(`/api/${API_VERSION}/games`, gameRoutes);
 app.use(`/api/${API_VERSION}/chats`, chatRoutes);
 app.use(`/api/${API_VERSION}/posts`, postRoutes);
 
+app.get('/health', (req, res) => {
+  res.status(200).send('ok')
+})
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(path.join(__dirname, 'public/dist'), 'index.html'));
 });
