@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable no-alert */
 /* eslint-disable no-undef */
 import {
   chatArea, chatContent, chatForm, messageInput, messageSendBtn
@@ -55,7 +54,15 @@ async function sendNewMessage(messageInfo) {
     const url = `/api/1.0/chats/${getCurrentGameId()}`;
     const res = await axios.post(url, messageInfo);
   } catch (error) {
-    alert(error.response.data);
+    Toastify({
+      text: error.response.data,
+      duration: 2000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "red",
+      stopOnFocus: true
+    }).showToast();
   }
 }
 
@@ -65,7 +72,16 @@ chatForm.addEventListener('submit', async (e) => {
   const { playerId, nickname } = getPlayerState();
 
   if (!playerId) {
-    alert('請先登入才可使用即時聊天系統！！');
+    Toastify({
+      text: '請先登入才可使用即時聊天系統！！',
+      duration: 2000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "red",
+      stopOnFocus: true
+    }).showToast();
+
     chatForm.reset();
     messageInput.disabled = true;
     messageSendBtn.disabled = true;

@@ -19,8 +19,15 @@ export function setupSocket() {
   if (roomId && playerState) {
     socket.emit('joinRoom', roomId, playerState);
   } else {
-    // eslint-disable-next-line no-alert
-    alert('請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。');
+    Toastify({
+      text: '請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。',
+      duration: 2000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "red",
+      stopOnFocus: true
+    }).showToast();
   }
 
   socket.on('setTimer', (data) => {

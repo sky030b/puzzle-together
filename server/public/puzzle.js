@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
-/* eslint-disable no-alert */
 /* eslint-disable import/no-cycle */
 import { container, canvas, targetContainer } from './dom.js';
 import {
@@ -358,15 +357,33 @@ export async function getRenderInfo() {
     console.log(renderInfo);
 
     if (!renderInfo) {
-      alert('沒有找到指定的遊戲關卡');
-      window.location.href = '/';
+      Toastify({
+        text: '沒有找到指定的遊戲關卡',
+        duration: 2000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "red",
+        stopOnFocus: true
+      }).showToast();
+
+      setTimeout(() => { window.location.href = '/' }, 1500);
     }
 
     return renderInfo;
   } catch (error) {
-    alert(error.response.data);
-    alert('請輸入有效的遊戲關卡ID');
     window.location.href = '/';
+    Toastify({
+      text: '請輸入有效的遊戲關卡ID',
+      duration: 2000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "red",
+      stopOnFocus: true
+    }).showToast();
+
+    setTimeout(() => { window.location.href = '/' }, 1500);
     return error;
   }
 }

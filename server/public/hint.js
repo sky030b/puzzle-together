@@ -107,7 +107,15 @@ export async function getHintInfo() {
     return hint;
   } catch (error) {
     console.error(error);
-    alert(error.response.data);
+    Toastify({
+      text: error.response.data,
+      duration: 2000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "red",
+      stopOnFocus: true
+    }).showToast();
     return error;
   }
 }

@@ -126,8 +126,15 @@ export function setPlaygroundStateByKey(key, value) {
   if (Object.prototype.hasOwnProperty.call(playgroundState, key)) {
     playgroundState[key] = value;
   } else {
-    // eslint-disable-next-line no-alert
-    alert('沒有指定的屬性，請再確認。');
+    Toastify({
+      text: '沒有指定的屬性，請再確認。',
+      duration: 2000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      backgroundColor: "red",
+      stopOnFocus: true
+    }).showToast();
   }
 }
 
@@ -139,8 +146,6 @@ export function getPlaygroundStateByKey(key) {
   if (Object.prototype.hasOwnProperty.call(playgroundState, key)) {
     return playgroundState[key];
   }
-  // eslint-disable-next-line no-alert
-  alert('沒有指定的屬性，請再確認。');
   return '沒有指定的屬性，請再確認。';
 }
 
