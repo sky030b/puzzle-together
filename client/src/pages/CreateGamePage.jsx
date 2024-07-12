@@ -16,6 +16,8 @@ const CreateGamePage = () => {
     is_open_when_owner_not_in: false,
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (type === 'checkbox') {
@@ -29,6 +31,7 @@ const CreateGamePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const formData = new FormData();
       for (const key in formValues) {
@@ -44,6 +47,8 @@ const CreateGamePage = () => {
     } catch (error) {
       console.error(error);
       toast.error(error.response.data, { autoClose: 2000 });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,6 +76,11 @@ const CreateGamePage = () => {
 
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">
+      {loading && (
+        <div className="overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <div className='w-75 mx-auto'>
         <h2 className="text-center mb-5">快來創建自己的拼圖遊戲吧 ～</h2>
         <form id="game-form" className="game-form" onSubmit={handleSubmit}>
@@ -158,7 +168,16 @@ const CreateGamePage = () => {
                 開放所有玩家加入
               </label>
             </div>
-            <button type="submit" className="btn btn-primary mt-5">開始玩</button>
+            <button type="submit" className="btn btn-primary mt-5" disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  正在處理...
+                </>
+              ) : (
+                '開始玩'
+              )}
+            </button>
           </div>
         </form>
       </div>
