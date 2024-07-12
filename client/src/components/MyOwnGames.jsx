@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext, useRef } from 'react';
 import axios from 'axios';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 import './style/MyOwnGames.css';
 
@@ -71,7 +72,7 @@ const MyOwnGames = () => {
   const copyGameUrlToClipboard = (gameId) => {
     const gameUrl = `${window.location.origin}/playground.html?gameId=${gameId}`;
     navigator.clipboard.writeText(gameUrl);
-    alert('遊戲網址已複製到剪貼簿');
+    toast.success('遊戲網址已複製到剪貼簿。', { autoClose: 1500 });
   };
 
   const handleMouseEnter = (game) => {
@@ -104,7 +105,7 @@ const MyOwnGames = () => {
         difficulty: formValues.difficulty,
         isPublic: formValues.isPublic
       });
-      alert('遊戲資料已更新');
+      toast.success('遊戲資料已更新。', { autoClose: 1500 });
       const updatedGames = games.map(game =>
         game.game_id !== hoveredGameId
           ? game
@@ -118,8 +119,8 @@ const MyOwnGames = () => {
       setGames(updatedGames);
     } catch (error) {
       console.error('Error updating game:', error);
-      alert('更新遊戲資料時發生錯誤');
-      alert(error.response.data)
+      toast.error('更新遊戲資料時發生錯誤。', { autoClose: 2000 });
+      console.error(error.response.data);
     }
   };
 
@@ -127,13 +128,13 @@ const MyOwnGames = () => {
     e.preventDefault();
     try {
       await axios.delete(`/api/1.0/games/${formValues.gameId}`);
-      alert('遊戲關卡已刪除');
+      toast.success('遊戲關卡已刪除。', { autoClose: 1500 });
       const deletedGames = games.filter((game) => game.game_id !== formValues.gameId);
       setGames(deletedGames);
     } catch (error) {
       console.error('Error deleting game:', error);
-      alert('刪除遊戲資料時發生錯誤');
-      alert(error.response.data)
+      toast.error('刪除遊戲資料時發生錯誤。', { autoClose: 2000 });
+      console.error(error.response.data);
     }
   };
 

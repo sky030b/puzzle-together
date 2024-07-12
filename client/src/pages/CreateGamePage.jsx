@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const CreateGamePage = () => {
   const [formValues, setFormValues] = useState({
@@ -42,7 +43,7 @@ const CreateGamePage = () => {
       window.location.href = `/playground.html?gameId=${res.data.game_id}`;
     } catch (error) {
       console.error(error);
-      alert(error.response.data);
+      toast.error(error.response.data, { autoClose: 2000 });
     }
   };
 
@@ -59,7 +60,7 @@ const CreateGamePage = () => {
         }));
       } catch (error) {
         console.error(error.response.data);
-        alert('尚未登入或是登入階段已過期，請重新登入。');
+        toast.error('尚未登入或是登入階段已過期，請重新登入。', { autoClose: 2000 });
         navigate('/signin');
       }
     };

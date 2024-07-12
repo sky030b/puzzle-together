@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 import { setCookie } from '../utils';
 
@@ -31,11 +32,11 @@ const SignInPage = () => {
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
       setPlayerInfo(playerInfo);
-      alert('登入成功。');
+      toast.success('登入成功。', { autoClose: 1500 });
       navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
-      alert(error.response.data);
+      toast.error(error.response.data, { autoClose: 2000 });
     } finally {
       setIsSubmitting(false);
     }

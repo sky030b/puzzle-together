@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { removeCookie } from '../utils';
+import { toast } from 'react-toastify';
 
 const Header = () => {
   const { playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const Header = () => {
     removeCookie('token');
     setIsAuthenticated(false);
     setPlayerInfo({});
-    alert('登出成功。')
+    toast.success('登出成功。', { autoClose: 1500 });
     setJustSignedOut(true);
   };
 

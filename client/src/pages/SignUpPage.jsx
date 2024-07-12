@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { getRandomHexCode, setCookie } from '../utils';
+import { toast } from 'react-toastify';
 
 const SignUpPage = () => {
   const [nickname, setNickname] = useState('');
@@ -27,11 +28,11 @@ const SignUpPage = () => {
       if (isSubmitting) return;
 
       if (password !== passwordCheck) {
-        alert('兩次輸入的密碼不同，請再試一次。');
+        toast.error('兩次輸入的密碼不同，請再試一次。', { autoClose: 2000 });
         return;
       }
 
-      if (nickname.trim().startsWith('匿名')) return alert('禁止以「匿名」為開頭設定暱稱。');
+      if (nickname.trim().startsWith('匿名')) return toast.error('禁止以「匿名」為開頭設定暱稱。', { autoClose: 2000 });
 
       const signupInfo = {
         nickname: nickname.trim(),
@@ -46,11 +47,11 @@ const SignUpPage = () => {
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
       setPlayerInfo(playerInfo);
-      alert('註冊成功。');
+      toast.success('註冊成功。', { autoClose: 1500 });
       navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
-      alert(error.response.data);
+      toast.error(error.response.data, { autoClose: 2000 });
     } finally {
       setIsSubmitting(false);
     }

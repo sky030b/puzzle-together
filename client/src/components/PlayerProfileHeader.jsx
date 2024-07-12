@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 
 const PlayerProfileHeader = () => {
@@ -19,7 +20,7 @@ const PlayerProfileHeader = () => {
         setProfileText(res.data.profile);
       } catch (error) {
         console.error('Error fetching player data:', error);
-        alert(error.response.data);
+        toast.error(error.response.data, { autoClose: 2000 });
         navigate('/not-found');
       }
     };
@@ -29,7 +30,7 @@ const PlayerProfileHeader = () => {
 
   const handleCopyPlayerId = () => {
     navigator.clipboard.writeText(playerData.player_id);
-    alert('Player ID copied to clipboard!');
+    toast.success('玩家 ID 已複製到剪貼簿。', { autoClose: 1500 });
   };
 
   const handleProfileChange = (e) => {
@@ -41,7 +42,7 @@ const PlayerProfileHeader = () => {
       await axios.post(`/api/1.0/players/profile/${playerId}`, { profile: profileText });
       setIsEditing(false);
       setPlayerData({ ...playerData, profile: profileText });
-      alert('Profile updated successfully!');
+      toast.success('自我介紹已更新。', { autoClose: 1500 });
     } catch (error) {
       console.error('Error updating profile:', error);
     }

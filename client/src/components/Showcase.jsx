@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Showcase = () => {
@@ -51,7 +52,7 @@ const Showcase = () => {
   const copyGameUrlToClipboard = (gameId) => {
     const gameUrl = `${window.location.origin}/playground.html?gameId=${gameId}`;
     navigator.clipboard.writeText(gameUrl);
-    alert('遊戲網址已複製到剪貼簿');
+    toast.success('遊戲網址已複製到剪貼簿。', { autoClose: 1500 });
   };
 
   return (

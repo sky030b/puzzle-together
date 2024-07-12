@@ -43,7 +43,7 @@ const PostCreation = ({ playerId, onCreatePost }) => {
 
   const handleSubmit = async () => {
     if (!selectedGame || postContent.length > 150) {
-      alert('請確認是否有選取一個相關關卡並確認發文內容少於150個字。');
+      // alert('請確認是否有選取一個相關關卡並確認發文內容少於150個字。');
       return;
     }
 
@@ -60,7 +60,7 @@ const PostCreation = ({ playerId, onCreatePost }) => {
         gameId: selectedGame.game_id,
         content: postContent
       });
-      alert('Post created successfully!');
+      // alert('Post created successfully!');
       setShowModal(false);
       onCreatePost(newPostData);
       setPostContent('');
