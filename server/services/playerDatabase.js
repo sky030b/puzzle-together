@@ -28,11 +28,16 @@ async function getPlayerByPlayerId(playerId) {
         p.represent_color,
         (SELECT COUNT(*) 
           FROM player_game pg 
-          WHERE pg.invitee_id = p.player_id) AS games_played,
+          WHERE 
+            pg.invitee_id = p.player_id 
+            AND pg.is_deleted = 0) AS games_played,
         (SELECT COUNT(*) 
           FROM player_game pg
           JOIN games g ON pg.game_id = g.game_id
-          WHERE pg.invitee_id = p.player_id AND g.is_completed = 1) AS games_completed,
+          WHERE 
+            pg.invitee_id = p.player_id 
+            AND g.is_completed = 1 
+            AND pg.is_deleted = 0) AS games_completed,
         (SELECT COUNT(*)
           FROM puzzles pu
           WHERE pu.locked_by = p.nickname) AS puzzles_locked,

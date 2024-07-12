@@ -38,6 +38,7 @@ CREATE TABLE player_game (
     inviter_id VARCHAR(255) NOT NULL,
     invitee_id VARCHAR(255) NOT NULL,
     game_id VARCHAR(255) NOT NULL,
+    is_deleted TINYINT(1) DEFAULT 0 NOT NULL,
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (invitee_id, game_id),
     FOREIGN KEY (inviter_id) REFERENCES players(player_id) ON DELETE CASCADE,

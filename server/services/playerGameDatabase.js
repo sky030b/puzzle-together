@@ -5,10 +5,9 @@ async function invitePlayerJoinGame(inviterId, inviteeId, gameId) {
   try {
     await pool.query(`
       INSERT INTO player_game (inviter_id, invitee_id, game_id)
-      SELECT * FROM (SELECT ? AS inviter_id_value, ? AS invitee_id_value, ? AS game_id_value) AS tmp
-      WHERE NOT EXISTS (
-        SELECT 1 FROM player_game WHERE invitee_id = ? AND game_id = ?
-      ) LIMIT 1;
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+      is_deleted = IF(is_deleted = 1, 0, is_deleted);    
     `, [inviterId, inviteeId, gameId, inviteeId, gameId]);
     return `Invite player done with ${inviteeId}-${gameId} record.`;
   } catch (error) {
@@ -20,7 +19,7 @@ async function invitePlayerJoinGame(inviterId, inviteeId, gameId) {
 async function checkoutInvited(playerId, gameId) {
   try {
     const [linkRecord] = await pool.query(`
-      SELECT * FROM player_game WHERE invitee_id = ? AND game_id = ?;
+      SELECT * FROM player_game WHERE invitee_id = ? AND game_id = ? AND is_deleted = 0;
     `, [playerId, gameId]);
     return linkRecord;
   } catch (error) {
@@ -39,7 +38,7 @@ async function getAllPlayedGamesInfo(playerId) {
       JOIN players p ON g.owner_id = p.player_id
       JOIN puzzles pz ON g.game_id = pz.game_id
       JOIN player_game pg ON g.game_id = pg.game_id
-      WHERE pg.invitee_id = ?
+      WHERE pg.invitee_id = ? AND pg.is_deleted = 0
       GROUP BY g.game_id, g.title
       ORDER BY completion_rate DESC;
     `, [playerId]);
