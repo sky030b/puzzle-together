@@ -86,7 +86,7 @@ nav ul li a {
 }
 
 /* styles.css */
-.overlay {
+.overlay-full {
   position: fixed;
   top: 0;
   left: 0;

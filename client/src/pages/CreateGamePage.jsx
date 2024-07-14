@@ -77,7 +77,7 @@ const CreateGamePage = () => {
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">
       {loading && (
-        <div className="overlay">
+        <div className="overlay-full">
           <div className="spinner"></div>
         </div>
       )}
