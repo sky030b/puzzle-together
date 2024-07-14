@@ -113,15 +113,3 @@ nav ul li a {
     transform: rotate(360deg);
   }
 }
-
-.accordion-body {
-  background-color: #dedede;
-}
-
-.pain-point {
-  background-color: rgb(150, 150, 150);
-}
-
-.accordion-body {
-  background-color: #dadada;
-}

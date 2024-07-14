@@ -1,8 +1,10 @@
+import '../style/HomePage.css';
+
 const HomePage = () => {
 
   return (
     <div>
-      <section className="hero text-center py-5 rounded d-flex align-items-center" style={{ height: '75vh' }}>
+      <section className="hero text-center py-5 rounded d-flex align-items-center overflow-hidden" style={{ height: '75vh' }}>
         <div className="w-75 d-flex align-items-center mx-auto">
           <div className="w-50 text-start">
             <div className="mb-5">
@@ -13,8 +15,9 @@ const HomePage = () => {
               <a href="#" className="btn btn-warning fs-5 fw-bold py-3 px-4">立即開始</a>
             </div>
           </div>
-          <div className="w-50">
-            <img className="img-fluid object-fit-cover" width="300" height="300" src="https://dsz5eydy8se7.cloudfront.net/img-2904526839091+(4).png" alt="" />
+          <div className="w-50 position-relative">
+            <img className="img-fluid object-fit-cover final-image" width="400" height="400" src="https://dsz5eydy8se7.cloudfront.net/img-2904526839091+(4).png" alt="" />
+            <img className="img-fluid object-fit-cover jump-gade position-absolute" width="400" height="400" src="https://dsz5eydy8se7.cloudfront.net/img-2904526839091+(2).png" alt="" />
           </div>
         </div>
       </section>
@@ -127,11 +130,11 @@ const HomePage = () => {
         <div className="accordion w-75 mx-auto overflow-hidden" id="accordionExample">
           <div className="accordion-item">
             <h2 className="accordion-header" id="headingOne">
-              <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 遊戲關卡的公開與私人標籤有什麼差異？
               </button>
             </h2>
-            <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
               <div className="accordion-body">
                 所有玩家都可以透過網址連結進入公開的關卡一起遊玩，私人關卡則僅能受到邀請後進入。
               </div>
