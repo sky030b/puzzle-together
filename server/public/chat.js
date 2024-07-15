@@ -56,7 +56,7 @@ async function sendNewMessage(messageInfo) {
   } catch (error) {
     Toastify({
       text: error.response.data,
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",
@@ -74,7 +74,7 @@ chatForm.addEventListener('submit', async (e) => {
   if (!playerId) {
     Toastify({
       text: '請先登入才可使用即時聊天系統！！',
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",

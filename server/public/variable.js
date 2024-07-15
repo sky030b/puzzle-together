@@ -128,7 +128,7 @@ export function setPlaygroundStateByKey(key, value) {
   } else {
     Toastify({
       text: '沒有指定的屬性，請再確認。',
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",

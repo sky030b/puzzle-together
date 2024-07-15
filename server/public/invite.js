@@ -8,7 +8,7 @@ const sendPlayerInvite = async (e) => {
     const { playerId: inviterId } = getPlayerState();
     if (!inviterId) return Toastify({
       text: '請先登入才可邀請其他玩家一同遊玩！',
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",
@@ -36,7 +36,7 @@ const sendPlayerInvite = async (e) => {
   } catch (error) {
     Toastify({
       text: error.response.data,
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",

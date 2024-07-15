@@ -21,7 +21,7 @@ export function setupSocket() {
   } else {
     Toastify({
       text: '請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。',
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",

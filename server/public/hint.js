@@ -109,7 +109,7 @@ export async function getHintInfo() {
     console.error(error);
     Toastify({
       text: error.response.data,
-      duration: 2000,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",
