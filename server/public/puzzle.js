@@ -358,32 +358,30 @@ export async function getRenderInfo() {
 
     if (!renderInfo) {
       Toastify({
-        text: '沒有找到指定的遊戲關卡',
-        duration: 2000,
+        text: '沒有找到指定的遊戲關卡。\n三秒後將轉址至遊戲總覽頁。',
+        duration: 3000,
         close: true,
         gravity: "top",
         position: "right",
-        backgroundColor: "red",
+        backgroundColor: "#e74c3c",
         stopOnFocus: true
       }).showToast();
-
-      setTimeout(() => { window.location.href = '/' }, 1500);
+      setTimeout(() => { window.location.href = '/all-games' }, 3000);
     }
 
     return renderInfo;
   } catch (error) {
-    window.location.href = '/';
     Toastify({
-      text: '請輸入有效的遊戲關卡ID',
-      duration: 2000,
+      text: `${error.response.data}\n三秒後將轉址至遊戲總覽頁。`,
+      duration: 3000,
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
 
-    setTimeout(() => { window.location.href = '/' }, 1500);
+    setTimeout(() => { window.location.href = '/all-games' }, 3000);
     return error;
   }
 }

@@ -100,7 +100,7 @@ container.addEventListener('wheel', (e) => {
 
 container.addEventListener('mousedown', (e) => {
   if (e.target === canvas || e.target === container || e.target.parentNode === targetContainer
-    || e.target.parentNode.parentNode === targetContainer 
+    || e.target.parentNode.parentNode === targetContainer
     || e.target.dataset.isLocked === 'true' || e.target.classList.contains('hint-box')) {
     e.target.style.cursor = 'move';
     isDraggingCanvas = true;
@@ -138,9 +138,22 @@ async function main() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const gameId = urlParams.get('gameId');
-    if (gameId) {
-      setCurrentGameId(gameId);
+    if (!gameId) {
+      Toastify({
+        text: '無法獲取有效的遊戲ID。\n三秒後將轉址至遊戲總覽頁。',
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#e74c3c",
+        stopOnFocus: true
+      }).showToast();
+
+      setTimeout(() => { window.location.href = '/all-games' }, 3000);
+      return;
     }
+
+    setCurrentGameId(gameId);
 
     const gameRenderResult = await renderGame();
     if (gameRenderResult instanceof Error) throw gameRenderResult;

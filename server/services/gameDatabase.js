@@ -8,7 +8,7 @@ const { savePuzzleMovementToDB } = require('./puzzleDatabase');
 
 async function getGamePublicInfo(gameId) {
   try {
-    const [{ is_public: isPublic }] = (await pool.query(`
+    const [game] = (await pool.query(`
       SELECT 
         is_public
       FROM 
@@ -16,6 +16,10 @@ async function getGamePublicInfo(gameId) {
       WHERE 
         game_id = ?;
     `, [gameId]))[0];
+
+    if (!game) throw new Error('找不到指定關卡的資訊。');
+  
+    const { is_public: isPublic } = game;
     return isPublic;
   } catch (error) {
     console.error(error);
