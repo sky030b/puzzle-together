@@ -1,10 +1,11 @@
+import { Link } from 'react-router-dom';
 import '../style/HomePage.css';
 
 const HomePage = () => {
 
   return (
     <div>
-      <section className="hero text-center py-5 rounded d-flex align-items-center overflow-hidden" style={{ height: '75vh' }}>
+      <section className="hero text-center py-5 rounded d-flex align-items-center overflow-hidden" style={{ height: "75vh" }}>
         <div className="w-75 d-flex align-items-center mx-auto">
           <div className="w-50 text-start">
             <div className="mb-5">
@@ -12,7 +13,7 @@ const HomePage = () => {
               <h4><strong className="text-warning">Puzzle Together</strong> <br />with Anyone, Anytime, Anywhere !</h4>
             </div>
             <div>
-              <a href="#" className="btn btn-warning fs-5 fw-bold py-3 px-4">立即開始</a>
+              <Link className="btn btn-warning fs-5 fw-bold py-3 px-5" to="/all-games">立即開始</Link>
             </div>
           </div>
           <div className="w-50 position-relative">
@@ -65,7 +66,7 @@ const HomePage = () => {
 
         <div className="d-flex flex-row-reverse w-100 justify-content-center align-items-center">
           <div className="pain-point py-4 px-5">
-            <div className="text-light fs-3">喜歡展示拼圖卻無法交流</div>
+            <div className="text-light fs-3">喜歡展示拼圖卻無處交流</div>
           </div>
           <div className="mx-3">
             <img src="https://dsz5eydy8se7.cloudfront.net/reaction.png" alt="" height="80" width="80" />
