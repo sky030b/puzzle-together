@@ -234,7 +234,7 @@ const MyOwnGames = () => {
                   <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
-                  <p>您確定要刪除 <strong>{formValues.title}</strong> 嗎？此操作將無法撤銷。</p>
+                  <div>您確定要刪除 <strong>{formValues.title}</strong> 嗎？此操作將無法撤銷。</div>
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">取消</button>
