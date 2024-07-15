@@ -60,7 +60,7 @@ async function sendNewMessage(messageInfo) {
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
   }
@@ -78,7 +78,7 @@ chatForm.addEventListener('submit', async (e) => {
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
 

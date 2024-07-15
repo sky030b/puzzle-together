@@ -113,7 +113,7 @@ export async function getHintInfo() {
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
     return error;

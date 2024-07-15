@@ -12,7 +12,7 @@ const sendPlayerInvite = async (e) => {
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
 
@@ -40,7 +40,7 @@ const sendPlayerInvite = async (e) => {
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
   }

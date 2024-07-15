@@ -25,7 +25,7 @@ export function setupSocket() {
       close: true,
       gravity: "top",
       position: "right",
-      backgroundColor: "red",
+      backgroundColor: "#e74c3c",
       stopOnFocus: true
     }).showToast();
   }
