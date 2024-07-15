@@ -48,7 +48,7 @@ async function getPlayerByPlayerId(playerId) {
         p.player_id = ?;
   `, [playerId]))[0];
 
-  if (!player) return new Error('找不到指定玩家的資訊。');
+    if (!player) return new Error('找不到指定玩家的資訊。');
 
     return player;
   } catch (error) {
@@ -57,11 +57,12 @@ async function getPlayerByPlayerId(playerId) {
   }
 }
 
-async function setPlayerProfileByPlayerId(playerId, profile) {
+async function setPlayerProfileByPlayerId(playerId, data) {
   try {
+    const { representColor, profile } = data;
     await pool.query(`
-      UPDATE players SET profile = ? WHERE player_id = ?;
-    `, [profile, playerId]);
+      UPDATE players SET represent_color = ?, profile = ? WHERE player_id = ?;
+    `, [representColor, profile, playerId]);
     return 'Update profile done.';
   } catch (error) {
     console.error(error);

@@ -43,11 +43,10 @@ async function updatePlayerProfile(req, res) {
   try {
     const { playerId: playerIdInParams } = req.params;
     const { playerId: playerIdInToken } = res.locals.jwtData;
-    const { profile } = req.body;
 
     if (playerIdInToken != playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
-    const updatePlayerProfileResult = await setPlayerProfileByPlayerId(playerIdInParams, profile);
+    const updatePlayerProfileResult = await setPlayerProfileByPlayerId(playerIdInParams, req.body);
     if (updatePlayerProfileResult instanceof Error) throw updatePlayerProfileResult;
 
     return res.status(200).send('updatePlayerProfile Done');
@@ -86,7 +85,7 @@ async function signup(req, res) {
       email, password, nickname, represent_color: representColor, is_room_public: isRoomPublic
     } = req.body;
 
-    if (nickname.trim().startsWith('匿名'))
+    if (nickname.startsWith('匿名'))
       return res.status(400).send('400 Bad Request: 禁止使用"匿名"開頭的暱稱');
 
     const playerId = nanoid(10);
