@@ -35,9 +35,9 @@ const GameCard = ({ game }) => {
 
   return (
     <div className="col">
-      <div className="card h-100">
+      <div className="card h-100 overflow-hidden">
         <div className="position-relative overflow-hidden image-container d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-          <img src={game.question_img_url} className="card-img-top img-fluid object-fit-cover h-100 w-auto" alt="Game Image" />
+          <img src={game.question_img_url} className="card-img-top img-fluid object-fit-cover h-100 w-auto rounded-0" alt="Game Image" />
           <div className="position-absolute bottom-0 end-0 p-2 bg-light text-dark" style={{ opacity: 0.8 }}>
             完成度：{(+game.completion_rate).toFixed(2)}%
           </div>
