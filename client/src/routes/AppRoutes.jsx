@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import HomePage from '../pages/HomePage';
 import SignUpPage from '../pages/SignUpPage';
 import SignInPage from '../pages/SignInPage';
+import AllGamesPage from '../pages/AllGamesPage';
 import PlayerProfilePage from '../pages/PlayerProfilePage';
 // import News from '../components/News';
 import Showcase from '../components/Showcase';
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Route index element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
         <Route path="signin" element={<SignInPage />} />
+        <Route path="all-games" element={<AllGamesPage />} />
         <Route path="create-game" element={<CreateGamePage />} />
         <Route path="profile/:playerId" element={<PlayerProfilePage />}>
           {/* <Route path="news" element={<News />} /> */}
