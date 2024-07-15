@@ -137,7 +137,7 @@ const HomePage = () => {
             </h2>
             <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
               <div className="accordion-body">
-                所有玩家都可以透過網址連結進入公開的關卡一起遊玩，私人關卡則僅能受到邀請後進入。
+                所有玩家都可以透過網址連結進入公開的關卡一起遊玩，私人關卡則僅能收到邀請後進入。
               </div>
             </div>
           </div>
