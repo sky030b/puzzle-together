@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://puzzle-together-api.e055339.com/';
+export const API_BASE_URL = 'https://puzzle-together-api.e055339.com';
 
 export const MAX_DIMENSION = 1500;
 export const CANVAS_WIDTH = 16000;
