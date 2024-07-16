@@ -11,7 +11,7 @@ const AllGamesPage = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await axios.get('/api/1.0/games/public');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/public`);
         setGames(res.data);
       } catch (error) {
         console.error('Error fetching games:', error);

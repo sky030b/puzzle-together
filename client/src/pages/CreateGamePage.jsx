@@ -37,7 +37,7 @@ const CreateGamePage = () => {
       for (const key in formValues) {
         formData.append(key, formValues[key]);
       }
-      const res = await axios.post('/api/1.0/games/', formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -57,7 +57,7 @@ const CreateGamePage = () => {
   useEffect(() => {
     const setOwnerId = async () => {
       try {
-        const res = await axios.get('/api/1.0/players/playerInfo');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/playerInfo`);
         const playerInfo = res.data;
         setFormValues((prevValues) => ({
           ...prevValues,

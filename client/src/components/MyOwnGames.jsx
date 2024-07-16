@@ -25,7 +25,7 @@ const MyOwnGames = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`/api/1.0/players/${playerId}/my-own-games`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/my-own-games`);
         setGames(res.data);
       } catch (error) {
         navigate(`/profile/${playerId}/showcase`);
@@ -100,7 +100,7 @@ const MyOwnGames = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`/api/1.0/games/${hoveredGameId}`, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/${hoveredGameId}`, {
         title: formValues.title,
         difficulty: formValues.difficulty,
         isPublic: formValues.isPublic
@@ -127,7 +127,7 @@ const MyOwnGames = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`/api/1.0/games/${formValues.gameId}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/${formValues.gameId}`);
       toast.success('遊戲關卡已刪除。', { autoClose: 1500 });
       const deletedGames = games.filter((game) => game.game_id !== formValues.gameId);
       setGames(deletedGames);

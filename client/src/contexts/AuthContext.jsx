@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get('/api/1.0/players/playerInfo');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/playerInfo`);
         setIsAuthenticated(true);
         setPlayerInfo(res.data);
       } catch (error) {

@@ -16,7 +16,7 @@ const PlayerProfileHeader = () => {
   useEffect(() => {
     const fetchPlayerData = async () => {
       try {
-        const res = await axios.get(`/api/1.0/players/profile/${playerId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/profile/${playerId}`);
         setPlayerData(res.data);
         setProfile(res.data.profile);
         setRepresentColor(res.data.represent_color);
@@ -46,7 +46,7 @@ const PlayerProfileHeader = () => {
   const handleSaveProfile = async () => {
     try {
       if (representColor === playerData.represent_color && profile === playerData.profile) return setIsEditing(false);
-      await axios.post(`/api/1.0/players/profile/${playerId}`, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/profile/${playerId}`, {
         representColor,
         profile
       });

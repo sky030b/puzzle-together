@@ -14,7 +14,7 @@ const PostCreation = ({ playerId, onCreatePost }) => {
   const fetchGames = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get(`/api/1.0/players/${playerId}/played-games`);
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/played-games`);
       setGames(res.data);
       setFilteredGames(res.data);
     } catch (error) {
@@ -56,7 +56,7 @@ const PostCreation = ({ playerId, onCreatePost }) => {
     };
 
     try {
-      await axios.post('/api/1.0/posts', {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/posts`, {
         gameId: selectedGame.game_id,
         content: postContent
       });

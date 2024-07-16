@@ -42,7 +42,7 @@ const SignUpPage = () => {
       };
 
       setIsSubmitting(true);
-      const res = await axios.post('/api/1.0/players/signup', signupInfo);
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/signup`, signupInfo);
       const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);
