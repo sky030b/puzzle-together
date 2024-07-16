@@ -30,49 +30,49 @@ const HomePage = () => {
 
         <div className="d-flex w-100 justify-content-center align-items-center mb-4">
           <div className="pain-point py-4 px-5">
-            <div className="text-light fs-3">受物理空間的限制，只能自己玩</div>
+            <div className="text-light fs-3">受物理空間的限制，只能自己玩？</div>
           </div>
           <div className="mx-3">
             <img src="https://dsz5eydy8se7.cloudfront.net/network.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
-            <div className="fs-3">與全球玩家即時連線，共享樂趣</div>
+            <div className="fs-3">與全球玩家即時連線，共享樂趣！</div>
           </div>
         </div>
 
         <div className="d-flex flex-row-reverse w-100 justify-content-center align-items-center mb-4">
           <div className="pain-point py-4 px-5">
-            <div className="text-light fs-3">過程中必須得佔用一個大桌面</div>
+            <div className="text-light fs-3">過程中必須得佔用一個大桌面？</div>
           </div>
           <div className="mx-3">
             <img src="https://dsz5eydy8se7.cloudfront.net/zoom.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
-            <div className="fs-3">小小電腦視窗，自由縮放拖動</div>
+            <div className="fs-3">小小電腦視窗，自由縮放拖動！</div>
           </div>
         </div>
 
         <div className="d-flex w-100 justify-content-center align-items-center mb-4">
           <div className="pain-point py-4 px-5">
-            <div className="text-light fs-3">一不小心碰到，記錄全歸零</div>
+            <div className="text-light fs-3">一不小心碰到，記錄全歸零？</div>
           </div>
           <div className="mx-3">
             <img src="https://dsz5eydy8se7.cloudfront.net/save.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
-            <div className="fs-3">全自動保存，保障所有進度</div>
+            <div className="fs-3">全自動保存，保障所有進度！</div>
           </div>
         </div>
 
         <div className="d-flex flex-row-reverse w-100 justify-content-center align-items-center">
           <div className="pain-point py-4 px-5">
-            <div className="text-light fs-3">喜歡展示拼圖卻無處交流</div>
+            <div className="text-light fs-3">喜歡展示拼圖卻無處交流？</div>
           </div>
           <div className="mx-3">
             <img src="https://dsz5eydy8se7.cloudfront.net/reaction.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
-            <div className="fs-3">拼圖展示牆，分享與互動</div>
+            <div className="fs-3">拼圖展示牆，分享與互動！</div>
           </div>
         </div>
       </section>
