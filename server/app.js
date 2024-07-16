@@ -25,7 +25,11 @@ app.use(express.static(path.join(__dirname, '../client/')));
 const socket = require('./services/socketio');
 
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: 'https://puzzle-together.e055339.com'
+  }
+});
 
 socket(io);
 
