@@ -8,8 +8,7 @@ import {
   getOpacityByDifficulty, getOverlapRatioByDifficulty,
   setPlaygroundStateByKey, API_BASE_URL
 } from './variable.js';
-
-import { getFormattedNowTime, getImageDimensions } from './utils.js';
+import { getCookie, getFormattedNowTime, getImageDimensions } from './utils.js';
 import { socket } from './socket.js';
 
 export const puzzleTargetMap = {};
@@ -350,7 +349,11 @@ export async function getRenderInfo() {
 
     const url = `${API_BASE_URL}/api/1.0/games/${gameId}`;
     // eslint-disable-next-line no-undef
-    const res = await axios.get(url);
+    const res = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${getCookie('token')}`
+      }
+    });
     const renderInfo = res.data;
 
     // eslint-disable-next-line no-console

@@ -14,7 +14,11 @@ async function getAnonymousPlayerInfo() {
 
 async function getPlayerInfoByToken() {
   try {
-    const res = await axios.get(`${API_BASE_URL}/api/1.0/players/playerInfo`);
+    const res = await axios.get(`${API_BASE_URL}/api/1.0/players/playerInfo`, {
+      headers: {
+        'Authorization': `Bearer ${getCookie('token')}`
+      }
+    });
     return res.data;
   } catch (error) {
     return error;

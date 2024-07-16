@@ -4,7 +4,7 @@ import {
   chatArea, chatContent, chatForm, messageInput, messageSendBtn
 } from './dom.js';
 import { socket } from './socket.js';
-import { returnChatMessageFormat } from './utils.js';
+import { getCookie, returnChatMessageFormat } from './utils.js';
 import { API_BASE_URL, getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
 
 chatArea.addEventListener('mouseenter', () => {
@@ -17,7 +17,11 @@ chatArea.addEventListener('mouseleave', () => {
 
 async function getChatHistory() {
   const url = `${API_BASE_URL}/api/1.0/chats/${getCurrentGameId()}`;
-  const res = await axios.get(url);
+  const res = await axios.get(url, {
+    headers: {
+      'Authorization': `Bearer ${getCookie('token')}`
+    }
+  });
   const chatHistoryInfo = res.data;
 
   return chatHistoryInfo;
@@ -52,7 +56,11 @@ export default async function renderChatHistory() {
 async function sendNewMessage(messageInfo) {
   try {
     const url = `${API_BASE_URL}/api/1.0/chats/${getCurrentGameId()}`;
-    const res = await axios.post(url, messageInfo);
+    const res = await axios.post(url, messageInfo, {
+      headers: {
+        'Authorization': `Bearer ${getCookie('token')}`
+      }
+    });
   } catch (error) {
     Toastify({
       text: error.response.data,

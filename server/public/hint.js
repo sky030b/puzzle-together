@@ -1,5 +1,5 @@
 import { navLinkUl, puzzleContainer } from './dom.js';
-import { delay } from './utils.js';
+import { delay, getCookie } from './utils.js';
 import { API_BASE_URL, CANVAS_HEIGHT, CANVAS_WIDTH, getCurrentGameId, getDifficulty, getPlaygroundStateByKey } from './variable.js';
 
 export function createHintNavItem() {
@@ -102,7 +102,11 @@ export function createHintNavItem() {
 
 export async function getHintInfo() {
   try {
-    const res = await axios.get(`${API_BASE_URL}/api/1.0/games/${getCurrentGameId()}/hint`);
+    const res = await axios.get(`${API_BASE_URL}/api/1.0/games/${getCurrentGameId()}/hint`, {
+      headers: {
+        'Authorization': `Bearer ${getCookie('token')}`
+      }
+    });
     const hint = res.data;
     return hint;
   } catch (error) {
