@@ -7,7 +7,7 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: deploy to ec2
         uses: appleboy/ssh-action@master
         with:
@@ -19,9 +19,37 @@ jobs:
             cd /home/ubuntu/puzzle-together
             git switch dev
             git pull
-            cd client
+            cd server
             npm install
-            npm run build
-            cd ../server
-            npm install
-            npx pm2 restart app
+            npx pm2 restart all
+
+  update_static_files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build project
+        run: |
+          cd client
+          npm install
+          npm run build
+
+      - name: Sync S3
+        run: aws s3 sync ./server/public "s3://${{ secrets.BUCKET_NAME }}/" --region ${{ secrets.AWS_REGION }}
+
+      - name: Invalidate CDN
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/index.html" "/assets/*" "/images/*" "/style/*" "/*.js"

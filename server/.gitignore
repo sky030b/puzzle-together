@@ -1,5 +1,8 @@
 node_modules/
 
 dist/
+public/assets/
+public/images/
+public/index.html
 
 .env
