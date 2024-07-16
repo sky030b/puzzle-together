@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
-import { setCookie } from '../utils';
+import { getCookie, setCookie } from '../utils';
 
 const SignInPage = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +27,11 @@ const SignInPage = () => {
       };
 
       setIsSubmitting(true);
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/signin`, signinInfo);
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/signin`, signinInfo, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
+      });
       const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);

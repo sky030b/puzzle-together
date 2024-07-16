@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form, ListGroup, Spinner } from 'react-bootstrap';
+import { getCookie } from '../utils';
 
 const PostCreation = ({ playerId, onCreatePost }) => {
   const [games, setGames] = useState([]);
@@ -14,7 +15,11 @@ const PostCreation = ({ playerId, onCreatePost }) => {
   const fetchGames = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/played-games`);
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/played-games`, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
+      });
       setGames(res.data);
       setFilteredGames(res.data);
     } catch (error) {
@@ -59,6 +64,10 @@ const PostCreation = ({ playerId, onCreatePost }) => {
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/posts`, {
         gameId: selectedGame.game_id,
         content: postContent
+      }, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
       });
       // alert('Post created successfully!');
       setShowModal(false);

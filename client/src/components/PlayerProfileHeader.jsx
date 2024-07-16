@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
+import { getCookie } from '../utils';
 
 const PlayerProfileHeader = () => {
   const { playerId } = useParams();
@@ -16,7 +17,11 @@ const PlayerProfileHeader = () => {
   useEffect(() => {
     const fetchPlayerData = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/profile/${playerId}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/profile/${playerId}`, {
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
         setPlayerData(res.data);
         setProfile(res.data.profile);
         setRepresentColor(res.data.represent_color);
@@ -49,6 +54,10 @@ const PlayerProfileHeader = () => {
       await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/profile/${playerId}`, {
         representColor,
         profile
+      }, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
       });
       setIsEditing(false);
       setPlayerData({

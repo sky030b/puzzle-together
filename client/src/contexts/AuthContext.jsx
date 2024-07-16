@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { getCookie } from '../utils';
 
 export const AuthContext = createContext();
 
@@ -10,7 +11,11 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/playerInfo`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/playerInfo`, {
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
         setIsAuthenticated(true);
         setPlayerInfo(res.data);
       } catch (error) {

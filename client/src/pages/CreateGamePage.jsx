@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { getCookie } from '../utils';
 
 const CreateGamePage = () => {
   const [formValues, setFormValues] = useState({
@@ -40,6 +41,7 @@ const CreateGamePage = () => {
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${getCookie('token')}`
         },
       });
       if (res instanceof Error) throw res;
@@ -57,7 +59,11 @@ const CreateGamePage = () => {
   useEffect(() => {
     const setOwnerId = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/playerInfo`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/playerInfo`, {
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
         const playerInfo = res.data;
         setFormValues((prevValues) => ({
           ...prevValues,

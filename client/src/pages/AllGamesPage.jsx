@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import GameCard from '../components/GameCard';
+import { getCookie } from '../utils';
 
 const AllGamesPage = () => {
   const { playerId } = useParams();
@@ -11,7 +12,11 @@ const AllGamesPage = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/public`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/public`, {
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
         setGames(res.data);
       } catch (error) {
         console.error('Error fetching games:', error);

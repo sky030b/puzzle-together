@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import { getRandomHexCode, setCookie } from '../utils';
+import { getCookie, getRandomHexCode, setCookie } from '../utils';
 import { toast } from 'react-toastify';
 
 const SignUpPage = () => {
@@ -42,7 +42,11 @@ const SignUpPage = () => {
       };
 
       setIsSubmitting(true);
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/signup`, signupInfo);
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/signup`, signupInfo, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
+      });
       const { accessToken, accessExpired, playerInfo } = res.data.data;
       setCookie('token', accessToken, accessExpired);
       setIsAuthenticated(true);

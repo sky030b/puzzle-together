@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import GameCard from '../components/GameCard';
+import { getCookie } from '../utils';
 
 const Showcase = () => {
   const { playerId } = useParams();
@@ -13,7 +14,11 @@ const Showcase = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/played-games`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/played-games`, {
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
         setGames(res.data);
       } catch (error) {
         console.error('Error fetching games:', error);

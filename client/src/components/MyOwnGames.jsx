@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 import './style/MyOwnGames.css';
+import { getCookie } from '../utils';
 
 const MyOwnGames = () => {
   const { playerId } = useParams();
@@ -25,7 +26,11 @@ const MyOwnGames = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/my-own-games`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/my-own-games`, {
+          headers: {
+            'Authorization': `Bearer ${getCookie('token')}`
+          }
+        });
         setGames(res.data);
       } catch (error) {
         navigate(`/profile/${playerId}/showcase`);
@@ -104,6 +109,10 @@ const MyOwnGames = () => {
         title: formValues.title,
         difficulty: formValues.difficulty,
         isPublic: formValues.isPublic
+      }, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
       });
       toast.success('遊戲資料已更新。', { autoClose: 1500 });
       const updatedGames = games.map(game =>
@@ -127,7 +136,11 @@ const MyOwnGames = () => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/${formValues.gameId}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/${formValues.gameId}`, {
+        headers: {
+          'Authorization': `Bearer ${getCookie('token')}`
+        }
+      });
       toast.success('遊戲關卡已刪除。', { autoClose: 1500 });
       const deletedGames = games.filter((game) => game.game_id !== formValues.gameId);
       setGames(deletedGames);
