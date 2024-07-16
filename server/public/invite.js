@@ -1,5 +1,5 @@
 import { sendInviteBtn } from './dom.js';
-import { getCurrentGameId, getPlayerState } from './variable.js';
+import { API_BASE_URL, getCurrentGameId, getPlayerState } from './variable.js';
 
 const inviteForm = document.querySelector('#invite-form');
 const sendPlayerInvite = async (e) => {
@@ -21,7 +21,7 @@ const sendPlayerInvite = async (e) => {
       inviteeId: inviteForm[0].value.trim(),
       gameId: getCurrentGameId()
     }
-    const res = await axios.post('/api/1.0/players/invite', inviteInfo);
+    const res = await axios.post(`${API_BASE_URL}/api/1.0/players/invite`, inviteInfo);
     Toastify({
       text: '邀請成功：' + inviteForm[0].value,
       duration: 1500,

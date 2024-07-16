@@ -6,7 +6,8 @@ import { delay } from './utils.js';
 import {
   CANVAS_HEIGHT, CANVAS_WIDTH,
   getCurrentGameId, getPlayerState, getPlaygroundState,
-  getPlaygroundStateByKey, setIsModalOpen, setScale, getScale
+  getPlaygroundStateByKey, setIsModalOpen, setScale, getScale,
+  API_BASE_URL
 } from './variable.js';
 
 function lockAllPuzzles() {
@@ -54,7 +55,7 @@ async function playbackGame() {
 
   await delay(500);
 
-  const res = await axios.get(`/api/1.0/games/${getCurrentGameId()}/playback`);
+  const res = await axios.get(`${API_BASE_URL}/api/1.0/games/${getCurrentGameId()}/playback`);
   const playbackInfo = res.data;
   console.log(playbackInfo);
 

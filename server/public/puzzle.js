@@ -6,7 +6,8 @@ import {
   CANVAS_WIDTH, CANVAS_HEIGHT, getScale, MAX_DIMENSION,
   getCurrentGameId, getPlayerState,
   getOpacityByDifficulty, getOverlapRatioByDifficulty,
-  setPlaygroundStateByKey
+  setPlaygroundStateByKey,
+  API_BASE_URL
 } from './variable.js';
 
 import { getFormattedNowTime, getImageDimensions } from './utils.js';
@@ -348,7 +349,7 @@ export async function getRenderInfo() {
   try {
     const gameId = getCurrentGameId();
 
-    const url = `/api/1.0/games/${gameId}`;
+    const url = `${API_BASE_URL}/api/1.0/games/${gameId}`;
     // eslint-disable-next-line no-undef
     const res = await axios.get(url);
     const renderInfo = res.data;

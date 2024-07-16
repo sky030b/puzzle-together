@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 import { invitePlayerInput, messageInput, messageSendBtn, sendInviteBtn } from './dom.js';
 import { getCookie } from './utils.js';
-import { getPlayerState, setPlayerState } from './variable.js';
+import { API_BASE_URL, getPlayerState, setPlayerState } from './variable.js';
 
 async function getAnonymousPlayerInfo() {
   try {
-    const res = await axios.get('/api/1.0/players/anonymous');
+    const res = await axios.get(`${API_BASE_URL}/api/1.0/players/anonymous`);
     return res.data;
   } catch (error) {
     return error;
@@ -14,7 +14,7 @@ async function getAnonymousPlayerInfo() {
 
 async function getPlayerInfoByToken() {
   try {
-    const res = await axios.get('/api/1.0/players/playerInfo');
+    const res = await axios.get(`${API_BASE_URL}/api/1.0/players/playerInfo`);
     return res.data;
   } catch (error) {
     return error;

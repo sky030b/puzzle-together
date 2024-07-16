@@ -5,7 +5,7 @@ import {
 } from './dom.js';
 import { socket } from './socket.js';
 import { returnChatMessageFormat } from './utils.js';
-import { getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
+import { API_BASE_URL, getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
 
 chatArea.addEventListener('mouseenter', () => {
   setIsInsideChatArea(true);
@@ -16,7 +16,7 @@ chatArea.addEventListener('mouseleave', () => {
 });
 
 async function getChatHistory() {
-  const url = `/api/1.0/chats/${getCurrentGameId()}`;
+  const url = `${API_BASE_URL}/api/1.0/chats/${getCurrentGameId()}`;
   const res = await axios.get(url);
   const chatHistoryInfo = res.data;
 
@@ -51,7 +51,7 @@ export default async function renderChatHistory() {
 
 async function sendNewMessage(messageInfo) {
   try {
-    const url = `/api/1.0/chats/${getCurrentGameId()}`;
+    const url = `${API_BASE_URL}/api/1.0/chats/${getCurrentGameId()}`;
     const res = await axios.post(url, messageInfo);
   } catch (error) {
     Toastify({
