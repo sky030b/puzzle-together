@@ -81,7 +81,7 @@ async function updateGameBasicSetting(updateInfo) {
 async function deleteMyOwnGameByGameId(gameId) {
   try {
     await pool.query(`
-      UPDATE games SET title = CONCAT(title, ' - deleted'), is_deleted = 1 WHERE game_id = ?;
+      UPDATE games SET title = CONCAT(title, ' - deleted - ', CURRENT_TIMESTAMP), is_deleted = 1 WHERE game_id = ?;
     `, [gameId]);
 
     await pool.query(`
