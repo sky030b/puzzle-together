@@ -7,11 +7,11 @@ import { getFormattedTime, returnChatMessageFormat } from './utils.js';
 import {
   clearTimer, setTimer,
   getCurrentGameId, getPlayerState, setPlaygroundStateByKey,
-  getPlaygroundStateByKey
+  getPlaygroundStateByKey, API_BASE_URL
 } from './variable.js';
 
 // eslint-disable-next-line no-undef
-export const socket = io();
+export const socket = io(API_BASE_URL);
 
 export function setupSocket() {
   const roomId = getCurrentGameId();

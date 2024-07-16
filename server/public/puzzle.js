@@ -6,8 +6,7 @@ import {
   CANVAS_WIDTH, CANVAS_HEIGHT, getScale, MAX_DIMENSION,
   getCurrentGameId, getPlayerState,
   getOpacityByDifficulty, getOverlapRatioByDifficulty,
-  setPlaygroundStateByKey,
-  API_BASE_URL
+  setPlaygroundStateByKey, API_BASE_URL
 } from './variable.js';
 
 import { getFormattedNowTime, getImageDimensions } from './utils.js';
