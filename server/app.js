@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -11,6 +12,9 @@ dotenv.config();
 
 const app = express();
 
+app.use(cors({
+  origin: 'https://puzzle-together.e055339.com'
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
