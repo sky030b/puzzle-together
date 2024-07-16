@@ -60,6 +60,10 @@ export default async function initPlayer() {
       invitePlayerInput.disabled = false;
       sendInviteBtn.textContent = '寄送邀請';
       sendInviteBtn.disabled = false;
+
+      const twoWayToGoBtn = document.querySelector('.two-way-to-go');
+      twoWayToGoBtn.textContent = '回我的展示櫃';
+      twoWayToGoBtn.href = `/profile/${getPlayerState().playerId}/showcase`;
     }
     return 'playerInit Done.';
   } catch (error) {
