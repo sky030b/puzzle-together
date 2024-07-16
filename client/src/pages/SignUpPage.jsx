@@ -22,17 +22,30 @@ const SignUpPage = () => {
     setRepresentColor(`#${getRandomHexCode()}`);
   }, []);
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       if (isSubmitting) return;
+
+      if (!validateEmail(email)) {
+        toast.error('請輸入有效的電子郵件地址。', { autoClose: 2000 });
+        return;
+      }
 
       if (password !== passwordCheck) {
         toast.error('兩次輸入的密碼不同，請再試一次。', { autoClose: 2000 });
         return;
       }
 
-      if (nickname.trim().startsWith('匿名')) return toast.error('禁止以「匿名」為開頭設定暱稱。', { autoClose: 2000 });
+      if (nickname.trim().startsWith('匿名')) {
+        toast.error('禁止以「匿名」為開頭設定暱稱。', { autoClose: 2000 });
+        return;
+      }
 
       const signupInfo = {
         nickname: nickname.trim(),
@@ -55,7 +68,7 @@ const SignUpPage = () => {
       navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
-      toast.error(error.response.data, { autoClose: 2000 });
+      toast.error(error.response.data.errors.map((error) => error.msg).join('\n'), { autoClose: 2000 });
     } finally {
       setIsSubmitting(false);
     }
@@ -117,7 +130,7 @@ const SignUpPage = () => {
               type="password"
               className="form-control"
               id="signupPasswordInput"
-              name="password" 
+              name="password"
               placeholder="請輸入您的密碼"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
