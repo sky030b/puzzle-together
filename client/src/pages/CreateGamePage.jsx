@@ -76,7 +76,7 @@ const CreateGamePage = () => {
       }
     };
 
-    document.title = '帕索兔蓋德 - 創建遊戲';
+    document.title = '帕索兔蓋德 - 建立遊戲';
     setOwnerId();
   }, [navigate]);
 
@@ -88,7 +88,7 @@ const CreateGamePage = () => {
         </div>
       )}
       <div className='w-75 mx-auto'>
-        <h2 className="text-center mb-5">快來創建自己的拼圖遊戲吧 ～</h2>
+        <h2 className="text-center mb-5">快來建立自己的拼圖遊戲吧 ～</h2>
         <form id="game-form" className="game-form" onSubmit={handleSubmit}>
           <input type="hidden" name="owner_id" value={formValues.owner_id} />
           <div className="row g-3">

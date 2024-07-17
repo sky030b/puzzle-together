@@ -155,7 +155,7 @@ const MyOwnGames = () => {
     <div className="container w-75 mt-4">
       {games.length === 0 ? (
         <div className="d-flex justify-content-center align-items-center" style={{ height: '150px' }}>
-          <h5>{isOwner ? '目前還未遊玩任何遊戲，快來加入/創建一個吧～' : '這位玩家目前還沒有參與任何遊戲，快來邀請他一起同樂～'}</h5>
+          <h5>{isOwner ? '目前還未遊玩任何遊戲，快來加入/建立一個吧～' : '這位玩家目前還沒有參與任何遊戲，快來邀請他一起同樂～'}</h5>
         </div>
       ) : (
         <>

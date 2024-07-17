@@ -45,7 +45,7 @@ const Header = () => {
             {isAuthenticated ? (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/create-game">創建關卡</NavLink>
+                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/create-game">建立關卡</NavLink>
                 </li>
                 <li className="nav-item">
                   <NavLink className="nav-link cursor-pointer" aria-current="page" to={`/profile/${playerInfo.playerId}`}>玩家檔案</NavLink>

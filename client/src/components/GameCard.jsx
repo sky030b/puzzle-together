@@ -44,7 +44,7 @@ const GameCard = ({ game }) => {
         </div>
         <div className="card-body">
           <h5 className="card-title">{game.title}</h5>
-          <p className="card-text">創建者：<Link to={`/profile/${game.owner_id}/showcase`}>{game.owner_nickname}</Link></p>
+          <p className="card-text">建立者：<Link to={`/profile/${game.owner_id}/showcase`}>{game.owner_nickname}</Link></p>
           <div className="d-flex flex-wrap mb-2">
             <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>
             <span className={`badge rounded-pill ${getDifficultyBadgeClass(game.difficulty)} me-2`}>

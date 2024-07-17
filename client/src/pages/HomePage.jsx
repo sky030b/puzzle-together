@@ -199,7 +199,7 @@ const HomePage = () => {
           <div className="accordion-item">
             <h2 className="accordion-header" id="headingSix">
               <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                我創建完關卡之後還可以調整或設定關卡嗎？
+                我建立完關卡之後還可以調整或設定關卡嗎？
               </button>
             </h2>
             <div id="collapseSix" className="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionExample">

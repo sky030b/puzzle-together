@@ -84,7 +84,7 @@ const PostCreation = ({ playerId, onCreatePost }) => {
     <>
       <div className="d-flex justify-content-center mb-4">
         <Button variant="primary" onClick={() => setShowModal(true)}>
-          創建貼文
+          建立貼文
         </Button>
       </div>
 
@@ -120,7 +120,7 @@ const PostCreation = ({ playerId, onCreatePost }) => {
                     <div className="w-100">
                       <div className="row">
                         <div className="col-4"><strong>標題：</strong>{game.title}</div>
-                        <div className="col-4"><strong>創建者：</strong>{game.owner_nickname}</div>
+                        <div className="col-4"><strong>建立者：</strong>{game.owner_nickname}</div>
                         <div className="col-4"><strong>難度：</strong>{game.difficulty === 'easy' ? '簡單' : game.difficulty === 'medium' ? '中等' : '困難'}</div>
                       </div>
                       <div className="row">
