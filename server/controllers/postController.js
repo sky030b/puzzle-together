@@ -17,7 +17,7 @@ async function createNewPost(req, res) {
   try {
     const { gameId, content } = req.body;
     const { playerId } = res.locals.jwtData;
-    const postInfo = { playerId, gameId, content }
+    const postInfo = { playerId, gameId, content };
 
     const newGame = await addNewPost(postInfo);
     if (newGame instanceof Error) throw newGame;

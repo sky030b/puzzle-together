@@ -1,6 +1,34 @@
+/* eslint-disable no-undef */
 import { navLinkUl, puzzleContainer } from './dom.js';
 import { delay, getCookie } from './utils.js';
-import { API_BASE_URL, CANVAS_HEIGHT, CANVAS_WIDTH, getCurrentGameId, getDifficulty, getPlaygroundStateByKey } from './variable.js';
+import {
+  API_BASE_URL, CANVAS_HEIGHT, CANVAS_WIDTH, getCurrentGameId, getDifficulty
+} from './variable.js';
+
+export async function getHintInfo() {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/api/1.0/games/${getCurrentGameId()}/hint`, {
+      headers: {
+        Authorization: `Bearer ${getCookie('token')}`
+      }
+    });
+    const hint = res.data;
+    return hint;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    Toastify({
+      text: error.response.data,
+      duration: 3000,
+      close: true,
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
+      stopOnFocus: true
+    }).showToast();
+    return error;
+  }
+}
 
 export function createHintNavItem() {
   if (getDifficulty() !== 'hard') return;
@@ -22,10 +50,9 @@ export function createHintNavItem() {
     e.preventDefault();
     const hint = await getHintInfo();
 
-    const onePiece = document.querySelector('.puzzle-piece')
+    const onePiece = document.querySelector('.puzzle-piece');
     const hintBoxWidth = onePiece.style.width;
     const hintBoxHeight = onePiece.style.height;
-    console.log(getPlaygroundStateByKey('img'))
     hint
       .filter((puzzle) => puzzle.isLocked)
       .forEach((lockedPuzzle) => {
@@ -86,7 +113,6 @@ export function createHintNavItem() {
         hintBox.style.left = `${(CANVAS_WIDTH * leftRatio) / 100}px`;
         hintBox.style.width = hintBoxWidth;
         hintBox.style.height = hintBoxHeight;
-        console.log(hintBox);
 
         setTimeout(() => {
           hintBox.style.opacity = 0;
@@ -96,30 +122,5 @@ export function createHintNavItem() {
           puzzleContainer.removeChild(hintBox);
         }, 2000);
       });
-
-  })
-}
-
-export async function getHintInfo() {
-  try {
-    const res = await axios.get(`${API_BASE_URL}/api/1.0/games/${getCurrentGameId()}/hint`, {
-      headers: {
-        'Authorization': `Bearer ${getCookie('token')}`
-      }
-    });
-    const hint = res.data;
-    return hint;
-  } catch (error) {
-    console.error(error);
-    Toastify({
-      text: error.response.data,
-      duration: 3000,
-      close: true,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "#e74c3c",
-      stopOnFocus: true
-    }).showToast();
-    return error;
-  }
+  });
 }

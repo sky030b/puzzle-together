@@ -5,7 +5,7 @@ async function invitePlayer(req, res) {
     const { playerId } = res.locals.jwtData;
     const { inviterId, inviteeId, gameId } = req.body;
 
-    if (inviterId != playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+    if (inviterId !== playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
     const invitePLayerResult = await invitePlayerJoinGame(inviterId, inviteeId, gameId);
     if (invitePLayerResult instanceof Error) throw invitePLayerResult;
@@ -36,7 +36,7 @@ async function getMyOwnGames(req, res) {
     const { playerId: playerIdInParams } = req.params;
     const { playerId: playerIdInToken } = res.locals.jwtData;
 
-    if (playerIdInToken != playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+    if (playerIdInToken !== playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
     const gamesInfo = await getMyOwnGamesInfo(playerIdInToken);
     if (gamesInfo instanceof Error) throw gamesInfo;

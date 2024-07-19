@@ -198,7 +198,10 @@ function addDragAndDrop(gameInfo) {
 
   function onMouseMove(e) {
     if (!selectedPiece) return;
-    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
+    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) {
+      selectedPiece = null;
+      return;
+    }
 
     const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
@@ -251,7 +254,10 @@ function addDragAndDrop(gameInfo) {
 
   function onMouseUp() {
     if (!selectedPiece) return;
-    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) return selectedPiece = null;
+    if (selectedPiece.dataset.moveBy !== getPlayerState().nickname) {
+      selectedPiece = null;
+      return;
+    }
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -298,7 +304,8 @@ function addDragAndDrop(gameInfo) {
       const targetId = target.id;
       const pieceId = selectedPiece.id;
       const overlapRatio = calculateOverlap(selectedPiece, target);
-      if (isNearTarget(selectedPiece, target) && overlapRatio >= getOverlapRatioByDifficulty(difficulty)) {
+      if (isNearTarget(selectedPiece, target)
+        && overlapRatio >= getOverlapRatioByDifficulty(difficulty)) {
         if (!(difficulty === 'easy' && puzzleTargetMap[targetId] !== pieceId)) {
           selectedPiece.style.left = `${+targetContainer.style.left.replace('px', '')
             + +targetContainer.style.borderWidth.replace('px', '')
@@ -321,9 +328,9 @@ function addDragAndDrop(gameInfo) {
           selectedPiece.style.zIndex = '5';
         }
 
-        puzzleTargetMap[targetId] === pieceId
-          ? emitUpdateAndLockPiece(targetId, nickname, representColor)
-          : emitUpdatePiece();
+        if (puzzleTargetMap[targetId] === pieceId) {
+          emitUpdateAndLockPiece(targetId, nickname, representColor);
+        } else emitUpdatePiece();
       } else emitUpdatePiece();
     });
 
@@ -351,7 +358,7 @@ export async function getRenderInfo() {
     // eslint-disable-next-line no-undef
     const res = await axios.get(url, {
       headers: {
-        'Authorization': `Bearer ${getCookie('token')}`
+        Authorization: `Bearer ${getCookie('token')}`
       }
     });
     const renderInfo = res.data;
@@ -360,31 +367,35 @@ export async function getRenderInfo() {
     console.log(renderInfo);
 
     if (!renderInfo) {
+      // This is from toastify-js cdn
+      // eslint-disable-next-line no-undef
       Toastify({
         text: '沒有找到指定的遊戲關卡。\n三秒後將轉址至遊戲總覽頁。',
         duration: 3000,
         close: true,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "#e74c3c",
+        gravity: 'top',
+        position: 'right',
+        backgroundColor: '#e74c3c',
         stopOnFocus: true
       }).showToast();
-      setTimeout(() => { window.location.href = '/all-games' }, 3000);
+      setTimeout(() => { window.location.href = '/all-games'; }, 3000);
     }
 
     return renderInfo;
   } catch (error) {
+    // This is from toastify-js cdn
+    // eslint-disable-next-line no-undef
     Toastify({
       text: `${error.response.data}\n三秒後將轉址至遊戲總覽頁。`,
       duration: 3000,
       close: true,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "#e74c3c",
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
       stopOnFocus: true
     }).showToast();
 
-    setTimeout(() => { window.location.href = '/all-games' }, 3000);
+    setTimeout(() => { window.location.href = '/all-games'; }, 3000);
     return error;
   }
 }

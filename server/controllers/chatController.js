@@ -20,14 +20,14 @@ async function createNewMessage(req, res) {
     const { playerId: playerIdInToken } = res.locals.jwtData;
     const { playerId: playerIdInBody, message } = req.body;
 
-    if (playerIdInToken != playerIdInBody) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+    if (playerIdInToken !== playerIdInBody) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
     const isPublic = await getGamePublicInfo(gameId);
 
     if (!isPublic) {
       const linkRecord = await checkoutInvited(playerIdInBody, gameId);
       if (linkRecord instanceof Error) throw linkRecord;
-      if (!linkRecord.length) return res.status(403).send(`403 Forbidden: 您沒有權限在此遊戲關卡的聊天室發言，請確保您已經收到邀請。或是指定關卡不存在。`);
+      if (!linkRecord.length) return res.status(403).send('403 Forbidden: 您沒有權限在此遊戲關卡的聊天室發言，請確保您已經收到邀請。或是指定關卡不存在。');
     }
 
     const messageInfo = {

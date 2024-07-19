@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
 import {
@@ -5,7 +6,9 @@ import {
 } from './dom.js';
 import { socket } from './socket.js';
 import { getCookie, returnChatMessageFormat } from './utils.js';
-import { API_BASE_URL, getCurrentGameId, getPlayerState, setIsInsideChatArea } from './variable.js';
+import {
+  API_BASE_URL, getCurrentGameId, getPlayerState, setIsInsideChatArea
+} from './variable.js';
 
 chatArea.addEventListener('mouseenter', () => {
   setIsInsideChatArea(true);
@@ -19,7 +22,7 @@ async function getChatHistory() {
   const url = `${API_BASE_URL}/api/1.0/chats/${getCurrentGameId()}`;
   const res = await axios.get(url, {
     headers: {
-      'Authorization': `Bearer ${getCookie('token')}`
+      Authorization: `Bearer ${getCookie('token')}`
     }
   });
   const chatHistoryInfo = res.data;
@@ -41,12 +44,12 @@ export default async function renderChatHistory() {
       e.preventDefault();
       chatContent.classList.remove('d-none');
       chatForm.classList.remove('d-none');
-    })
+    });
     chatArea.addEventListener('mouseleave', (e) => {
       e.preventDefault();
       chatContent.classList.add('d-none');
       chatForm.classList.add('d-none');
-    })
+    });
     return 'renderChatHistory Done.';
   } catch (error) {
     return error;
@@ -56,9 +59,9 @@ export default async function renderChatHistory() {
 async function sendNewMessage(messageInfo) {
   try {
     const url = `${API_BASE_URL}/api/1.0/chats/${getCurrentGameId()}`;
-    const res = await axios.post(url, messageInfo, {
+    await axios.post(url, messageInfo, {
       headers: {
-        'Authorization': `Bearer ${getCookie('token')}`
+        Authorization: `Bearer ${getCookie('token')}`
       }
     });
   } catch (error) {
@@ -66,9 +69,9 @@ async function sendNewMessage(messageInfo) {
       text: error.response.data,
       duration: 3000,
       close: true,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "#e74c3c",
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
       stopOnFocus: true
     }).showToast();
   }
@@ -84,9 +87,9 @@ chatForm.addEventListener('submit', async (e) => {
       text: '請先登入才可使用即時聊天系統！！',
       duration: 3000,
       close: true,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "#e74c3c",
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
       stopOnFocus: true
     }).showToast();
 

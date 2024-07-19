@@ -39,7 +39,7 @@ export function getFormattedTime(timestamp = Date.now()) {
 }
 
 export function getFormattedNowTime() {
-  const taiwanOffsetSec = 8 * 60 * 60
+  const taiwanOffsetSec = 8 * 60 * 60;
   return new Date(Date.now() + taiwanOffsetSec * 1000).toISOString().slice(0, 19).replace('T', ' ');
 }
 
@@ -54,5 +54,7 @@ export function returnChatMessageFormat(messageInfo, screenIsWhos) {
 }
 
 export function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

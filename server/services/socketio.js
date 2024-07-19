@@ -1,5 +1,5 @@
-const redisClient = require('./createRedisClient');
 const { createAdapter } = require('@socket.io/redis-adapter');
+const redisClient = require('./createRedisClient');
 
 const {
   getGameDurationByGameId, updateGameDurationByGameId, updateGameIsCompletedStatus

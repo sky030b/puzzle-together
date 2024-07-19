@@ -128,13 +128,15 @@ export function setPlaygroundStateByKey(key, value) {
   if (Object.prototype.hasOwnProperty.call(playgroundState, key)) {
     playgroundState[key] = value;
   } else {
+    // This is from toastify-js cdn
+    // eslint-disable-next-line no-undef
     Toastify({
       text: '沒有指定的屬性，請再確認。',
       duration: 3000,
       close: true,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "#e74c3c",
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
       stopOnFocus: true
     }).showToast();
   }

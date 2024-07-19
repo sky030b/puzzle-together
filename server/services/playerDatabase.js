@@ -159,7 +159,6 @@ async function addNewPlayer(info) {
   }
 }
 
-
 module.exports = {
   getPlayerById,
   getPlayerByPlayerId,

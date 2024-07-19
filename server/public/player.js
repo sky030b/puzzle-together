@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
-import { invitePlayerInput, messageInput, messageSendBtn, sendInviteBtn } from './dom.js';
+import {
+  invitePlayerInput, messageInput, messageSendBtn, sendInviteBtn
+} from './dom.js';
 import { getCookie } from './utils.js';
 import { API_BASE_URL, getPlayerState, setPlayerState } from './variable.js';
 
@@ -16,7 +18,7 @@ async function getPlayerInfoByToken() {
   try {
     const res = await axios.get(`${API_BASE_URL}/api/1.0/players/playerInfo`, {
       headers: {
-        'Authorization': `Bearer ${getCookie('token')}`
+        Authorization: `Bearer ${getCookie('token')}`
       }
     });
     return res.data;

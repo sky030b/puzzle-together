@@ -18,7 +18,7 @@ async function getGamePublicInfo(gameId) {
     `, [gameId]))[0];
 
     if (!game) throw new Error('找不到指定關卡的資訊。');
-  
+
     const { is_public: isPublic } = game;
     return isPublic;
   } catch (error) {
@@ -67,7 +67,9 @@ async function getGameOwnerIdByGameId(gameId) {
 
 async function updateGameBasicSetting(updateInfo) {
   try {
-    const { title, difficulty, isPublic, gameId } = updateInfo;
+    const {
+      title, difficulty, isPublic, gameId
+    } = updateInfo;
     await pool.query(`
       UPDATE games SET title = ?, difficulty = ?, is_public = ? WHERE game_id = ?;
     `, [title, difficulty, isPublic, gameId]);
@@ -317,14 +319,20 @@ async function addPuzzlesOfGame(newGame) {
     const puzzlesInfoObj = Object.keys(targetPuzzlePairingObj).map((targetId) => {
       const centerAvoidPercent = 15;
       const edgeAvoidPercent = 25;
-      const { topRatio, leftRatio } = getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent);
-      return {
-        gameId, puzzleId: targetPuzzlePairingObj[targetId], targetId,
+      const {
         topRatio, leftRatio
+      } = getRandomIntAvoidRanges2D(centerAvoidPercent, edgeAvoidPercent);
+
+      return {
+        gameId,
+        puzzleId: targetPuzzlePairingObj[targetId],
+        targetId,
+        topRatio,
+        leftRatio
       };
     });
 
-    const values = puzzlesInfoObj.map(puzzlesInfo => [
+    const values = puzzlesInfoObj.map((puzzlesInfo) => [
       puzzlesInfo.gameId,
       puzzlesInfo.puzzleId,
       puzzlesInfo.targetId,

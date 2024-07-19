@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const pool = require('./createDatabasePool');
 
 async function getGameCompletionInfo(gameId) {
@@ -27,6 +28,4 @@ async function getGameCompletionInfo(gameId) {
   }
 }
 
-module.exports = {
-  getGameCompletionInfo,
-};
+module.exports = { getGameCompletionInfo };

@@ -57,7 +57,7 @@ async function createNewGame(req, res) {
       is_public: isPublic, is_open_when_owner_not_in: isOpenWhenOwnerNotIn
     } = req.body;
 
-    if (ownerId != playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+    if (ownerId !== playerId) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
     const gameInfo = {
       title,
@@ -119,7 +119,9 @@ async function updateGameInfo(req, res) {
   try {
     const { gameId } = req.params;
     const { title, difficulty, isPublic } = req.body;
-    const updateInfo = { gameId, title, difficulty, isPublic: isPublic === true };
+    const updateInfo = {
+      gameId, title, difficulty, isPublic: isPublic === true
+    };
 
     const updateGameInfoResult = await updateGameBasicSetting(updateInfo);
     if (updateGameInfoResult instanceof Error) throw updateGameInfoResult;
@@ -137,11 +139,11 @@ async function deleteMyGame(req, res) {
     const deleteGameResult = await deleteMyOwnGameByGameId(gameId);
     if (deleteGameResult instanceof Error) throw deleteGameResult;
 
-
     return res.status(200).send('deleteMyGame Done.');
   } catch (error) {
     return res.status(500).send(error.message);
-  }}
+  }
+}
 
 module.exports = {
   getGames,

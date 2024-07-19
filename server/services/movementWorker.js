@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const Redis = require('ioredis');
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
@@ -26,12 +27,11 @@ const pool = mysql.createPool({
   database: isDevelopment ? process.env.MYSQL_DATABASE : process.env.RDS_MYSQL_DATABASE
 });
 
-
 async function savePuzzleMovementToDB(data) {
   try {
     if (!data.length) return 0;
 
-    const values = data.map(item => [
+    const values = data.map((item) => [
       item.puzzleId,
       item.gameId,
       item.topRatio.toFixed(3),
@@ -74,7 +74,7 @@ async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
 
     const res = await redisClient.eval(luaScript, 0, `${redisMovementKeyPrefix}*`);
 
-    const dataToWrite = res.map(([_, movementInfo]) => JSON.parse(movementInfo));
+    const dataToWrite = res.map(([, movementInfo]) => JSON.parse(movementInfo));
     const saveMovementToDBResult = await savePuzzleMovementToDB(dataToWrite);
     if (saveMovementToDBResult instanceof Error) throw saveMovementToDBResult;
 

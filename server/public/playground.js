@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { setupSocket } from './socket.js';
 import renderGame from './puzzle.js';
 import {
@@ -7,7 +8,7 @@ import {
   setScale, getScale, CANVAS_WIDTH, CANVAS_HEIGHT,
   SCALE_AMOUNT, INIT_SCALE, MIN_SCALE, MAX_SCALE,
   getIsInsideChatArea, getIsInsideRecordArea, getIsModalOpen,
-  setCurrentGameId, getPlayerState
+  setCurrentGameId
 } from './variable.js';
 import initPlayer from './player.js';
 import renderChatHistory from './chat.js';
@@ -61,15 +62,8 @@ export function constrainCanvas() {
   canvas.style.top = `${top}px`;
 }
 
-// const toMyShowcaseLink = document.querySelector('.to-my-showcase-link');
-// toMyShowcaseLink.addEventListener('click', (e) => {
-//   e.preventDefault();
-//   window.location.href = `/profile/${getPlayerState().playerId}`;
-// })
-
 container.addEventListener('wheel', (e) => {
   if (getIsInsideChatArea() || getIsInsideRecordArea() || getIsModalOpen()) return;
-  // e.preventDefault();
   const previousScale = getScale();
   let scaleTemp = getScale();
 
@@ -139,18 +133,19 @@ async function main() {
     const urlParams = new URLSearchParams(queryString);
     const gameId = urlParams.get('gameId');
     if (!gameId) {
+      // This is from toastify-js cdn
+      // eslint-disable-next-line no-undef
       Toastify({
         text: '無法獲取有效的遊戲ID。\n三秒後將轉址至遊戲總覽頁。',
         duration: 3000,
         close: true,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "#e74c3c",
+        gravity: 'top',
+        position: 'right',
+        backgroundColor: '#e74c3c',
         stopOnFocus: true
       }).showToast();
 
-      setTimeout(() => { window.location.href = '/all-games' }, 3000);
-      return;
+      return setTimeout(() => { window.location.href = '/all-games'; }, 3000);
     }
 
     setCurrentGameId(gameId);

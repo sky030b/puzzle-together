@@ -48,7 +48,7 @@ async function lockPuzzleBySomeone(lockingInfo) {
       const invitePLayerResult = await invitePlayerJoinGame(playerId, playerId, gameId);
       if (invitePLayerResult instanceof Error) throw invitePLayerResult;
     }
-    
+
     const completionInfo = await getGameCompletionInfo(gameId);
     return completionInfo;
   } catch (error) {
@@ -59,7 +59,7 @@ async function lockPuzzleBySomeone(lockingInfo) {
 
 async function savePuzzleMovementToDB(data) {
   try {
-    const values = data.map(item => [
+    const values = data.map((item) => [
       item.puzzleId,
       item.gameId,
       item.topRatio.toFixed(3),

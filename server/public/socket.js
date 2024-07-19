@@ -3,7 +3,7 @@
 import { chatContent } from './dom.js';
 import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import showResult from './result.js';
-import { getFormattedTime, returnChatMessageFormat } from './utils.js';
+import { returnChatMessageFormat } from './utils.js';
 import {
   clearTimer, setTimer,
   getCurrentGameId, getPlayerState, setPlaygroundStateByKey,
@@ -19,13 +19,15 @@ export function setupSocket() {
   if (roomId && playerState) {
     socket.emit('joinRoom', roomId, playerState);
   } else {
+    // This is from toastify-js cdn
+    // eslint-disable-next-line no-undef
     Toastify({
       text: '請輸入有效的遊戲關卡ID。或是遊戲初始化失敗，請重新整理。',
       duration: 3000,
       close: true,
-      gravity: "top",
-      position: "right",
-      backgroundColor: "#e74c3c",
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
       stopOnFocus: true
     }).showToast();
   }
@@ -137,7 +139,7 @@ export function setupSocket() {
     const { gameId } = data;
 
     if (gameId === roomId) {
-      const str = returnChatMessageFormat(data, getPlayerState().nickname);;
+      const str = returnChatMessageFormat(data, getPlayerState().nickname);
       chatContent.innerHTML += str;
       chatContent.scrollTop = chatContent.scrollHeight;
     }

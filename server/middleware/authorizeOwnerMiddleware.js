@@ -1,4 +1,4 @@
-const { getGameOwnerIdByGameId } = require("../services/gameDatabase");
+const { getGameOwnerIdByGameId } = require('../services/gameDatabase');
 
 const authorizeOwnerMiddleware = async (req, res, next) => {
   try {
@@ -13,14 +13,13 @@ const authorizeOwnerMiddleware = async (req, res, next) => {
       throw ownerId;
     }
 
-    console.log(ownerId, playerId);
     if (ownerId !== playerId) {
       return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
     }
 
-    next();
+    return next();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 

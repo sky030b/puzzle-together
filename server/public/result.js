@@ -1,5 +1,6 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
-import { navLinkUl, puzzleContainer } from './dom.js';
+import { canvas, navLinkUl, puzzleContainer } from './dom.js';
 import { centerView, constrainCanvas } from './playground.js';
 import { puzzleTargetMap } from './puzzle.js';
 import { delay, getCookie } from './utils.js';
@@ -21,7 +22,7 @@ function lockAllPuzzles() {
     puzzleDiv.dataset.isLocked = 'true';
     puzzleDiv.classList.add('locked');
     puzzleDiv.style.cursor = 'default';
-  })
+  });
 }
 
 function removeHintNavItem() {
@@ -51,24 +52,26 @@ async function playbackGame() {
     const puzzleDiv = document.getElementById(puzzleId);
     puzzleContainer.appendChild(puzzleDiv);
     puzzleDiv.style.display = 'none';
-  })
+  });
 
   await delay(500);
 
+  // eslint-disable-next-line no-undef
   const res = await axios.get(`${API_BASE_URL}/api/1.0/games/${getCurrentGameId()}/playback`, {
     headers: {
-      'Authorization': `Bearer ${getCookie('token')}`
+      Authorization: `Bearer ${getCookie('token')}`
     }
   });
   const playbackInfo = res.data;
+  // eslint-disable-next-line no-console
   console.log(playbackInfo);
 
   let lastBgcDiv = null;
   let lastPuzzle = null;
   // for (let i = 0; i < playbackInfo.length; i++) {
   //   const puzzleInfo = playbackInfo[i];
+  // eslint-disable-next-line no-restricted-syntax
   for (const puzzleInfo of playbackInfo) {
-
     if (lastPuzzle) lastPuzzle.style.zIndex = '8';
     if (lastBgcDiv) lastBgcDiv.style.zIndex = '7';
 
@@ -98,6 +101,7 @@ async function playbackGame() {
     lastPuzzle = puzzle;
     // const delayTime = 30 - (29 * (i / playbackInfo.length));
     // await delay(delayTime);
+    // eslint-disable-next-line no-await-in-loop
     await delay(1);
 
     setTimeout(() => {
@@ -187,7 +191,7 @@ function createResultPuzzles(img) {
 }
 
 function createResultTargetBoxes(img) {
-  const { rowQty, colQty, puzzles } = getPlaygroundState();;
+  const { rowQty, colQty, puzzles } = getPlaygroundState();
 
   const scaledWidth = img.width * img.scale;
   const scaledHeight = img.height * img.scale;

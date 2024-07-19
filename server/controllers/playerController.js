@@ -44,7 +44,7 @@ async function updatePlayerProfile(req, res) {
     const { playerId: playerIdInParams } = req.params;
     const { playerId: playerIdInToken } = res.locals.jwtData;
 
-    if (playerIdInToken != playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
+    if (playerIdInToken !== playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
     const updatePlayerProfileResult = await setPlayerProfileByPlayerId(playerIdInParams, req.body);
     if (updatePlayerProfileResult instanceof Error) throw updatePlayerProfileResult;
@@ -85,8 +85,7 @@ async function signup(req, res) {
       email, password, nickname, represent_color: representColor, is_room_public: isRoomPublic
     } = req.body;
 
-    if (nickname.startsWith('匿名'))
-      return res.status(400).send('400 Bad Request: 禁止使用"匿名"開頭的暱稱');
+    if (nickname.startsWith('匿名')) return res.status(400).send('400 Bad Request: 禁止使用"匿名"開頭的暱稱');
 
     const playerId = nanoid(10);
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -156,6 +155,11 @@ async function generateAnonymousPlayer(req, res) {
 }
 
 module.exports = {
-  getPlayers, getPlayerInfo, getPlayerProfile, updatePlayerProfile,
-  signup, signin, generateAnonymousPlayer
+  getPlayers,
+  getPlayerInfo,
+  getPlayerProfile,
+  updatePlayerProfile,
+  signup,
+  signin,
+  generateAnonymousPlayer
 };

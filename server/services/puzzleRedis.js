@@ -1,5 +1,6 @@
-const redisClient = require("./createRedisClient");
-const { savePuzzleMovementToDB } = require("./puzzleDatabase");
+/* eslint-disable no-console */
+const redisClient = require('./createRedisClient');
+const { savePuzzleMovementToDB } = require('./puzzleDatabase');
 
 async function savePuzzleMovementToRedis(movementInfo) {
   try {
@@ -12,7 +13,7 @@ async function savePuzzleMovementToRedis(movementInfo) {
       gameId, puzzleId, leftRatio, topRatio, movedColor, movedAt
     };
     await redisClient.rpush(`movement-${gameId}`, JSON.stringify(saveInfo));
-    
+
     return 'savePuzzleMovementToRedis Done';
   } catch (error) {
     console.error(error);
@@ -37,8 +38,8 @@ async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
       return result
     `;
 
-    const res = await redisClient.eval(luaScript, 0, `${redisMovementKeyPrefix}*`)
-    const dataToWrite = res.map(([_, movementInfo]) => JSON.parse(movementInfo));
+    const res = await redisClient.eval(luaScript, 0, `${redisMovementKeyPrefix}*`);
+    const dataToWrite = res.map(([, movementInfo]) => JSON.parse(movementInfo));
     const saveMovementToDBResult = await savePuzzleMovementToDB(dataToWrite);
     if (saveMovementToDBResult instanceof Error) throw saveMovementToDBResult;
 
