@@ -137,4 +137,17 @@ export function setupSocket() {
       chatContent.scrollTop = chatContent.scrollHeight;
     }
   });
+
+  socket.on('error', (error) => {
+    // eslint-disable-next-line no-undef
+    Toastify({
+      text: error.message,
+      duration: 3000,
+      close: true,
+      gravity: 'top',
+      position: 'right',
+      backgroundColor: '#e74c3c',
+      stopOnFocus: true
+    }).showToast();
+  });
 }
