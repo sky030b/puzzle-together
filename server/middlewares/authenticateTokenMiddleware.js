@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const jwt = require('jsonwebtoken');
 
-const authenticateToken = (req, res, next) => {
+const authenticateTokenMiddleware = (req, res, next) => {
   let token = req.cookies.jwtToken || req.cookies.token || undefined;
 
   if (!token) {
@@ -30,4 +30,4 @@ const authenticateToken = (req, res, next) => {
   return next();
 };
 
-module.exports = authenticateToken;
+module.exports = authenticateTokenMiddleware;

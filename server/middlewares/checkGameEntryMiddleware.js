@@ -1,6 +1,6 @@
 const { getGamePublicInfo } = require('../models/gameDatabase');
 const { checkoutInvited } = require('../models/playerGameDatabase');
-const authenticateToken = require('./authenticateToken');
+const authenticateTokenMiddleware = require('./authenticateTokenMiddleware');
 
 const checkGameEntryMiddleware = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ const checkGameEntryMiddleware = async (req, res, next) => {
     const isPublic = await getGamePublicInfo(gameId);
     if (isPublic) return next();
 
-    return authenticateToken(req, res, async (err) => {
+    return authenticateTokenMiddleware(req, res, async (err) => {
       if (err) return next(err);
 
       const { playerId } = res.locals.jwtData;

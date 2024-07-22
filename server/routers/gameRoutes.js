@@ -8,10 +8,10 @@ const {
   updateGameInfo,
   deleteMyGame
 } = require('../controllers/gameController');
-const checkGameEntryMiddleware = require('../middleware/checkGameEntryMiddleware');
-const authenticateToken = require('../middleware/authenticateToken');
-const uploadImageMiddleware = require('../middleware/uploadImageMiddleware');
-const authorizeOwnerMiddleware = require('../middleware/authorizeOwnerMiddleware');
+const checkGameEntryMiddleware = require('../middlewares/checkGameEntryMiddleware');
+const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
+const authorizeOwnerMiddleware = require('../middlewares/authorizeOwnerMiddleware');
+const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMiddleware');
 
 const router = express.Router();
 
@@ -22,12 +22,12 @@ router.get('/:gameId/hint', checkGameEntryMiddleware, getHintInfo);
 
 router.post(
   '/',
-  authenticateToken,
+  authenticateTokenMiddleware,
   uploadImageMiddleware({ single: true, fieldName: 'question_img' }),
   createNewGame
 );
-router.post('/:gameId', authenticateToken, authorizeOwnerMiddleware, updateGameInfo);
+router.post('/:gameId', authenticateTokenMiddleware, authorizeOwnerMiddleware, updateGameInfo);
 
-router.delete('/:gameId', authenticateToken, authorizeOwnerMiddleware, deleteMyGame);
+router.delete('/:gameId', authenticateTokenMiddleware, authorizeOwnerMiddleware, deleteMyGame);
 
 module.exports = router;
