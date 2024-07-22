@@ -27,14 +27,11 @@ async function getPlayerProfile(req, res) {
   try {
     const { playerId } = req.params;
     const playerProfile = await getPlayerByPlayerId(playerId);
-    if (playerProfile instanceof Error) {
-      if (playerProfile.message === '找不到指定玩家的資訊。') {
-        return res.status(404).send('404 Not Found: 找不到指定玩家的資訊。');
-      }
-      throw playerProfile;
-    }
     return res.status(200).send(playerProfile);
   } catch (error) {
+    if (error.message === '找不到指定玩家的資訊。') {
+      return res.status(404).send('404 Not Found: 找不到指定玩家的資訊。');
+    }
     return res.status(500).send(error.message);
   }
 }
@@ -46,8 +43,7 @@ async function updatePlayerProfile(req, res) {
 
     if (playerIdInToken !== playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
-    const updatePlayerProfileResult = await setPlayerProfileByPlayerId(playerIdInParams, req.body);
-    if (updatePlayerProfileResult instanceof Error) throw updatePlayerProfileResult;
+    await setPlayerProfileByPlayerId(playerIdInParams, req.body);
 
     return res.status(200).send('updatePlayerProfile Done');
   } catch (error) {
@@ -94,7 +90,6 @@ async function signup(req, res) {
       playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'true'
     };
     const newPlayer = await addNewPlayer(playerInfo);
-    if (newPlayer instanceof Error) throw newPlayer;
 
     const playerToken = getPlayerToken(newPlayer);
     return res.status(200).send(playerToken);
@@ -108,7 +103,6 @@ async function signin(req, res) {
     const { email, password } = req.body;
 
     const hashedPasswordFromDatabase = await getHashPWDByEmail(email);
-    if (hashedPasswordFromDatabase instanceof Error) throw hashedPasswordFromDatabase;
     if (!hashedPasswordFromDatabase) {
       return res.status(400).send('400 Bad Request: 帳號或密碼輸入錯誤');
     }
@@ -121,8 +115,6 @@ async function signin(req, res) {
     }
 
     const player = await getPlayerByEmail(email);
-    if (player instanceof Error) throw player;
-
     const playerToken = getPlayerToken(player);
 
     return res.status(200).send(playerToken);
@@ -142,7 +134,6 @@ async function generateAnonymousPlayer(req, res) {
 
   try {
     const nickname = await getAnonymousNickname();
-    if (nickname instanceof Error) throw nickname;
 
     const anonymousPlayer = {
       nickname,
