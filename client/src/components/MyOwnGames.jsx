@@ -86,7 +86,7 @@ const MyOwnGames = () => {
       gameId: game.game_id,
       title: game.title,
       difficulty: game.difficulty,
-      isPublic: game.is_public
+      isPublic: game.is_public ? true : false
     });
   };
 
@@ -105,11 +105,7 @@ const MyOwnGames = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/${hoveredGameId}`, {
-        title: formValues.title,
-        difficulty: formValues.difficulty,
-        isPublic: formValues.isPublic
-      }, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/games/${hoveredGameId}`, formValues, {
         headers: {
           'Authorization': `Bearer ${getCookie('token')}`
         }
