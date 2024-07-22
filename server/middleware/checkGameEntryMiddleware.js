@@ -14,7 +14,6 @@ const checkGameEntryMiddleware = async (req, res, next) => {
 
     const { playerId } = res.locals.jwtData;
     const linkRecord = await checkoutInvited(playerId, gameId);
-    if (linkRecord instanceof Error) return next(linkRecord);
     if (!linkRecord.length) return res.status(403).send('403 Forbidden: 您沒有權限存取此遊戲關卡。請確保您已經收到邀請。');
     return next();
   });

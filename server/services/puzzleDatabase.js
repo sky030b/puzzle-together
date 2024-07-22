@@ -44,10 +44,7 @@ async function lockPuzzleBySomeone(lockingInfo) {
         game_id = ? AND puzzle_id = ?;
     `, updateInfo);
 
-    if (playerId) {
-      const invitePLayerResult = await invitePlayerJoinGame(playerId, playerId, gameId);
-      if (invitePLayerResult instanceof Error) throw invitePLayerResult;
-    }
+    if (playerId) await invitePlayerJoinGame(playerId, playerId, gameId);
 
     const completionInfo = await getGameCompletionInfo(gameId);
     return completionInfo;

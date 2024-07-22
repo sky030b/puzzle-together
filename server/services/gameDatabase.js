@@ -384,8 +384,7 @@ async function addNewGame(file, info) {
     const newGame = await getGameBySerialId(id);
     await addPuzzlesOfGame(newGame);
 
-    const invitePlayerResult = await invitePlayerJoinGame(ownerId, ownerId, gameId);
-    if (invitePlayerResult instanceof Error) throw invitePlayerResult;
+    await invitePlayerJoinGame(ownerId, ownerId, gameId);
 
     return newGame;
   } catch (error) {
