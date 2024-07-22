@@ -28,73 +28,71 @@ const pool = mysql.createPool({
 });
 
 async function savePuzzleMovementToDB(data) {
-  try {
-    if (!data.length) return 0;
+  if (!data.length) return 0;
 
-    const taiwanOffsetSec = 8 * 60 * 60;
-    const values = data.map((item) => [
-      item.puzzleId,
-      item.gameId,
-      item.topRatio.toFixed(3),
-      item.leftRatio.toFixed(3),
-      item.movedColor,
-      item.movedAt ? item.movedAt : new Date(Date.now() + taiwanOffsetSec * 1000).toISOString().slice(0, 19).replace('T', ' ')
-    ]);
+  const taiwanOffsetSec = 8 * 60 * 60;
+  const values = data.map((item) => [
+    item.puzzleId,
+    item.gameId,
+    item.topRatio.toFixed(3),
+    item.leftRatio.toFixed(3),
+    item.movedColor,
+    item.movedAt ? item.movedAt : new Date(Date.now() + taiwanOffsetSec * 1000).toISOString().slice(0, 19).replace('T', ' ')
+  ]);
 
-    const sql = `
-      INSERT INTO movements (
-        puzzle_id, game_id, top_ratio, left_ratio, moved_color, moved_at
-      ) VALUES ?
-    `;
+  const sql = `
+    INSERT INTO movements (
+      puzzle_id, game_id, top_ratio, left_ratio, moved_color, moved_at
+    ) VALUES ?
+  `;
 
-    const res = (await pool.query(sql, [values]))[0];
-    const { affectedRows } = res;
-    return affectedRows;
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
+  const res = (await pool.query(sql, [values]))[0];
+  const { affectedRows } = res;
+  return affectedRows;
 }
 
 async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
-  try {
-    if (redisClient.status !== 'ready') return console.log(new Error('redisClient is not ready.'));
+  if (redisClient.status !== 'ready') return console.log(new Error('redisClient is not ready.'));
 
-    const luaScript = `
-      local keys = redis.call('keys', ARGV[1])
-      local result = {}
-      for _, key in ipairs(keys) do
-        local movementsInfo = redis.call('lrange', key, 0, -1)
-        redis.call('del', key)
-        for _, movementInfo in ipairs(movementsInfo) do
-          table.insert(result, {key, movementInfo})
-        end
+  const luaScript = `
+    local keys = redis.call('keys', ARGV[1])
+    local result = {}
+    for _, key in ipairs(keys) do
+      local movementsInfo = redis.call('lrange', key, 0, -1)
+      redis.call('del', key)
+      for _, movementInfo in ipairs(movementsInfo) do
+        table.insert(result, {key, movementInfo})
       end
-      return result
-    `;
+    end
+    return result
+  `;
 
-    const res = await redisClient.eval(luaScript, 0, `${redisMovementKeyPrefix}*`);
+  const res = await redisClient.eval(luaScript, 0, `${redisMovementKeyPrefix}*`);
 
-    const dataToWrite = res.map(([, movementInfo]) => JSON.parse(movementInfo));
-    const saveMovementToDBResult = await savePuzzleMovementToDB(dataToWrite);
-    if (saveMovementToDBResult instanceof Error) throw saveMovementToDBResult;
+  const dataToWrite = res.map(([, movementInfo]) => JSON.parse(movementInfo));
+  const saveMovementToDBResult = await savePuzzleMovementToDB(dataToWrite);
+  if (saveMovementToDBResult instanceof Error) throw saveMovementToDBResult;
 
-    return 'savePuzzleMovementToDBWithPrefix Done.';
-  } catch (error) {
-    console.error(error);
-    return error;
-  }
+  return 'savePuzzleMovementToDBWithPrefix Done.';
 }
 
 redisClient.on('ready', async () => {
   console.log('redisClient is ready.');
 
-  const updateIntervalSec = 30 * 60;
-  setInterval(async () => {
+  try {
+    const updateIntervalSec = 30 * 60;
+    setInterval(async () => {
+      try {
+        const saveToDBResult = await savePuzzleMovementToDBWithPrefix('movement-');
+        console.log(saveToDBResult);
+      } catch (error) {
+        console.error('Error in setInterval task:', error);
+      }
+    }, updateIntervalSec * 1000);
+
     const saveToDBResult = await savePuzzleMovementToDBWithPrefix('movement-');
     console.log(saveToDBResult);
-  }, updateIntervalSec * 1000);
-
-  const saveToDBResult = await savePuzzleMovementToDBWithPrefix('movement-');
-  console.log(saveToDBResult);
+  } catch (error) {
+    console.error('Error in redisClient ready event or first save process:', error);
+  }
 });
