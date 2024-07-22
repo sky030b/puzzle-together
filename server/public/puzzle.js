@@ -124,6 +124,98 @@ function createTargetBoxes(img, gameInfo) {
   targetContainer.style.top = `${(CANVAS_HEIGHT - targetContainer.clientHeight) / 2}px`;
 }
 
+function isNearTarget(element, target) {
+  const rect1 = element.getBoundingClientRect();
+  const rect2 = target.getBoundingClientRect();
+
+  const isInHorizontalBound = rect1.left < rect2.right && rect1.right > rect2.left;
+  const isInVerticalBound = rect1.top < rect2.bottom && rect1.bottom > rect2.top;
+
+  return isInHorizontalBound && isInVerticalBound;
+}
+
+function calculateOverlap(element, target) {
+  const rect1 = element.getBoundingClientRect();
+  const rect2 = target.getBoundingClientRect();
+
+  const overlapWidth = Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left);
+  const overlapHeight = Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top);
+
+  if (overlapWidth <= 0 || overlapHeight <= 0) {
+    return 0;
+  }
+
+  const overlapArea = overlapWidth * overlapHeight;
+  const elementArea = rect1.width * rect1.height;
+
+  return overlapArea / elementArea;
+}
+
+function centerInTarget(element, target) {
+  // target.innerHTML = '';
+  target.appendChild(element);
+  target.style.width = '100%';
+  target.style.height = '100%';
+  target.style.opacity = 1;
+  target.style.border = 'none';
+  element.style.border = 'none';
+  element.style.zIndex = '1';
+}
+
+function emitMovePiece(selectedPiece, dx, dy) {
+  socket.emit('movePiece', {
+    gameId: getCurrentGameId(),
+    puzzleId: selectedPiece.id,
+    left: selectedPiece.style.left,
+    top: selectedPiece.style.top,
+    leftRatio: (dx / CANVAS_WIDTH) * 100,
+    topRatio: (dy / CANVAS_HEIGHT) * 100,
+    isLocked: false,
+    lockedBy: null,
+    lockedColor: null,
+    zIndex: '5',
+    movedColor: getPlayerState().representColor,
+    movedAt: getFormattedNowTime()
+  });
+}
+
+function emitUpdatePiece(selectedPiece) {
+  socket.emit('updatePiece', {
+    gameId: getCurrentGameId(),
+    puzzleId: selectedPiece.id,
+    left: selectedPiece.style.left,
+    top: selectedPiece.style.top,
+    leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
+    topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
+    isLocked: false,
+    lockedBy: null,
+    lockedColor: null,
+    zIndex: selectedPiece.style.zIndex,
+    movedColor: getPlayerState().representColor,
+    movedAt: getFormattedNowTime()
+  });
+}
+
+function emitUpdateAndLockPiece(selectedPiece, targetId, difficulty, nickname, representColor) {
+  socket.emit('updateAndLockPiece', {
+    gameId: getCurrentGameId(),
+    puzzleId: selectedPiece.id,
+    targetId,
+    difficulty,
+    left: selectedPiece.style.left,
+    top: selectedPiece.style.top,
+    leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
+    topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
+    playerId: getPlayerState().playerId,
+    isLocked: true,
+    lockedBy: nickname,
+    lockedColor: representColor,
+    zIndex: selectedPiece.style.zIndex,
+    movedColor: representColor,
+    movedAt: getFormattedNowTime()
+  });
+}
+
 function addDragAndDrop(gameInfo) {
   const { difficulty } = gameInfo;
   const puzzlePieces = document.querySelectorAll('.puzzle-piece');
@@ -132,44 +224,6 @@ function addDragAndDrop(gameInfo) {
   let offsetY;
   let selectedPiece;
   let lastNotLockedPiece;
-
-  function isNearTarget(element, target) {
-    const rect1 = element.getBoundingClientRect();
-    const rect2 = target.getBoundingClientRect();
-
-    const isInHorizontalBound = rect1.left < rect2.right && rect1.right > rect2.left;
-    const isInVerticalBound = rect1.top < rect2.bottom && rect1.bottom > rect2.top;
-
-    return isInHorizontalBound && isInVerticalBound;
-  }
-
-  function calculateOverlap(element, target) {
-    const rect1 = element.getBoundingClientRect();
-    const rect2 = target.getBoundingClientRect();
-
-    const overlapWidth = Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left);
-    const overlapHeight = Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top);
-
-    if (overlapWidth <= 0 || overlapHeight <= 0) {
-      return 0;
-    }
-
-    const overlapArea = overlapWidth * overlapHeight;
-    const elementArea = rect1.width * rect1.height;
-
-    return overlapArea / elementArea;
-  }
-
-  function centerInTarget(element, target) {
-    // target.innerHTML = '';
-    target.appendChild(element);
-    target.style.width = '100%';
-    target.style.height = '100%';
-    target.style.opacity = 1;
-    target.style.border = 'none';
-    element.style.border = 'none';
-    element.style.zIndex = '1';
-  }
 
   function onMouseDown(e) {
     if (e.target.dataset.isLocked === 'true') return;
@@ -236,20 +290,7 @@ function addDragAndDrop(gameInfo) {
 
     selectedPiece.style.left = `${dx}px`;
     selectedPiece.style.top = `${dy}px`;
-    socket.emit('movePiece', {
-      gameId: getCurrentGameId(),
-      puzzleId: selectedPiece.id,
-      left: selectedPiece.style.left,
-      top: selectedPiece.style.top,
-      leftRatio: (dx / CANVAS_WIDTH) * 100,
-      topRatio: (dy / CANVAS_HEIGHT) * 100,
-      isLocked: false,
-      lockedBy: null,
-      lockedColor: null,
-      zIndex: '5',
-      movedColor: getPlayerState().representColor,
-      movedAt: getFormattedNowTime()
-    });
+    emitMovePiece(selectedPiece, dx, dy);
   }
 
   function onMouseUp() {
@@ -262,43 +303,6 @@ function addDragAndDrop(gameInfo) {
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
     selectedPiece.style.cursor = 'grab';
-
-    function emitUpdatePiece() {
-      socket.emit('updatePiece', {
-        gameId: getCurrentGameId(),
-        puzzleId: selectedPiece.id,
-        left: selectedPiece.style.left,
-        top: selectedPiece.style.top,
-        leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
-        topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
-        isLocked: false,
-        lockedBy: null,
-        lockedColor: null,
-        zIndex: selectedPiece.style.zIndex,
-        movedColor: getPlayerState().representColor,
-        movedAt: getFormattedNowTime()
-      });
-    }
-
-    function emitUpdateAndLockPiece(targetId, nickname, representColor) {
-      socket.emit('updateAndLockPiece', {
-        gameId: getCurrentGameId(),
-        puzzleId: selectedPiece.id,
-        targetId,
-        difficulty,
-        left: selectedPiece.style.left,
-        top: selectedPiece.style.top,
-        leftRatio: (+selectedPiece.style.left.replace('px', '') / CANVAS_WIDTH) * 100,
-        topRatio: (+selectedPiece.style.top.replace('px', '') / CANVAS_HEIGHT) * 100,
-        playerId: getPlayerState().playerId,
-        isLocked: true,
-        lockedBy: nickname,
-        lockedColor: representColor,
-        zIndex: selectedPiece.style.zIndex,
-        movedColor: representColor,
-        movedAt: getFormattedNowTime()
-      });
-    }
 
     let isLocked = false;
     let lockTargetId;
@@ -341,9 +345,15 @@ function addDragAndDrop(gameInfo) {
     });
 
     if (isLocked) {
-      emitUpdateAndLockPiece(lockTargetId, lockNickname, lockRepresentColor);
+      emitUpdateAndLockPiece(
+        selectedPiece,
+        lockTargetId,
+        difficulty,
+        lockNickname,
+        lockRepresentColor
+      );
     } else {
-      emitUpdatePiece();
+      emitUpdatePiece(selectedPiece);
     }
 
     if (['5', '10'].includes(selectedPiece.style.zIndex)) {
@@ -425,7 +435,7 @@ function basicSetting(img, gameInfo) {
   });
 }
 
-export default async function renderGame() {
+export async function renderGame() {
   try {
     const gameInfo = await getRenderInfo();
     const { questionImgUrl } = gameInfo;

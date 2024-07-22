@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { setupSocket } from './socket.js';
-import renderGame from './puzzle.js';
+import { renderGame } from './puzzle.js';
 import {
   container, canvas, targetContainer
 } from './dom.js';
