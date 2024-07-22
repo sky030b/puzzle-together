@@ -8,12 +8,12 @@ const uploadImageMiddleware = (config) => {
     }
   });
 
-  const limits = { fileSize: 3000000 }; // 拒絕超過 3MB 的檔案
+  const limits = { fileSize: 3000000 };
   const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image')) {
-      cb(null, true); // 接受圖片檔案
+      cb(null, true);
     } else {
-      cb(new Error('Only accept images'), false); // 拒絕非圖片檔案
+      cb(new Error('Only accept images'), false);
     }
   };
 

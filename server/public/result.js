@@ -219,9 +219,6 @@ function createResultTargetBoxes(img) {
 
     const piece = document.getElementById(`result-${puzzleId}`);
     piece.style.border = 'none';
-    // piece.style.left = '50%';
-    // piece.style.top = '50%';
-    // piece.style.transform = 'translate(-50%, -50%)';
     piece.style.position = 'absolute';
     piece.style.opacity = 1;
     resultTargetBox.appendChild(piece);

@@ -10,7 +10,6 @@ recordArea.addEventListener('mouseleave', () => {
 });
 
 export function renderPlayDuration(playDurationSec) {
-  // playDurationSec = 100000;
   const day = Math.floor(playDurationSec / 86400);
   const hr = Math.floor((playDurationSec % 86400) / 3600);
   const min = Math.floor((playDurationSec % 3600) / 60);

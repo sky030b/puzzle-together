@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3'); // 引入 AWS SDK S3 的客戶端和命令
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 const {
   AWS_ACCESS_KEY_ID,
@@ -7,7 +7,6 @@ const {
   BUCKET_NAME
 } = process.env;
 
-// 建立新的 S3 用戶端實例，設定區域和認證資訊
 const s3Client = new S3Client({
   region: S3_BUCKET_REGION,
   credentials: {

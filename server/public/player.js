@@ -52,7 +52,6 @@ export default async function initPlayer() {
     const playerInfo = await getPlayerInfo();
     if (playerInfo instanceof Error) throw playerInfo;
     setPlayerState(playerInfo);
-    // setCookie('playerInfo', JSON.stringify(playerInfo));
     if (getPlayerState().playerId) {
       messageInput.placeholder = '說點什麼吧';
       messageInput.disabled = false;

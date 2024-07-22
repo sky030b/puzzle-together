@@ -106,9 +106,6 @@ function createTargetBoxes(img, gameInfo) {
       if (isLocked) {
         const piece = document.getElementById(puzzleId);
         piece.style.border = 'none';
-        // piece.style.left = '50%';
-        // piece.style.top = '50%';
-        // piece.style.transform = 'translate(-50%, -50%)';
         piece.style.opacity = 1;
         targetBox.appendChild(piece);
         targetBox.style.opacity = 1;
@@ -152,7 +149,6 @@ function calculateOverlap(element, target) {
 }
 
 function centerInTarget(element, target) {
-  // target.innerHTML = '';
   target.appendChild(element);
   target.style.width = '100%';
   target.style.height = '100%';
