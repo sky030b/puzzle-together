@@ -39,29 +39,26 @@ const socket = (io) => {
     console.log('New client connected');
 
     socketio.on('joinRoom', async (roomId, playerState) => {
-      socketio.join(roomId);
-
-      if (!roomsInfo[roomId]) {
-        roomsInfo[roomId] = { playersInfo: [], timerInfo: null };
-      }
-      roomsInfo[roomId].playersInfo.push({ ...playerState, id: socketio.id });
-
       try {
+        socketio.join(roomId);
+        if (!roomsInfo[roomId]) {
+          roomsInfo[roomId] = { playersInfo: [], timerInfo: null };
+        }
+        roomsInfo[roomId].playersInfo.push({ ...playerState, id: socketio.id });
         if (roomsInfo[roomId].playersInfo.length === 1) await setTimerFromDB(roomId);
+        socketio.emit('setTimer', roomsInfo[roomId].timerInfo);
+        io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
       } catch (error) {
-        console.error('Error in joinRoom:', error);
+        console.error('Error in joinRoom:', error.message);
         socketio.emit('error', { message: 'Failed to join room' });
       }
-
-      socketio.emit('setTimer', roomsInfo[roomId].timerInfo);
-      io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
 
       socketio.on('movePiece', async (data) => {
         try {
           await savePuzzleMovementToRedis(data);
           socketio.to(roomId).emit('movePiece', data);
         } catch (error) {
-          console.error('Error in movePiece:', error);
+          console.error('Error in movePiece:', error.message);
           socketio.emit('error', { message: 'Failed to move piece' });
         }
       });
@@ -75,7 +72,7 @@ const socket = (io) => {
           socketio.to(roomId).emit('updatePiece', data);
           io.to(roomId).emit('updatePuzzlesState', puzzles);
         } catch (error) {
-          console.error('Error in updatePiece:', error);
+          console.error('Error in updatePiece:', error.message);
           socketio.emit('error', { message: 'Failed to update piece' });
         }
       });
@@ -101,7 +98,7 @@ const socket = (io) => {
             io.to(roomId).emit('setTimer', roomsInfo[roomId].timerInfo);
           }
         } catch (error) {
-          console.error('Error in updateAndLockPiece:', error);
+          console.error('Error in updateAndLockPiece:', error.message);
           socketio.emit('error', { message: 'Failed to update and lock piece' });
         }
       });
@@ -125,7 +122,7 @@ const socket = (io) => {
           }
           console.log('Client disconnected');
         } catch (error) {
-          console.error('Error in disconnect:', error);
+          console.error('Error in disconnect:', error.message);
         }
       });
     });
