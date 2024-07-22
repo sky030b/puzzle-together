@@ -57,12 +57,12 @@ const Header = () => {
             ) : (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/signup">
+                  <NavLink className="p-0 nav-link cursor-pointer" aria-current="page" to="/signup">
                     <button type="button" className="btn btn-warning px-4">註冊</button>
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link cursor-pointer" aria-current="page" to="/signin">
+                  <NavLink className="p-0 nav-link cursor-pointer" aria-current="page" to="/signin">
                     <button type="button" className="btn btn-outline-warning px-4">登入</button>
                   </NavLink>
                 </li>
