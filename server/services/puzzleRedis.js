@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
 const redisClient = require('./createRedisClient');
 const { savePuzzleMovementToDB } = require('./puzzleDatabase');
 
 async function savePuzzleMovementToRedis(movementInfo) {
-  if (redisClient.status !== 'ready') return new Error('redisClient is not ready.');
+  if (redisClient.status !== 'ready') throw new Error('redisClient is not ready.');
 
   const {
     gameId, puzzleId, leftRatio, topRatio, movedColor, movedAt
@@ -17,7 +16,7 @@ async function savePuzzleMovementToRedis(movementInfo) {
 }
 
 async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
-  if (redisClient.status !== 'ready') return new Error('redisClient is not ready.');
+  if (redisClient.status !== 'ready') throw new Error('redisClient is not ready.');
 
   const luaScript = `
     local keys = redis.call('keys', ARGV[1])
