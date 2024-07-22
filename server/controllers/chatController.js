@@ -24,7 +24,7 @@ async function createNewMessage(req, res) {
 
     if (!isPublic) {
       const linkRecord = await checkoutInvited(playerIdInBody, gameId);
-      if (!linkRecord.length) return res.status(403).send('403 Forbidden: 您沒有權限在此遊戲關卡的聊天室發言，請確保您已經收到邀請。或是指定關卡不存在。');
+      if (!linkRecord.length) return res.status(403).send('403 Forbidden: 您沒有權限在此遊戲關卡的聊天室發言，請確保您已經收到邀請。');
     }
 
     const messageInfo = {
@@ -37,6 +37,7 @@ async function createNewMessage(req, res) {
 
     return res.status(200).send(newMessage);
   } catch (error) {
+    if (error.message === '找不到指定關卡的資訊。') return res.status(400).send(`400 Bad Request: ${error.message}`);
     return res.status(500).send(error.message);
   }
 }
