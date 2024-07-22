@@ -12,8 +12,6 @@ const { getPlaybackInfoByGameId } = require('../services/puzzleDatabase');
 async function getGames(req, res) {
   try {
     const allGames = await getAllGames();
-    if (allGames instanceof Error) throw allGames;
-
     return res.status(200).send(allGames);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -23,8 +21,6 @@ async function getGames(req, res) {
 async function getPublicGames(req, res) {
   try {
     const publicGames = await getAllPublicGames();
-    if (publicGames instanceof Error) throw publicGames;
-
     return res.status(200).send(publicGames);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -35,13 +31,6 @@ async function getRenderInfo(req, res) {
   try {
     const { gameId } = req.params;
     const gameRenderInfo = await getRenderInfoByGameId(gameId);
-    if (gameRenderInfo instanceof Error) {
-      if (gameRenderInfo.message === '找不到指定關卡的資訊。') {
-        return res.status(404).send('404 Not Found: 找不到指定關卡的資訊。');
-      }
-      throw gameRenderInfo;
-    }
-
     return res.status(200).send(gameRenderInfo);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -71,7 +60,6 @@ async function createNewGame(req, res) {
     };
 
     const newGame = await addNewGame(file, gameInfo);
-    if (newGame instanceof Error) throw newGame;
 
     return res.status(200).send(newGame);
   } catch (error) {
@@ -82,14 +70,10 @@ async function createNewGame(req, res) {
 async function getPlaybackInfo(req, res) {
   try {
     const { gameId } = req.params;
-
-    const completionInfo = await getGameCompletionInfo(gameId);
-
-    const { isCompleted } = completionInfo;
+    const { isCompleted } = await getGameCompletionInfo(gameId);
     if (!isCompleted) return res.status(400).send('這個關卡尚未結束，無法使用回放功能。');
 
     const playbackInfo = await getPlaybackInfoByGameId(gameId);
-
     return res.status(200).send(playbackInfo);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -100,12 +84,6 @@ async function getHintInfo(req, res) {
   try {
     const { gameId } = req.params;
     const gameRenderInfo = await getRenderInfoByGameId(gameId);
-    if (gameRenderInfo instanceof Error) {
-      if (gameRenderInfo.message === '找不到指定關卡的資訊。') {
-        return res.status(404).send('404 Not Found: 找不到指定關卡的資訊。');
-      }
-      throw gameRenderInfo;
-    }
     const { puzzles } = gameRenderInfo;
     return res.status(200).send(puzzles);
   } catch (error) {
@@ -120,10 +98,7 @@ async function updateGameInfo(req, res) {
     const updateInfo = {
       gameId, title, difficulty, isPublic: isPublic === true
     };
-
-    const updateGameInfoResult = await updateGameBasicSetting(updateInfo);
-    if (updateGameInfoResult instanceof Error) throw updateGameInfoResult;
-
+    await updateGameBasicSetting(updateInfo);
     return res.status(200).send('updateGameInfo Done.');
   } catch (error) {
     return res.status(500).send(error.message);
@@ -133,10 +108,7 @@ async function updateGameInfo(req, res) {
 async function deleteMyGame(req, res) {
   try {
     const { gameId } = req.params;
-
-    const deleteGameResult = await deleteMyOwnGameByGameId(gameId);
-    if (deleteGameResult instanceof Error) throw deleteGameResult;
-
+    await deleteMyOwnGameByGameId(gameId);
     return res.status(200).send('deleteMyGame Done.');
   } catch (error) {
     return res.status(500).send(error.message);
