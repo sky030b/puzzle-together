@@ -84,13 +84,11 @@ async function getPlaybackInfo(req, res) {
     const { gameId } = req.params;
 
     const completionInfo = await getGameCompletionInfo(gameId);
-    if (completionInfo instanceof Error) return res.status(400).send(completionInfo.message);
 
     const { isCompleted } = completionInfo;
     if (!isCompleted) return res.status(400).send('這個關卡尚未結束，無法使用回放功能。');
 
     const playbackInfo = await getPlaybackInfoByGameId(gameId);
-    if (playbackInfo instanceof Error) throw playbackInfo;
 
     return res.status(200).send(playbackInfo);
   } catch (error) {
