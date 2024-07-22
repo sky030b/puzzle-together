@@ -70,8 +70,7 @@ async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
   const res = await redisClient.eval(luaScript, 0, `${redisMovementKeyPrefix}*`);
 
   const dataToWrite = res.map(([, movementInfo]) => JSON.parse(movementInfo));
-  const saveMovementToDBResult = await savePuzzleMovementToDB(dataToWrite);
-  if (saveMovementToDBResult instanceof Error) throw saveMovementToDBResult;
+  await savePuzzleMovementToDB(dataToWrite);
 
   return 'savePuzzleMovementToDBWithPrefix Done.';
 }
