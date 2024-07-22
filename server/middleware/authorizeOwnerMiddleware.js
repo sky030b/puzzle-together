@@ -1,4 +1,4 @@
-const { getGameOwnerIdByGameId } = require('../services/gameDatabase');
+const { getGameOwnerIdByGameId } = require('../models/gameDatabase');
 
 const authorizeOwnerMiddleware = async (req, res, next) => {
   try {

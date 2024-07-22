@@ -5,9 +5,9 @@ const {
   updateGameBasicSetting,
   deleteMyOwnGameByGameId,
   getAllPublicGames
-} = require('../services/gameDatabase');
-const { getGameCompletionInfo } = require('../services/gameHelpers');
-const { getPlaybackInfoByGameId } = require('../services/puzzleDatabase');
+} = require('../models/gameDatabase');
+const { getGameCompletionInfo } = require('../models/gameHelpers');
+const { getPlaybackInfoByGameId } = require('../models/puzzleDatabase');
 
 async function getGames(req, res) {
   try {

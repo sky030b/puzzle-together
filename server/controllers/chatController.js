@@ -1,6 +1,6 @@
-const { getChatHistoryByGameId, addNewMessageToGame } = require('../services/chatDatabase.js');
-const { getGamePublicInfo } = require('../services/gameDatabase.js');
-const { checkoutInvited } = require('../services/playerGameDatabase.js');
+const { getChatHistoryByGameId, addNewMessageToGame } = require('../models/chatDatabase.js');
+const { getGamePublicInfo } = require('../models/gameDatabase.js');
+const { checkoutInvited } = require('../models/playerGameDatabase.js');
 
 async function getChatHistory(req, res) {
   try {

@@ -1,4 +1,4 @@
-const { invitePlayerJoinGame, getAllPlayedGamesInfo, getMyOwnGamesInfo } = require('../services/playerGameDatabase');
+const { invitePlayerJoinGame, getAllPlayedGamesInfo, getMyOwnGamesInfo } = require('../models/playerGameDatabase');
 
 async function invitePlayer(req, res) {
   try {

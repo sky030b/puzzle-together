@@ -1,4 +1,4 @@
-const { addNewPost, getAllPostByPlayerId } = require('../services/postDatabase');
+const { addNewPost, getAllPostByPlayerId } = require('../models/postDatabase');
 
 async function getAllPlayerPosts(req, res) {
   try {

@@ -5,7 +5,7 @@ const {
   getAllPlayers, getAnonymousNickname, addNewPlayer,
   getPlayerByPlayerId, setPlayerProfileByPlayerId,
   getPlayerByEmail, getHashPWDByEmail
-} = require('../services/playerDatabase');
+} = require('../models/playerDatabase');
 
 async function getPlayers(req, res) {
   try {

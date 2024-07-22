@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/dist')));
 app.use(express.static(path.join(__dirname, '../client/')));
 
-const socket = require('./services/socketio');
+const socket = require('./models/socketio');
 
 const server = http.createServer(app);
 const io = socketIo(server, {
