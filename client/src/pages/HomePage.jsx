@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import '../style/HomePage.css';
+import { useEffect } from 'react';
 
 const HomePage = () => {
+  useEffect(() => {
+    document.title = '帕索兔蓋德';
+  }, [])
 
   return (
     <div>
