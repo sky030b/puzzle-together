@@ -2,7 +2,8 @@ const { createAdapter } = require('@socket.io/redis-adapter');
 const redisClient = require('./createRedisClient');
 
 const {
-  getGameDurationByGameId, updateGameDurationByGameId, updateGameIsCompletedStatus
+  getGameDurationByGameId, updateGameDurationByGameId,
+  updateGameIsCompletedStatus, getRenderInfoByGameId
 } = require('./gameDatabase');
 const { getGameCompletionInfo } = require('./gameHelpers');
 const { lockPuzzleBySomeone, updatePuzzleLocation } = require('./puzzleDatabase');
@@ -60,7 +61,9 @@ const socket = (io) => {
         await updatePuzzleLocation(data);
         await updateGameIsCompletedStatus(roomId, 0);
         await savePuzzleMovementToRedis(data);
+        const { puzzles } = await getRenderInfoByGameId(data.gameId);
         socketio.to(roomId).emit('updatePiece', data);
+        io.to(roomId).emit('updatePuzzlesState', puzzles);
       });
 
       socketio.on('changeMoveBy', async (data) => {
@@ -71,7 +74,9 @@ const socket = (io) => {
         await updatePuzzleLocation(data);
         await savePuzzleMovementToRedis(data);
         const { isCompleted } = await lockPuzzleBySomeone(data);
+        const { puzzles } = await getRenderInfoByGameId(data.gameId);
         io.to(roomId).emit('updateAndLockPiece', data);
+        io.to(roomId).emit('updatePuzzlesState', puzzles);
         io.to(roomId).emit('updateRecord', { gameId: roomId, playersInfo: roomsInfo[roomId].playersInfo });
         if (isCompleted) {
           await updateDurationToDB(roomId);

@@ -5,9 +5,8 @@ import { renderPlayDuration, renderPlayersRecord } from './record.js';
 import showResult from './result.js';
 import { returnChatMessageFormat } from './utils.js';
 import {
-  clearTimer, setTimer,
-  getCurrentGameId, getPlayerState, setPlaygroundStateByKey,
-  getPlaygroundStateByKey, API_BASE_URL
+  clearTimer, setTimer, API_BASE_URL,
+  getCurrentGameId, getPlayerState, setPlaygroundStateByKey
 } from './variable.js';
 
 // eslint-disable-next-line no-undef
@@ -123,16 +122,10 @@ export function setupSocket() {
         }
       }
     }
+  });
 
-    const puzzles = getPlaygroundStateByKey('puzzles');
-    const newPuzzles = puzzles.map((puzzle) => (
-      puzzle.puzzleId !== puzzleId
-        ? puzzle
-        : {
-          ...puzzle, lockedBy, lockedColor, isLocked: 1, zIndex
-        }
-    ));
-    setPlaygroundStateByKey('puzzles', newPuzzles);
+  socket.on('updatePuzzlesState', (puzzles) => {
+    setPlaygroundStateByKey('puzzles', puzzles);
   });
 
   socket.on('sendNewMessage', (data) => {
