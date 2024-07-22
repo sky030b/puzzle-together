@@ -29,9 +29,7 @@ async function getPlayerProfile(req, res) {
     const playerProfile = await getPlayerByPlayerId(playerId);
     return res.status(200).send(playerProfile);
   } catch (error) {
-    if (error.message === '找不到指定玩家的資訊。') {
-      return res.status(404).send('404 Not Found: 找不到指定玩家的資訊。');
-    }
+    if (error.message === '找不到指定玩家的資訊。') return res.status(404).send('404 Not Found: 找不到指定玩家的資訊。');
     return res.status(500).send(error.message);
   }
 }
@@ -44,7 +42,6 @@ async function updatePlayerProfile(req, res) {
     if (playerIdInToken !== playerIdInParams) return res.status(403).send('403 Forbidden: 您無權限訪問此資源。');
 
     await setPlayerProfileByPlayerId(playerIdInParams, req.body);
-
     return res.status(200).send('updatePlayerProfile Done');
   } catch (error) {
     return res.status(500).send(error.message);
@@ -89,9 +86,10 @@ async function signup(req, res) {
     const playerInfo = {
       playerId, email, hashedPassword, nickname, representColor, isRoomPublic: isRoomPublic === 'true'
     };
-    const newPlayer = await addNewPlayer(playerInfo);
 
+    const newPlayer = await addNewPlayer(playerInfo);
     const playerToken = getPlayerToken(newPlayer);
+
     return res.status(200).send(playerToken);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -123,18 +121,17 @@ async function signin(req, res) {
   }
 }
 
-async function generateAnonymousPlayer(req, res) {
-  function getRandomColorCode() {
-    let hexCode = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    while (hexCode.length < 6) {
-      hexCode = `0${hexCode}`;
-    }
-    return `#${hexCode}`;
+function getRandomColorCode() {
+  let hexCode = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+  while (hexCode.length < 6) {
+    hexCode = `0${hexCode}`;
   }
+  return `#${hexCode}`;
+}
 
+async function generateAnonymousPlayer(req, res) {
   try {
     const nickname = await getAnonymousNickname();
-
     const anonymousPlayer = {
       nickname,
       representColor: getRandomColorCode()
