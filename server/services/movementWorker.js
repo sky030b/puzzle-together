@@ -31,13 +31,14 @@ async function savePuzzleMovementToDB(data) {
   try {
     if (!data.length) return 0;
 
+    const taiwanOffsetSec = 8 * 60 * 60;
     const values = data.map((item) => [
       item.puzzleId,
       item.gameId,
       item.topRatio.toFixed(3),
       item.leftRatio.toFixed(3),
       item.movedColor,
-      item.movedAt ? item.movedAt : new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+      item.movedAt ? item.movedAt : new Date(Date.now() + taiwanOffsetSec * 1000).toISOString().slice(0, 19).replace('T', ' ')
     ]);
 
     const sql = `
@@ -88,10 +89,11 @@ async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
 redisClient.on('ready', async () => {
   console.log('redisClient is ready.');
 
+  const updateIntervalSec = 30 * 60;
   setInterval(async () => {
     const saveToDBResult = await savePuzzleMovementToDBWithPrefix('movement-');
     console.log(saveToDBResult);
-  }, 30 * 60 * 1000);
+  }, updateIntervalSec * 1000);
 
   const saveToDBResult = await savePuzzleMovementToDBWithPrefix('movement-');
   console.log(saveToDBResult);

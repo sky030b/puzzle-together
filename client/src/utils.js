@@ -12,7 +12,8 @@ export function getCookie(key) {
   return undefined;
 }
 
-export function setCookie(key, value, expireSec = 4 * 60 * 60) {
+const defaultExpireSec = 4 * 60 * 60;
+export function setCookie(key, value, expireSec = defaultExpireSec) {
   const expiresDate = new Date(Date.now() + expireSec * 1000);
   const expiresUTCString = expiresDate.toUTCString();
   document.cookie = `${key}=${value}; Expires=${expiresUTCString}; path=/`;

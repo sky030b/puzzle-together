@@ -56,13 +56,14 @@ async function lockPuzzleBySomeone(lockingInfo) {
 
 async function savePuzzleMovementToDB(data) {
   try {
+    const taiwanOffsetSec = 8 * 60 * 60;
     const values = data.map((item) => [
       item.puzzleId,
       item.gameId,
       item.topRatio.toFixed(3),
       item.leftRatio.toFixed(3),
       item.movedColor,
-      item.movedAt ? item.movedAt : new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ')
+      item.movedAt ? item.movedAt : new Date(Date.now() + taiwanOffsetSec * 1000).toISOString().slice(0, 19).replace('T', ' ')
     ]);
 
     const sql = `

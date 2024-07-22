@@ -45,6 +45,7 @@ export function getOverlapRatioByDifficulty(difficulty) {
 
 const playgroundState = {
   scale: 1,
+  playbackScale: 0.1,
   currentGameId: '',
   isInsideChatArea: false,
   isInsideRecordArea: false,
@@ -142,15 +143,15 @@ export function setPlaygroundStateByKey(key, value) {
   }
 }
 
-export function getPlaygroundState() {
-  return { ...playgroundState };
-}
-
 export function getPlaygroundStateByKey(key) {
   if (Object.prototype.hasOwnProperty.call(playgroundState, key)) {
     return playgroundState[key];
   }
   return '沒有指定的屬性，請再確認。';
+}
+
+export function getPlaygroundState() {
+  return { ...playgroundState };
 }
 
 const playerState = {

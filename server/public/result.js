@@ -36,7 +36,7 @@ function removeInviteNavItem() {
 }
 
 async function playbackGame() {
-  setScale(0.1);
+  setScale(getPlaygroundStateByKey('playbackScale'));
   canvas.style.transform = `scale(${getScale()})`;
   constrainCanvas();
   centerView();
