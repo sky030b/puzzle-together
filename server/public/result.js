@@ -165,7 +165,7 @@ function createResultPuzzles(img) {
   const pieceWidth = scaledWidth / cols;
   const pieceHeight = scaledHeight / rows;
 
-  const resultPuzzleContainer = document.getElementById('result-puzzle-container');
+  const resultPuzzleContainer = document.querySelector('#result-puzzle-container');
   resultPuzzleContainer.innerHTML = '';
 
   puzzles.forEach((puzzleInfo) => {
@@ -201,7 +201,7 @@ function createResultTargetBoxes(img) {
   const pieceWidth = scaledWidth / cols;
   const pieceHeight = scaledHeight / rows;
 
-  const resultTargetContainer = document.getElementById('result-target-container');
+  const resultTargetContainer = document.querySelector('#result-target-container');
   resultTargetContainer.style.border = '3px solid black';
   resultTargetContainer.innerHTML = '';
   resultTargetContainer.style.gridTemplateColumns = `repeat(${cols}, ${pieceWidth}px)`;
@@ -308,7 +308,7 @@ function createResultModal() {
   const downloadOriginPicBtn = document.querySelector('.download-origin-pic');
   downloadOriginPicBtn.addEventListener('click', downloadOriginPic);
 
-  const myModalEl = document.getElementById('exampleModal');
+  const myModalEl = document.querySelector('#exampleModal');
   myModalEl.addEventListener('hidden.bs.modal', () => {
     setIsModalOpen(false);
   });

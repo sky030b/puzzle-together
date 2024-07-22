@@ -33,7 +33,7 @@ function createPuzzles(img, gameInfo) {
   const pieceWidth = scaledWidth / cols;
   const pieceHeight = scaledHeight / rows;
 
-  const puzzleContainer = document.getElementById('puzzle-container');
+  const puzzleContainer = document.querySelector('#puzzle-container');
   puzzleContainer.innerHTML = '';
   Object.keys(puzzleTargetMap).forEach((key) => delete puzzleTargetMap[key]);
 
