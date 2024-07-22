@@ -300,6 +300,11 @@ function addDragAndDrop(gameInfo) {
       });
     }
 
+    let isLocked = false;
+    let lockTargetId;
+    let lockNickname;
+    let lockRepresentColor;
+
     targetBoxes.forEach((target) => {
       const targetId = target.id;
       const pieceId = selectedPiece.id;
@@ -324,15 +329,22 @@ function addDragAndDrop(gameInfo) {
           selectedPiece.classList.add('locked');
           selectedPiece.removeEventListener('mousedown', onMouseDown);
           selectedPiece.style.zIndex = '1';
+
+          isLocked = true;
+          lockTargetId = targetId;
+          lockNickname = nickname;
+          lockRepresentColor = representColor;
         } else {
           selectedPiece.style.zIndex = '5';
         }
-
-        if (puzzleTargetMap[targetId] === pieceId) {
-          emitUpdateAndLockPiece(targetId, nickname, representColor);
-        } else emitUpdatePiece();
-      } else emitUpdatePiece();
+      }
     });
+
+    if (isLocked) {
+      emitUpdateAndLockPiece(lockTargetId, lockNickname, lockRepresentColor);
+    } else {
+      emitUpdatePiece();
+    }
 
     if (['5', '10'].includes(selectedPiece.style.zIndex)) {
       lastNotLockedPiece = selectedPiece;
