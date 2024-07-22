@@ -5,7 +5,8 @@ const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMid
 
 const router = express.Router();
 
-router.get('/:gameId', checkGameEntryMiddleware, getChatHistory);
-router.post('/:gameId', authenticateTokenMiddleware, createNewMessage);
+router.route('/:gameId')
+  .get(checkGameEntryMiddleware, getChatHistory)
+  .post(authenticateTokenMiddleware, createNewMessage);
 
 module.exports = router;

@@ -16,7 +16,12 @@ const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMid
 const router = express.Router();
 
 router.get('/public', getPublicGames);
-router.get('/:gameId', checkGameEntryMiddleware, getRenderInfo);
+
+router.route('/:gameId')
+  .get(checkGameEntryMiddleware, getRenderInfo)
+  .post(authenticateTokenMiddleware, authorizeOwnerMiddleware, updateGameInfo)
+  .delete(authenticateTokenMiddleware, authorizeOwnerMiddleware, deleteMyGame);
+
 router.get('/:gameId/playback', checkGameEntryMiddleware, getPlaybackInfo);
 router.get('/:gameId/hint', checkGameEntryMiddleware, getHintInfo);
 
@@ -26,8 +31,5 @@ router.post(
   uploadImageMiddleware({ single: true, fieldName: 'question_img' }),
   createNewGame
 );
-router.post('/:gameId', authenticateTokenMiddleware, authorizeOwnerMiddleware, updateGameInfo);
-
-router.delete('/:gameId', authenticateTokenMiddleware, authorizeOwnerMiddleware, deleteMyGame);
 
 module.exports = router;
