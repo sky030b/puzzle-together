@@ -321,19 +321,21 @@ function addDragAndDrop(gameInfo) {
         }
 
         const { nickname, representColor } = getPlayerState();
-        if (puzzleTargetMap[targetId] === pieceId && ['easy', 'medium'].includes(difficulty)) {
-          centerInTarget(selectedPiece, target);
-          selectedPiece.dataset.isLocked = 'true';
-          selectedPiece.dataset.lockedBy = nickname;
-          selectedPiece.dataset.lockedColor = representColor;
-          selectedPiece.classList.add('locked');
-          selectedPiece.removeEventListener('mousedown', onMouseDown);
-          selectedPiece.style.zIndex = '1';
-
+        if (puzzleTargetMap[targetId] === pieceId) {
           isLocked = true;
           lockTargetId = targetId;
           lockNickname = nickname;
           lockRepresentColor = representColor;
+
+          if (['easy', 'medium'].includes(difficulty)) {
+            centerInTarget(selectedPiece, target);
+            selectedPiece.dataset.isLocked = 'true';
+            selectedPiece.dataset.lockedBy = nickname;
+            selectedPiece.dataset.lockedColor = representColor;
+            selectedPiece.classList.add('locked');
+            selectedPiece.removeEventListener('mousedown', onMouseDown);
+            selectedPiece.style.zIndex = '1';
+          }
         } else {
           selectedPiece.style.zIndex = '5';
         }
