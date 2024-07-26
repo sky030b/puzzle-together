@@ -10,11 +10,8 @@
 ### 一不小心碰到，記錄全歸零？	vs.	全自動保存，保障所有進度！  
 ### 喜歡展示拼圖卻無處交流？	vs.	拼圖展示牆，分享與互動！
 
-<div align="center">
-  <img src="https://puzzle-together.e055339.com/play_together.gif" alt="play_together" />
-  <img src="https://puzzle-together.e055339.com/zoom.gif" alt="zoom" />
-</div>
-
+![play_together](https://puzzle-together.e055339.com/play_together.gif)
+![zoom](https://puzzle-together.e055339.com/zoom.gif)
 ![showcase](https://puzzle-together.e055339.com/showcase.png)
 
 ## 功能介紹
