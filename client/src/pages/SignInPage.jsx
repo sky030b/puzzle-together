@@ -6,8 +6,8 @@ import { AuthContext } from '../contexts/AuthContext';
 import { getCookie, setCookie } from '../utils';
 
 const SignInPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('gade@gmail.com');
+  const [password, setPassword] = useState('gadeisgood');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     playerInfo, setPlayerInfo, isAuthenticated, setIsAuthenticated
