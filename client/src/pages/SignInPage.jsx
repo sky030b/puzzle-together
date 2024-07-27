@@ -40,7 +40,8 @@ const SignInPage = () => {
       navigate(`/profile/${playerInfo.playerId}`);
     } catch (error) {
       console.error(error);
-      toast.error(error.response.data.errors.map((error) => error.msg).join('\n'), { autoClose: 2000 });
+      if (error.response.data.errors)  toast.error(error.response.data.errors.map((error) => error.msg).join('\n'), { autoClose: 2000 });
+      else toast.error(error.response.data, { autoClose: 2000 });
     } finally {
       setIsSubmitting(false);
     }
