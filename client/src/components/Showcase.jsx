@@ -10,6 +10,7 @@ const Showcase = () => {
   const { playerInfo } = useContext(AuthContext);
 
   const [games, setGames] = useState([]);
+  const isOwner = playerInfo && playerInfo.playerId === playerId;
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -19,15 +20,18 @@ const Showcase = () => {
             'Authorization': `Bearer ${getCookie('token')}`
           }
         });
-        setGames(res.data);
+
+        if (isOwner)
+          setGames(res.data);
+        else {
+          setGames(res.data.filter((game) => game.is_public));
+        }
       } catch (error) {
         console.error('Error fetching games:', error);
       }
     };
     fetchGames();
-  }, [playerId]);
-
-  const isOwner = playerInfo && playerInfo.playerId === playerId;
+  }, [isOwner, playerId]);
 
   return (
     <div className="container w-75 mt-4">
