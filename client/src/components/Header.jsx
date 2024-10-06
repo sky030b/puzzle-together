@@ -22,7 +22,7 @@ const Header = () => {
       navigate('/signin');
       setJustSignedOut(false);
     }
-  }, [justSignedOut, navigate]);
+  }, [playerInfo, justSignedOut, navigate]);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top">

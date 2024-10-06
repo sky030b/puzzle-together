@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getCookie } from '../utils';
+import { getCookie, removeCookie } from '../utils';
+import { AuthContext } from '../contexts/AuthContext';
 
 const CreateGamePage = () => {
+  const { setPlayerInfo, setIsAuthenticated } = useContext(AuthContext);
+
   const [formValues, setFormValues] = useState({
     owner_id: '',
     title: '',
@@ -71,6 +74,9 @@ const CreateGamePage = () => {
         }));
       } catch (error) {
         console.error(error.response.data);
+        removeCookie('token');
+        setIsAuthenticated(false);
+        setPlayerInfo({});
         toast.error('尚未登入或是登入階段已過期，請重新登入。', { autoClose: 2000 });
         navigate('/signin');
       }
@@ -78,7 +84,7 @@ const CreateGamePage = () => {
 
     document.title = '帕索兔蓋德 - 建立遊戲';
     setOwnerId();
-  }, [navigate]);
+  }, [setIsAuthenticated, setPlayerInfo, navigate]);
 
   return (
     <div className="container-bg py-5 d-flex justify-content-center align-items-center">
