@@ -1,5 +1,6 @@
 # 帕索兔蓋德 Puzzle Together
 **這是一個可以讓全世界的玩家在線上同步拼拼圖，大家一起同樂的網站。**  
+[專案介紹影片](https://drive.google.com/file/d/1oUXLlk7sXJ50qRJbhdo3paEMtO9pfn7C/view)
 
 ![hero_banner](https://puzzle-together.e055339.com/hero_banner.gif)
 
@@ -42,7 +43,7 @@
 
 ![playback](https://puzzle-together.e055339.com/playback.gif)
 
-## 架構圖
+## 系統架構
 - 除了遊戲室以外的所有頁面都是使用 React 所寫，遊戲室則是用 Vanilla JavaScript 實現。
 - 透過 AWS 的 S3 和 CloudFront 來託管靜態網站並存取使用者上傳的圖片。
 - 使用 AWS 的 Load Balancer，搭配 GitHub Actions 做到 Server 的自動化佈署。
