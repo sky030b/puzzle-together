@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 import './style/MyOwnGames.css';
-import { getCookie } from '../utils';
+import { getCookie, removeCookie } from '../utils';
 
 const MyOwnGames = () => {
   const { playerId } = useParams();
@@ -12,7 +12,7 @@ const MyOwnGames = () => {
   const [games, setGames] = useState([]);
   const [hoveredGameId, setHoveredGameId] = useState(null);
   const [overlayHeight, setOverlayHeight] = useState(0);
-  const { playerInfo } = useContext(AuthContext);
+  const { playerInfo, setPlayerInfo, setIsAuthenticated } = useContext(AuthContext);
   const cardBodyRef = useRef(null);
   const imageContainerRef = useRef(null);
 
@@ -26,6 +26,16 @@ const MyOwnGames = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
+        const token = getCookie('token');
+        if (!token) {
+          toast.error('尚未登入或是登入階段已過期，請重新登入。', { autoClose: 2000 });
+          removeCookie('token');
+          setIsAuthenticated(false);
+          setPlayerInfo({});
+          navigate('/signin');
+          return;
+        }
+
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/1.0/players/${playerId}/my-own-games`, {
           headers: {
             'Authorization': `Bearer ${getCookie('token')}`
@@ -33,12 +43,22 @@ const MyOwnGames = () => {
         });
         setGames(res.data);
       } catch (error) {
-        navigate(`/profile/${playerId}/showcase`);
+        if (error.response.data === '403 JsonWebTokenError: jwt malformed') {
+          toast.error('尚未登入或是登入階段已過期，請重新登入。', { autoClose: 2000 });
+          removeCookie('token');
+          setIsAuthenticated(false);
+          setPlayerInfo({});
+          navigate('/signin');
+        }
+        else if (error.response.data.startsWith('403 Forbidden')) {
+          toast.error('您無權限訪問此頁面，將前往該玩家的玩家檔案。', { autoClose: 2000 });
+          navigate(`/profile/${playerId}/showcase`);
+        }
         console.error('Error fetching games:', error);
       }
     };
     fetchGames();
-  }, [navigate, playerId]);
+  }, [navigate, setIsAuthenticated, setPlayerInfo, playerId]);
 
   useEffect(() => {
     if (cardBodyRef.current && imageContainerRef.current) {
