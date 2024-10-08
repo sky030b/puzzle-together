@@ -3,8 +3,9 @@ import axios from 'axios';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
-import './style/MyOwnGames.css';
 import { getCookie, removeCookie } from '../utils';
+import './style/GameCard.css';
+import './style/MyOwnGames.css';
 
 const MyOwnGames = () => {
   const { playerId } = useParams();
@@ -175,7 +176,7 @@ const MyOwnGames = () => {
         </div>
       ) : (
         <>
-          <div className="row row-cols-1 row-cols-md-3 g-4">
+          <div className="row row-cols-1 row-cols-md-3 g-4 mb-4">
             {games.map((game) => (
               <div className="col" key={game.game_id}>
                 <div className="card h-100 overflow-hidden"
@@ -188,7 +189,7 @@ const MyOwnGames = () => {
                     </div>
                   </div>
                   <div className="card-body" ref={cardBodyRef}>
-                    <h5 className="card-title">{game.title}</h5>
+                    <h5 className="card-title card-title-limit">{game.title}</h5>
                     <div className="d-flex flex-wrap mb-2">
                       <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>
                       <span className={`badge rounded-pill ${getDifficultyBadgeClass(game.difficulty)} me-2`}>

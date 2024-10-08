@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import './style/GameCard.css';
 
 const GameCard = ({ game }) => {
   const getDifficultyBadgeClass = (difficulty) => {
@@ -43,7 +44,7 @@ const GameCard = ({ game }) => {
           </div>
         </div>
         <div className="card-body">
-          <h5 className="card-title">{game.title}</h5>
+          <h5 className="card-title card-title-limit">{game.title}</h5>
           <p className="card-text">建立者：<Link to={`/profile/${game.owner_id}/showcase`}>{game.owner_nickname}</Link></p>
           <div className="d-flex flex-wrap mb-2">
             <span className="badge rounded-pill bg-primary me-2">{game.row_qty} × {game.col_qty}</span>

@@ -1,0 +1,10 @@
+/* PlayerProfileHeader.css */
+.card-title-limit {
+  display: -webkit-box;
+  /* 顯示最多一行 */
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

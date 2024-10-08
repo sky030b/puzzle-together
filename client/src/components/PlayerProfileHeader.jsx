@@ -66,7 +66,7 @@ const PlayerProfileHeader = () => {
         represent_color: representColor,
         profile
       });
-      toast.success('資料已更新。', { autoClose: 1500 });
+      toast.success('資料已更新，新代表色將於重新登入後生效。', { autoClose: 1500 });
     } catch (error) {
       console.error('Error updating profile:', error);
       toast.error(error.response.data, { autoClose: 2000 });
@@ -126,6 +126,11 @@ const PlayerProfileHeader = () => {
                       rows='5'
                       value={profile}
                       onChange={handleProfileChange}
+                      onKeyDown={(e) => {
+                        if (e.ctrlKey && e.key === 'Enter') {
+                          handleSaveProfile(); // 觸發儲存功能
+                        }
+                      }}
                     ></textarea>
                     <button className='btn btn-outline-primary' onClick={handleSaveProfile}>儲存</button>
                   </div>

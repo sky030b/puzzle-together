@@ -40,7 +40,7 @@ const Showcase = () => {
           <h5>{isOwner ? '目前還未遊玩任何遊戲，快來加入/建立一個吧～' : '這位玩家目前還沒有參與任何遊戲，快來邀請他一起同樂～'}</h5>
         </div>
       ) : (
-        <div className="row row-cols-1 row-cols-md-3 g-4">
+        <div className="row row-cols-1 row-cols-md-3 g-4 mb-4">
           {games.map((game) => (
             <GameCard key={game.game_id} game={game} />
           ))}

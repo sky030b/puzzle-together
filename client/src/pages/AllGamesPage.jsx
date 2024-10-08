@@ -31,7 +31,7 @@ const AllGamesPage = () => {
     <div className="container w-75 my-4">
       <h2 className="text-center">公開關卡總覽</h2>
       <hr className="my-4" />
-      <div className="row row-cols-1 row-cols-md-3 g-4">
+      <div className="row row-cols-1 row-cols-md-3 g-4 mb-4">
         {games.map((game) => (
           <GameCard key={game.game_id} game={game} />
         ))}
