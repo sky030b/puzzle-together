@@ -1,0 +1,12 @@
+/* PlayerProfileHeader.css */
+.intro-text {
+  display: -webkit-box;
+  /* 顯示最多五行 */
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* 保留換行 */
+  white-space: pre-wrap;
+}

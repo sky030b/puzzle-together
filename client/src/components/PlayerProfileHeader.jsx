@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../contexts/AuthContext';
 import { getCookie } from '../utils';
+import './style/PlayerProfileHeader.css';
 
 const PlayerProfileHeader = () => {
   const { playerId } = useParams();
@@ -82,18 +83,18 @@ const PlayerProfileHeader = () => {
     <div className='player-profile-header d-flex'>
       <div className='w-75 mx-auto'>
         <div className='nickname mb-3'>
-          <span className='me-3'>玩家暱稱：</span>
+          <span className='me-3 text-nowrap'>玩家暱稱：</span>
           <span>{playerData.nickname}</span>
         </div>
         <div className='player-id mb-2'>
-          <span className='me-3'>玩家編號：</span>
+          <span className='me-3 text-nowrap'>玩家編號：</span>
           <span className='me-3'>{playerData.player_id}</span>
           <button className='btn btn-outline-secondary' onClick={handleCopyPlayerId}>複製</button>
         </div>
         <div className='player-id mb-3 d-flex align-items-center'>
           {isOwner && isEditing ? (
             <>
-              <span className='me-3 align-middle'>代表顏色：</span>
+              <span className='me-3 align-middle text-nowrap'>代表顏色：</span>
               <input
                 type='color'
                 className='form-control form-control-color'
@@ -104,7 +105,7 @@ const PlayerProfileHeader = () => {
             </>
           ) : (
             <>
-              <span className='me-3 align-middle'>代表顏色：</span>
+              <span className='me-3 align-middle text-nowrap'>代表顏色：</span>
               <div
                 className='represent-color'
                 title={playerData.represent_color}
@@ -118,31 +119,35 @@ const PlayerProfileHeader = () => {
             isEditing ? (
               <>
                 <div className='d-flex'>
-                  <div className='me-3' style={{ whiteSpace: 'nowrap' }}>自我介紹：</div>
-                  <textarea
-                    className='form-control'
-                    rows='3'
-                    value={profile}
-                    onChange={handleProfileChange}
-                  ></textarea>
+                  <div className='me-3 text-nowrap'>自我介紹：</div>
+                  <div className='w-100'>
+                    <textarea
+                      className='form-control mb-3'
+                      rows='5'
+                      value={profile}
+                      onChange={handleProfileChange}
+                    ></textarea>
+                    <button className='btn btn-outline-primary' onClick={handleSaveProfile}>儲存</button>
+                  </div>
                 </div>
-                <button className='btn btn-outline-primary mt-2' onClick={handleSaveProfile}>儲存</button>
               </>
             ) : (
               <>
                 <div className='d-flex mb-3'>
-                  <div className='me-3' style={{ whiteSpace: 'nowrap' }}>自我介紹：</div>
-                  <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
-                    {playerData.profile || '快來加點自我介紹，讓其他人更認識你吧～'}
+                  <div className='me-3 text-nowrap'>自我介紹：</div>
+                  <div className='w-100'>
+                    <div className='mb-3 text-break intro-text'>
+                      {playerData.profile || '快來加點自我介紹，讓其他人更認識你吧～'}
+                    </div>
+                    <button className='btn btn-outline-secondary' onClick={() => setIsEditing(true)}>編輯</button>
                   </div>
                 </div>
-                <button className='btn btn-outline-secondary mt-2' onClick={() => setIsEditing(true)}>編輯</button>
               </>
             )
           ) : (
             <div className='d-flex mb-3'>
-              <div style={{ whiteSpace: 'nowrap' }}>自我介紹：</div>
-              <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>
+              <div className='me-3 text-nowrap'>自我介紹：</div>
+              <div className='text-break intro-text'>
                 {playerData.profile || '這位玩家什麼都沒有說╮(╯_╰)╭'}
               </div>
             </div>
@@ -151,9 +156,9 @@ const PlayerProfileHeader = () => {
       </div>
       <div className='w-25 d-flex justify-content-center align-items-center'>
         <div className='stats mb-3 d-flex flex-column align-items-center'>
-          <div className='mb-3 text-center'>參加過 <strong>{playerData.games_played}</strong> 場遊戲</div>
-          <div className='mb-3 text-center'>完成過 <strong>{playerData.games_completed}</strong> 場遊戲</div>
-          <div className='mb-3 text-center'>拼對了 <strong>{playerData.puzzles_locked}</strong> 塊拼圖</div>
+          <div className='mb-3 text-center text-nowrap'>參加過 <strong>{playerData.games_played}</strong> 場遊戲</div>
+          <div className='mb-3 text-center text-nowrap'>完成過 <strong>{playerData.games_completed}</strong> 場遊戲</div>
+          <div className='mb-3 text-center text-nowrap'>拼對了 <strong>{playerData.puzzles_locked}</strong> 塊拼圖</div>
         </div>
       </div>
     </div>

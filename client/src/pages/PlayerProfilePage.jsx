@@ -18,8 +18,8 @@ const PlayerProfilePage = () => {
   return (
     <div className="player-profile-page">
       <PlayerProfileHeader />
-      <ToggleButtonBar />
       <hr />
+      <ToggleButtonBar />
       <Outlet />
     </div>
   );
