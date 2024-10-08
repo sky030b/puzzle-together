@@ -52,7 +52,7 @@ async function savePuzzleMovementToDB(data) {
 }
 
 async function savePuzzleMovementToDBWithPrefix(redisMovementKeyPrefix) {
-  if (redisClient.status !== 'ready') return console.log(new Error('redisClient is not ready.'));
+  if (redisClient.status !== 'ready') return new Error('redisClient is not ready.');
 
   const luaScript = `
     local keys = redis.call('keys', ARGV[1])
