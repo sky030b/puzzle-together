@@ -66,7 +66,7 @@ const MyOwnGames = () => {
       const totalHeight = cardBodyRef.current.clientHeight + imageContainerRef.current.clientHeight;
       setOverlayHeight(totalHeight);
     }
-  }, [games]);
+  }, [hoveredGameId]);
 
   const getDifficultyBadgeClass = (difficulty) => {
     switch (difficulty) {
