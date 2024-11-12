@@ -231,7 +231,7 @@ function addDragAndDrop(gameInfo) {
 
     // const audioFiles = ['mine_in_chinese.mp3', 'mine.mp3'];
     // const randomIndex = Math.floor(Math.random() * audioFiles.length);
-    // const player = new Audio(`https://dsz5eydy8se7.cloudfront.net/${audioFiles[randomIndex]}`);
+    // const player = new Audio(`https://puzzle-together.e055339.com/${audioFiles[randomIndex]}`);
     // player.play();
 
     selectedPiece = e.target;

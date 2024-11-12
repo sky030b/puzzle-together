@@ -21,8 +21,8 @@ const HomePage = () => {
             </div>
           </div>
           <div className="w-50 position-relative">
-            <img className="img-fluid object-fit-cover final-image" width="400" height="400" src="https://dsz5eydy8se7.cloudfront.net/img-2904526839091+(4).png" alt="" />
-            <img className="img-fluid object-fit-cover jump-gade position-absolute" width="400" height="400" src="https://dsz5eydy8se7.cloudfront.net/img-2904526839091+(2).png" alt="" />
+            <img className="img-fluid object-fit-cover final-image" width="400" height="400" src="https://puzzle-together.e055339.com/img-2904526839091+(4).png" alt="" />
+            <img className="img-fluid object-fit-cover jump-gade position-absolute" width="400" height="400" src="https://puzzle-together.e055339.com/img-2904526839091+(2).png" alt="" />
           </div>
         </div>
       </section>
@@ -37,7 +37,7 @@ const HomePage = () => {
             <div className="text-light fs-3">受物理空間的限制，只能自己玩？</div>
           </div>
           <div className="mx-3">
-            <img src="https://dsz5eydy8se7.cloudfront.net/network.png" alt="" height="80" width="80" />
+            <img src="https://puzzle-together.e055339.com/network.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
             <div className="fs-3">與全球玩家即時連線，共享樂趣！</div>
@@ -49,7 +49,7 @@ const HomePage = () => {
             <div className="text-light fs-3">過程中必須得佔用一個大桌面？</div>
           </div>
           <div className="mx-3">
-            <img src="https://dsz5eydy8se7.cloudfront.net/zoom.png" alt="" height="80" width="80" />
+            <img src="https://puzzle-together.e055339.com/zoom.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
             <div className="fs-3">小小電腦視窗，自由縮放拖動！</div>
@@ -61,7 +61,7 @@ const HomePage = () => {
             <div className="text-light fs-3">一不小心碰到，記錄全歸零？</div>
           </div>
           <div className="mx-3">
-            <img src="https://dsz5eydy8se7.cloudfront.net/save.png" alt="" height="80" width="80" />
+            <img src="https://puzzle-together.e055339.com/save.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
             <div className="fs-3">全自動保存，保障所有進度！</div>
@@ -73,7 +73,7 @@ const HomePage = () => {
             <div className="text-light fs-3">喜歡展示拼圖卻無處交流？</div>
           </div>
           <div className="mx-3">
-            <img src="https://dsz5eydy8se7.cloudfront.net/reaction.png" alt="" height="80" width="80" />
+            <img src="https://puzzle-together.e055339.com/reaction.png" alt="" height="80" width="80" />
           </div>
           <div className="bg-light py-4 px-5">
             <div className="fs-3">拼圖展示牆，分享與互動！</div>
@@ -91,7 +91,7 @@ const HomePage = () => {
             <div className="col">
               <div className="px-3 py-5 border border-dark rounded">
                 <div className="rounded-circle text-center mb-3">
-                  <img src="https://dsz5eydy8se7.cloudfront.net/hard.png" alt="" height="80" width="80" />
+                  <img src="https://puzzle-together.e055339.com/hard.png" alt="" height="80" width="80" />
                 </div>
                 <h3 className="mb-3 text-center">不同難度</h3>
                 <div className="text-center">提供三種不同難度<br />讓不同等級的玩家都可以同樂</div>
@@ -100,7 +100,7 @@ const HomePage = () => {
             <div className="col">
               <div className="px-3 py-5 border border-dark rounded">
                 <div className="rounded-circle text-center mb-3">
-                  <img src="https://dsz5eydy8se7.cloudfront.net/chat.png" alt="" height="80" width="80" />
+                  <img src="https://puzzle-together.e055339.com/chat.png" alt="" height="80" width="80" />
                 </div>
                 <h3 className="mb-3 text-center">聊天室</h3>
                 <div className="text-center">提供即時聊天室<br />讓玩家們隨時溝通想法與合作規劃</div>
@@ -109,7 +109,7 @@ const HomePage = () => {
             <div className="col">
               <div className="px-3 py-5 border border-dark rounded">
                 <div className="rounded-circle text-center mb-3">
-                  <img src="https://dsz5eydy8se7.cloudfront.net/jigsaw.png" alt="" height="80" width="80" />
+                  <img src="https://puzzle-together.e055339.com/jigsaw.png" alt="" height="80" width="80" />
                 </div>
                 <h3 className="mb-3 text-center">貢獻記錄</h3>
                 <div className="text-center">可隨時查看目前每位玩家的貢獻數<br />並於通關時結算</div>
@@ -118,7 +118,7 @@ const HomePage = () => {
             <div className="col">
               <div className="px-3 py-5 border border-dark rounded">
                 <div className="rounded-circle text-center mb-3">
-                  <img src="https://dsz5eydy8se7.cloudfront.net/play.png" alt="" height="80" width="80" />
+                  <img src="https://puzzle-together.e055339.com/play.png" alt="" height="80" width="80" />
                 </div>
                 <h3 className="mb-3 text-center">精彩回放</h3>
                 <div className="text-center">完整保留遊玩過程<br />通關後可回味過往的有趣時刻</div>

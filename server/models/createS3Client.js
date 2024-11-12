@@ -28,7 +28,7 @@ async function uploadToS3(file) {
 
   await s3Client.send(command);
 
-  const imageUrl = `https://dsz5eydy8se7.cloudfront.net/${key}`;
+  const imageUrl = `https://puzzle-together.e055339.com/${key}`;
   return imageUrl;
 }
 

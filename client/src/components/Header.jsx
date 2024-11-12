@@ -29,7 +29,7 @@ const Header = () => {
       <div className="container-fluid justify-content-between">
         <NavLink className="navbar-brand" to="/">
           <div className='d-flex align-items-center'>
-            <img src="https://dsz5eydy8se7.cloudfront.net/puzzle-together.svg" alt="logo" width="30" height="24" className="d-inline-block align-text-top" />
+            <img src="https://puzzle-together.e055339.com/puzzle-together.svg" alt="logo" width="30" height="24" className="d-inline-block align-text-top" />
             <div>帕索兔蓋德</div>
           </div>
         </NavLink>

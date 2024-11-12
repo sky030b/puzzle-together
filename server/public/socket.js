@@ -89,7 +89,7 @@ export function setupSocket() {
           // if (piece.dataset.moveBy && piece.dataset.moveBy !== moveBy) {
           //   const audioFiles = ['let_me_do_it_for_you.mp3', 'mine_in_chinese.mp3', 'mine.mp3'];
           //   const randomIndex = Math.floor(Math.random() * audioFiles.length);
-          //   const player = new Audio(`https://dsz5eydy8se7.cloudfront.net/${audioFiles[randomIndex]}`);
+          //   const player = new Audio(`https://puzzle-together.e055339.com/${audioFiles[randomIndex]}`);
           //   player.play();
           // }
           piece.dataset.moveBy = moveBy;
