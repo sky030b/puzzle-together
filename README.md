@@ -2,7 +2,7 @@
 **這是一個可以讓全世界的玩家在線上同步拼拼圖，大家一起同樂的網站。**  
 [專案介紹影片](https://drive.google.com/file/d/1oUXLlk7sXJ50qRJbhdo3paEMtO9pfn7C/view)
 
-![hero_banner](https://puzzle-together.e055339.com/hero_banner.gif)
+![hero_banner](https://dsz5eydy8se7.cloudfront.net/hero_banner.gif)
 
 
 ## 痛點與解方  
@@ -11,37 +11,37 @@
 ### 一不小心碰到，記錄全歸零？	vs.	全自動保存，保障所有進度！  
 ### 喜歡展示拼圖卻無處交流？	vs.	拼圖展示牆，分享與互動！
 
-![play_together](https://puzzle-together.e055339.com/play_together.gif)
-![zoom](https://puzzle-together.e055339.com/zoom.gif)
-![showcase](https://puzzle-together.e055339.com/showcase.png)
+![play_together](https://dsz5eydy8se7.cloudfront.net/play_together.gif)
+![zoom](https://dsz5eydy8se7.cloudfront.net/zoom.gif)
+![showcase](https://dsz5eydy8se7.cloudfront.net/showcase.png)
 
 ## 功能介紹
 ### 自由創造屬於自己的拼圖關卡
 提供玩家自由發揮創意的空間，可以自選關卡的題目圖片，也可以自己決定要遊玩幾乘幾的拼圖，  
 並提供三種不同的難度讓玩家挑戰，最後還可以決定是否公開遊戲室讓所有玩家加入或是僅與三五好友同樂～  
 
-![creation](https://puzzle-together.e055339.com/creation.png)
-![difficulty](https://puzzle-together.e055339.com/difficulty.png)
+![creation](https://dsz5eydy8se7.cloudfront.net/creation.png)
+![difficulty](https://dsz5eydy8se7.cloudfront.net/difficulty.png)
 
 ### 線上即時聊天室
 提供線上即時溝通的聊天室，讓玩家們可以在線上溝通彼此的遊玩策略或是如何分工，  
 當然，想講笑話也是可以的喔~  
 
-![chat](https://puzzle-together.e055339.com/chat.gif)  
+![chat](https://dsz5eydy8se7.cloudfront.net/chat.gif)  
 
 ### 記錄玩家貢獻排行榜
 遊玩過程中會記錄該關卡的累積遊玩時數(只要有玩家在關卡內就會持續累加)，同時也會即時更新每位玩家的拼圖貢獻數；  
 通關後，系統將顯示所有玩家的貢獻數表格，並提供貢獻比例圖，讓玩家更直觀地檢視每位玩家的貢獻度；
 玩家們也可以在通關後下載原始圖片喔～  
 
-![result](https://puzzle-together.e055339.com/result.gif)
+![result](https://dsz5eydy8se7.cloudfront.net/result.gif)
 
 ### 通關後的精彩回放功能
 你是否曾經在與一群人共同完成拼圖後，感到一絲失落？  
 本網站特別提供了精彩回放功能，讓你在通關後可以重溫奮戰過程，並與他人分享這段美好時光。  
 辛苦的努力將會永遠留存！
 
-![playback](https://puzzle-together.e055339.com/playback.gif)
+![playback](https://dsz5eydy8se7.cloudfront.net/playback.gif)
 
 ## 系統架構
 - 除了遊戲室以外的所有頁面都是使用 React 所寫，遊戲室則是用 Vanilla JavaScript 實現。
@@ -59,4 +59,4 @@
   (3) 線上即時同步聊天室  
   (4) 當 貢獻數變動 或是 玩家進出入遊戲室 時，即時更新玩家排行榜
 
-![architecture_diagram](https://puzzle-together.e055339.com/puzzle_together_architecture_diagram.png)
+![architecture_diagram](https://dsz5eydy8se7.cloudfront.net/puzzle_together_architecture_diagram.png)
